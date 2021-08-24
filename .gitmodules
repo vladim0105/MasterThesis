@@ -1,0 +1,3 @@
+[submodule "submodules/htm.core"]
+	path = submodules/htm.core
+	url = https://github.com/htm-community/htm.core
