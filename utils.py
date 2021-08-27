@@ -1,5 +1,6 @@
 import torch
 from htm.bindings.sdr import SDR
+import torch.nn as nn
 
 
 def tensor_to_sdr(tensor: torch.Tensor) -> SDR:
@@ -12,3 +13,5 @@ def tensor_to_sdr(tensor: torch.Tensor) -> SDR:
 def sdr_to_tensor(sdr: SDR) -> torch.Tensor:
     tensor = torch.Tensor(sdr.dense)
     return tensor
+
+

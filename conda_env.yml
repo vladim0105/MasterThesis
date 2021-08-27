@@ -153,6 +153,7 @@ dependencies:
     - pytest==6.2.4
     - requests==2.26.0
     - toml==0.10.2
+    - torchsummary==1.5.1
     - urllib3==1.26.6
     - wcwidth==0.2.5
 prefix: /home/vladim0105/miniconda3/envs/MasterThesis
