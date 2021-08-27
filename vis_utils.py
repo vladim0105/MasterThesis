@@ -53,7 +53,7 @@ def save_feature_maps(feature_maps: list, vis_dim=8):
             if i == vis_dim ** 2:  # we will visualize only vis_dim*vis_dim blocks from each layer
                 break
             plt.subplot(vis_dim, vis_dim, i + 1)
-            plt.imshow(feature_map, cmap='gray')
+            plt.imshow(feature_map)
             plt.axis("off")
         print(f"Saving layer {num_layer} feature maps...")
         plt.savefig(f"feature_maps/layer_{num_layer}.png")
@@ -73,3 +73,10 @@ def save_feature_maps_of_image(img: np.ndarray, model, vis_dim=8):
     img = img.unsqueeze(0)  # Add batch dimension
     feature_maps = create_feature_maps(img, conv_layers)
     save_feature_maps(feature_maps, vis_dim=vis_dim)
+
+
+def get_layer_activation(out_data):
+    def hook(model, input, output):
+        out_data["data"] = output.detach()
+
+    return hook

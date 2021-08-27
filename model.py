@@ -1,5 +1,6 @@
 import htm.bindings.algorithms as algos
 import torch.nn as nn
+import torchvision.models.resnet
 from htm.bindings.sdr import SDR
 
 import utils
@@ -8,6 +9,18 @@ import utils
 class Model:
     def __init__(self):
         pass
+
+
+class CNNLayer(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.model = torchvision.models.resnet.resnet18(pretrained=True)
+        # Replace the final layer with an identity layer
+        self.model.fc = nn.Identity()
+
+    def forward(self, x):
+        x = self.model(x)
+        return x
 
 
 class HTMLayer(nn.Module):
