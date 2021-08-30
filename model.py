@@ -25,16 +25,16 @@ class CNNLayer(nn.Module):
 
 class HTMLayer(nn.Module):
     def __init__(self, shape,
-                 columnDimensions=1000,
-                 potentialPct=0.85,
-                 potentialRadius=1000,
+                 columnDimensions=(1000,),
+                 potentialPct=0.1,
+                 potentialRadius=7,
                  globalInhibition=True,
-                 localAreaDensity=0.04395604395604396,
-                 synPermInactiveDec=0.006,
-                 synPermActiveInc=0.04,
-                 synPermConnected=0.14,
-                 boostStrength=3.0,
-                 wrapAround=True
+                 localAreaDensity=0.1,
+                 synPermInactiveDec=0.02,
+                 synPermActiveInc=0.1,
+                 synPermConnected=0.5,
+                 boostStrength=100.0,
+                 wrapAround=False
                  ):
         super().__init__()
         self.sp = algos.SpatialPooler(
@@ -48,20 +48,23 @@ class HTMLayer(nn.Module):
             synPermActiveInc=synPermActiveInc,
             synPermConnected=synPermConnected,
             boostStrength=boostStrength,
-            wrapAround=wrapAround
+            wrapAround=wrapAround,
+            seed=0
         )
-        self.tm = algos.TemporalMemory()
+        self.tm = algos.TemporalMemory(columnDimensions=columnDimensions, seed=0, cellsPerColumn=5)
 
-        self.sdr = SDR(self.sp.getColumnDimensions())
 
     def forward(self, x):
         encoded_sdr = utils.tensor_to_sdr(x)
+        active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
-        self.sp.compute(encoded_sdr, None, self.sdr)
+        self.sp.compute(encoded_sdr, True, active_sdr)
+        print(active_sdr.size)
         # Run the temporal memory
-        self.tm.compute(self.sdr, learn=True)
+        self.tm.compute(active_sdr, learn=True)
         # Extract the predicted SDR and convert it to a tensor
         predicted = utils.sdr_to_tensor(self.tm.getActiveCells())
+        print(predicted.size())
         # Extract the anomaly score
         anomaly = self.tm.anomaly
 
