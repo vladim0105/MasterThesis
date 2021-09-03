@@ -1,3 +1,4 @@
+import htm.bindings.algorithms
 import htm.bindings.algorithms as algos
 import torch.nn as nn
 import torchvision.models.resnet
@@ -26,19 +27,20 @@ class CNNLayer(nn.Module):
 class HTMLayer(nn.Module):
     def __init__(self, shape,
                  columnDimensions=(1000,),
-                 potentialPct=0.1,
+                 potentialPct=1,
                  potentialRadius=7,
                  globalInhibition=True,
-                 localAreaDensity=0.1,
-                 synPermInactiveDec=0.02,
-                 synPermActiveInc=0.1,
+                 localAreaDensity=0.1, # Seems to affect the model sensitivity
+                 synPermInactiveDec=0.08,
+                 synPermActiveInc=0.14,
                  synPermConnected=0.5,
-                 boostStrength=100.0,
-                 wrapAround=False
+                 boostStrength=0.0,
+                 wrapAround=False,
+                 seed=0
                  ):
         super().__init__()
         self.sp = algos.SpatialPooler(
-            inputDimensions=shape,
+            inputDimensions=(shape[1], shape[0]),
             columnDimensions=columnDimensions,
             potentialPct=potentialPct,
             potentialRadius=potentialRadius,
@@ -49,22 +51,20 @@ class HTMLayer(nn.Module):
             synPermConnected=synPermConnected,
             boostStrength=boostStrength,
             wrapAround=wrapAround,
-            seed=0
+            seed=seed
         )
-        self.tm = algos.TemporalMemory(columnDimensions=columnDimensions, seed=0, cellsPerColumn=5)
+        self.tm = algos.TemporalMemory(columnDimensions=columnDimensions, seed=seed, cellsPerColumn=40, maxNewSynapseCount=40)
 
 
-    def forward(self, x):
+    def forward(self, x, learn):
         encoded_sdr = utils.tensor_to_sdr(x)
         active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
-        self.sp.compute(encoded_sdr, True, active_sdr)
-        print(active_sdr.size)
+        self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
         # Run the temporal memory
-        self.tm.compute(active_sdr, learn=True)
+        self.tm.compute(activeColumns=active_sdr, learn=learn)
         # Extract the predicted SDR and convert it to a tensor
-        predicted = utils.sdr_to_tensor(self.tm.getActiveCells())
-        print(predicted.size())
+        predicted = self.tm.getActiveCells()
         # Extract the anomaly score
         anomaly = self.tm.anomaly
 
