@@ -3,7 +3,7 @@ import htm.bindings.algorithms as algos
 import torch.nn as nn
 import torchvision.models.resnet
 from htm.bindings.sdr import SDR
-
+from htm.algorithms.anomaly_likelihood import AnomalyLikelihood
 import utils
 
 
@@ -15,9 +15,9 @@ class Model:
 class CNNLayer(nn.Module):
     def __init__(self):
         super().__init__()
-        self.model = torchvision.models.resnet.resnet18(pretrained=True)
+        self.model = torchvision.models.resnet.resnet18(pretrained=True).cuda()
         # Replace the final layer with an identity layer
-        self.model.fc = nn.Identity()
+        self.model.fc = nn.Identity().cuda()
 
     def forward(self, x):
         x = self.model(x)
@@ -27,20 +27,21 @@ class CNNLayer(nn.Module):
 class HTMLayer(nn.Module):
     def __init__(self, shape,
                  columnDimensions=(1000,),
-                 potentialPct=1,
-                 potentialRadius=7,
+                 potentialPct=0.5,
+                 potentialRadius=14,
                  globalInhibition=True,
-                 localAreaDensity=0.1, # Seems to affect the model sensitivity
+                 localAreaDensity=0.05,  # Seems to affect the model sensitivity
                  synPermInactiveDec=0.08,
                  synPermActiveInc=0.14,
                  synPermConnected=0.5,
                  boostStrength=0.0,
-                 wrapAround=False,
+                 wrapAround=True,
                  seed=0
                  ):
         super().__init__()
         self.sp = algos.SpatialPooler(
-            inputDimensions=(shape[1], shape[0]),
+            inputDimensions=shape,
+            # inputDimensions=(shape[1], shape[0]),
             columnDimensions=columnDimensions,
             potentialPct=potentialPct,
             potentialRadius=potentialRadius,
@@ -53,11 +54,9 @@ class HTMLayer(nn.Module):
             wrapAround=wrapAround,
             seed=seed
         )
-        self.tm = algos.TemporalMemory(columnDimensions=columnDimensions, seed=seed, cellsPerColumn=40, maxNewSynapseCount=40)
-
-
-    def forward(self, x, learn):
-        encoded_sdr = utils.tensor_to_sdr(x)
+        self.tm = algos.TemporalMemory(columnDimensions=columnDimensions, seed=seed)
+        self.anom = AnomalyLikelihood(learningPeriod=100)
+    def forward(self, encoded_sdr, learn):
         active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
         self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
@@ -67,5 +66,8 @@ class HTMLayer(nn.Module):
         predicted = self.tm.getActiveCells()
         # Extract the anomaly score
         anomaly = self.tm.anomaly
-
-        return predicted, anomaly
+        if learn:
+            anomaly_likelihood = 0
+        else:
+            anomaly_likelihood = self.anom.anomalyProbability(0, anomaly)
+        return predicted, anomaly, anomaly_likelihood

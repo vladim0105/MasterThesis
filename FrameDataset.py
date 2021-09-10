@@ -18,7 +18,7 @@ class FrameDataset(Dataset):
             indices = np.random.randint(0, len(self.frames), size=2)
             for j in range(length):
                 try:
-                    self.frames[indices[0]+j] = (self.frames[indices[1]+direction*j])
+                    self.frames[indices[0]+j] = (self.frames[indices[1]+direction*j]).copy()
                     self.anomalies[indices[0]+j] = True
                 except:
                     pass
@@ -26,8 +26,6 @@ class FrameDataset(Dataset):
 
     def __getitem__(self, index):
         frame = self.frames[index]
-        if index==0:
-            matplotlib.image.imsave("out.png", frame, cmap="gray")
         return torch.Tensor(frame)
 
     def __len__(self):

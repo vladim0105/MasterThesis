@@ -41,10 +41,12 @@ def create_feature_maps(img: torch.Tensor, conv_layers: list) -> list:
     return feature_maps
 
 
-def save_feature_maps(feature_maps: list, vis_dim=8):
+def save_feature_maps(feature_maps: list, vis_dim=8, tag="", index=-1):
     # visualize 64 features from each layer
     # (although there are more feature maps in the upper layers)
     for num_layer in range(len(feature_maps)):
+        if index != -1 and num_layer != index:
+            continue
         fig = plt.figure(figsize=(30, 30))
         layer_viz = feature_maps[num_layer][0, :, :, :]
         layer_viz = layer_viz.data
@@ -56,23 +58,24 @@ def save_feature_maps(feature_maps: list, vis_dim=8):
             plt.imshow(feature_map)
             plt.axis("off")
         print(f"Saving layer {num_layer} feature maps...")
-        plt.savefig(f"feature_maps/layer_{num_layer}.png")
+        plt.savefig(f"feature_maps/{tag}_layer_{num_layer}.png")
         # plt.show()
         plt.close()
 
 
-def save_feature_maps_of_image(img: np.ndarray, model, vis_dim=8):
+def save_feature_maps_of_image(img: np.ndarray, model, vis_dim=8, index=-1, tag=""):
     conv_layers, _ = get_conv_layers_and_weights(model)
     # define the transforms
     transform = transforms.Compose([
         transforms.ToPILImage(),
         transforms.Resize((256, 256)),
+        transforms.Lambda(lambda image: image.convert('RGB')),
         transforms.ToTensor(),
     ])
     img = transform(img)
     img = img.unsqueeze(0)  # Add batch dimension
     feature_maps = create_feature_maps(img, conv_layers)
-    save_feature_maps(feature_maps, vis_dim=vis_dim)
+    save_feature_maps(feature_maps, vis_dim=vis_dim, tag=tag, index=index),
 
 
 def get_layer_activation(out_data):
