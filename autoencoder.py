@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    dataset = ImageReconstructionDataset(args.data, "png", device)
+    dataset = ImageReconstructionDataset(args.data, "jpg", device)
     train_set, val_set = random_split(dataset=dataset, lengths=[int(0.8*len(dataset)), int(0.2*len(dataset))])
 
     train_loader = DataLoader(dataset=train_set, batch_size=args.batch, shuffle=True)
