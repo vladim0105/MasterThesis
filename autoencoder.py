@@ -11,7 +11,7 @@ import torch
 import torchvision.models.resnet
 import torch.nn as nn
 import argparse
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, random_split
 from torch.utils.data.dataset import T_co
 from PIL import Image
 from torchvision.transforms import transforms
@@ -90,19 +90,16 @@ class Params(TypedDict):
     scheduler: object
     loss_func: typing.Callable[[torch.Tensor, torch.Tensor], torch.Tensor]
     train_loader: torch.utils.data.DataLoader
+    val_loader: torch.utils.data.DataLoader
     device: torch.device
     name: str
 
 
 def train(params: Params):
-    Path(f"./{params['name']}").mkdir(exist_ok=True)
-    Path(f"./{params['name']}/images").mkdir(exist_ok=True)
-    Path(f"./{params['name']}/checkpoints").mkdir(exist_ok=True)
-    with open(f"{params['name']}/params.json", "w") as file:
-        file.write(json.dumps(params, default=lambda o: str(o)))  # use `json.loads` to do the reverse
 
     for epoch in range(params["num_epochs"]):
-        losses = []
+        train_losses = []
+        params["model"].train()
         with progressbar.ProgressBar(max_value=len(params["train_loader"])) as bar:
             for batch_idx, data in enumerate(params["train_loader"]):
                 inputs, targets = data
@@ -113,19 +110,30 @@ def train(params: Params):
                 loss = params["loss_func"](outputs, targets)
                 loss.backward()
                 params["optimizer"].step()
-                losses.append(loss.item())
-                if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
-                    torchvision.utils.save_image(outputs, f"{params['name']}/images/out_{epoch}.png")
-                    torchvision.utils.save_image(latent[0, 0, :, :], f"{params['name']}/images/latent_{epoch}.png")
+                train_losses.append(loss.item())
 
                 bar.update(bar.value + 1)
-        loss_metric = np.average(losses)
-        print(f"Epoch: {epoch}, Loss: {loss_metric}")
-        # TODO Validation
-        scheduler.step(loss_metric)
+        train_loss = np.average(train_losses)
+
+        # Validation
+        params["model"].eval()
+        val_losses = []
+        for batch_idx, data in enumerate(params["val_loader"]):
+            inputs, targets = data
+
+            outputs, latent = params["model"](inputs)
+            loss = params["loss_func"](outputs, targets)
+            val_losses.append(loss.item())
+            # Save useful info during validation...
+            if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
+                torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
+                torchvision.utils.save_image(latent[0, 0, :, :], f"{params['name']}/images/latent_{epoch}.png")
+
+        val_loss = np.average(val_losses)
+        scheduler.step(val_loss)
         if epoch % int(params["num_epochs"] / 5) == 0:
             torch.save(params["model"].state_dict(), f"{params['name']}/checkpoints/checkpoint_{epoch}.pt")
-
+        print(f"Epoch: {epoch}, Train Loss: {train_loss}, Val Loss: {val_loss}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -137,11 +145,17 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
     dataset = ImageReconstructionDataset(args.data, "png", device)
-    train_loader = DataLoader(dataset=dataset, batch_size=args.batch, shuffle=True)
+    train_set, val_set = random_split(dataset=dataset, lengths=[int(0.8*len(dataset)), int(0.2*len(dataset))])
+
+    train_loader = DataLoader(dataset=train_set, batch_size=args.batch, shuffle=True)
+    val_loader = DataLoader(dataset=val_set, batch_size=args.batch, shuffle=False)
+
     model = AutoEncoder(latent_dim=0)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, verbose=True)
+
     params: Params = {
         "num_epochs": args.epochs,
         "model": model.to(device),
@@ -149,8 +163,15 @@ if __name__ == "__main__":
         "scheduler": scheduler,
         "loss_func": nn.MSELoss().to(device),
         "train_loader": train_loader,
+        "val_loader": val_loader,
         "device": device,
         "name": args.name
     }
+    # Setup folders etc...
+    Path(f"./{params['name']}").mkdir(exist_ok=True)
+    Path(f"./{params['name']}/images").mkdir(exist_ok=True)
+    Path(f"./{params['name']}/checkpoints").mkdir(exist_ok=True)
+    with open(f"{params['name']}/params.json", "w") as file:
+        file.write(json.dumps(params, default=lambda o: str(o)))  # use `json.loads` to do the reverse
 
     train(params)
