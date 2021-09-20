@@ -151,6 +151,8 @@ def train(params: Params):
                     torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
                     torchvision.utils.save_image(latent[0].reshape(-1, latent.shape[-1]),
                                                  f"{params['name']}/images/latent_{epoch}.png")
+                if epoch == 0:
+                    torchvision.utils.save_image(inputs[0, :, :, :], f"{params['name']}/images/in.png")
                 bar.update(bar.value + 1)
 
         val_loss = np.average(val_losses)
@@ -162,6 +164,7 @@ def train(params: Params):
         print("-")
 
     # Plot loss graph
+    plt.yscale("log")
     plt.plot(plot_data["train_loss"], label="Training")
     plt.plot(plot_data["val_loss"], label="Validation")
     plt.xlabel("Epoch")
