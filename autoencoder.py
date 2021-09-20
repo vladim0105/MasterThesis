@@ -4,7 +4,7 @@ import os
 import pickle
 import typing
 from pathlib import Path
-
+import matplotlib.pyplot as plt
 import numpy as np
 import progressbar
 import torch
@@ -50,9 +50,10 @@ class Encoder(nn.Module):
 
     def create_block(self, in_channels, out_channels, kernel_size=(3, 3), padding=1):
         block = nn.Sequential(
-            nn.Conv2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=kernel_size, padding=padding),
+            nn.Conv2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=kernel_size,
+                      padding=padding),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.ReLU()
+            nn.LeakyReLU()
         )
         return block
 
@@ -75,9 +76,10 @@ class Decoder(nn.Module):
         block = nn.Sequential(
             nn.ConvTranspose2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=(2, 2)),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.ReLU()
+            nn.LeakyReLU()
         )
         return block
+
     def forward(self, x):
         x = self.block1(x)
         x = self.block2(x)
@@ -113,6 +115,7 @@ class Params(TypedDict):
 
 
 def train(params: Params):
+    plot_data = {"train_loss": [], "val_loss": []}
     for epoch in range(params["num_epochs"]):
         train_losses = []
         params["model"].train()
@@ -130,7 +133,7 @@ def train(params: Params):
                 train_losses.append(loss.item())
                 bar.update(bar.value + 1)
         train_loss = np.average(train_losses)
-
+        plot_data["train_loss"].append(train_loss)
         # Validation
         params["model"].eval()
         val_losses = []
@@ -146,15 +149,26 @@ def train(params: Params):
                 # Save useful info during validation...
                 if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
                     torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
-                    torchvision.utils.save_image(latent[0].reshape(-1, latent.shape[-1]), f"{params['name']}/images/latent_{epoch}.png")
+                    torchvision.utils.save_image(latent[0].reshape(-1, latent.shape[-1]),
+                                                 f"{params['name']}/images/latent_{epoch}.png")
                 bar.update(bar.value + 1)
 
         val_loss = np.average(val_losses)
+        plot_data["val_loss"].append(val_loss)
         scheduler.step(val_loss)
         if epoch % int(params["num_epochs"] / 5) == 0:
             torch.save(params["model"].state_dict(), f"{params['name']}/checkpoints/checkpoint_{epoch}.pt")
         utils.log(f"Epoch: {epoch}, Train Loss: {train_loss}, Val Loss: {val_loss}", f"{params['name']}/log.txt")
         print("-")
+
+    # Plot loss graph
+    plt.plot(plot_data["train_loss"], label="Training")
+    plt.plot(plot_data["val_loss"], label="Validation")
+    plt.xlabel("Epoch")
+    plt.ylabel("MSE")
+    plt.legend()
+    plt.title("Loss")
+    plt.savefig(f"{params['name']}/plots/loss.png")
 
 
 if __name__ == "__main__":
@@ -197,6 +211,7 @@ if __name__ == "__main__":
     Path(f"./{params['name']}").mkdir(exist_ok=True)
     Path(f"./{params['name']}/images").mkdir(exist_ok=True)
     Path(f"./{params['name']}/checkpoints").mkdir(exist_ok=True)
+    Path(f"./{params['name']}/plots").mkdir(exist_ok=True)
     with open(f"{params['name']}/params.json", "w") as file:
         file.write(json.dumps(params, default=lambda o: str(o)))  # use `json.loads` to do the reverse
 
