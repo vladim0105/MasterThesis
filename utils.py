@@ -34,7 +34,7 @@ import sys
 def log(o: object, file: str):
     print(str(o))
     original_stdout = sys.stdout  # Save a reference to the original standard output
-    with open(file, 'wa') as f:
+    with open(file, 'a') as f:
         sys.stdout = f  # Change the standard output to the file we created.
         print(str(o))
         sys.stdout = original_stdout  # Reset the standard output to its original value
