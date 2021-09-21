@@ -2,6 +2,7 @@ import glob
 import json
 import os
 import pickle
+import random
 import typing
 from pathlib import Path
 import matplotlib.pyplot as plt
@@ -17,6 +18,25 @@ from PIL import Image
 from torchvision.transforms import transforms
 
 import utils
+from piqa import SSIM
+
+
+class ResidualWrapper(nn.Module):
+    def __init__(self, module: nn.Module, res_op=None):
+        super().__init__()
+        self.module = module
+        self.res_op = res_op
+
+    def forward(self, inputs):
+        res_out = inputs
+        if self.res_op is not None:
+            res_out = self.res_op(res_out)
+        return self.module(inputs) + res_out
+
+
+class SSIMLoss(SSIM):
+    def forward(self, x, y):
+        return 1. - super().forward(x, y)
 
 
 class ImageReconstructionDataset(Dataset):
@@ -44,22 +64,34 @@ class Encoder(nn.Module):
     def __init__(self, latent_dim):
         super().__init__()
         self.relu = nn.ReLU()
-        self.block1 = self.create_block(1, 2, kernel_size=(5, 5), padding=2)
+        self.block1 = self.create_block(1, 2)
         self.block2 = self.create_block(2, 3)
-        self.block3 = self.create_block(3, 4)
+        self.block3 = self.create_block(3, 4, dp=0)
+        self.pool = nn.MaxPool2d(2, 2)
 
-    def create_block(self, in_channels, out_channels, kernel_size=(3, 3), padding=1):
-        block = nn.Sequential(
+    def create_block(self, in_channels, out_channels, kernel_size=(3, 3), padding=1, dp=0, residual=True):
+        sequence = nn.Sequential(
             nn.Conv2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=kernel_size,
                       padding=padding),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.LeakyReLU()
+            nn.LeakyReLU(),
+            nn.Dropout(p=dp)
         )
+        if residual:
+            block = ResidualWrapper(
+                sequence,
+                nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, 1), stride=(2, 2))
+                # 1x1 conv to adjust the residual channels
+            )
+        else:
+            block = sequence
         return block
 
     def forward(self, x):
         x = self.block1(x)
+
         x = self.block2(x)
+
         x = self.block3(x)
         return x
 
@@ -67,17 +99,19 @@ class Encoder(nn.Module):
 class Decoder(nn.Module):
     def __init__(self, latent_dim):
         super().__init__()
-        self.relu = nn.ReLU()
         self.block1 = self.create_block(4, 3)
         self.block2 = self.create_block(3, 2)
-        self.block3 = self.create_block(2, 1)
+        self.block3 = self.create_block(2, 1, activation=nn.Sigmoid, dp=0)
+        self.sigmoid = nn.Sigmoid()
 
-    def create_block(self, in_channels, out_channels):
+    def create_block(self, in_channels, out_channels, activation: typing.Type[nn.Module] = nn.LeakyReLU, dp=0.05):
         block = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=(2, 2)),
+            nn.ConvTranspose2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=(2,2)),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.LeakyReLU()
+            activation(),
+            nn.Dropout(p=dp)
         )
+
         return block
 
     def forward(self, x):
@@ -149,10 +183,13 @@ def train(params: Params):
                 # Save useful info during validation...
                 if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
                     torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
-                    torchvision.utils.save_image(latent[0].reshape(-1, latent.shape[-1]),
+                    latent_image = latent[0].reshape(-1, latent.shape[-1])
+                    latent_image = (latent_image-torch.min(latent_image))/torch.max(latent_image)
+                    torchvision.utils.save_image(latent_image,
                                                  f"{params['name']}/images/latent_{epoch}.png")
-                if epoch == 0:
-                    torchvision.utils.save_image(inputs[0, :, :, :], f"{params['name']}/images/in.png")
+                    if epoch == 0:
+                        torchvision.utils.save_image(targets[0, :, :, :], f"{params['name']}/images/in.png")
+
                 bar.update(bar.value + 1)
 
         val_loss = np.average(val_losses)
@@ -183,7 +220,16 @@ if __name__ == "__main__":
     parser.add_argument("-w", "--workers", type=int, help="Number of dataloader workers", default=1)
     parser.add_argument("--lr", type=float, help="Learning rate", default=0.01)
     parser.add_argument("--extension", type=str, help="File extension for data", default="jpg")
+    parser.add_argument("--ssim", action="store_true")
+    parser.add_argument("--seed", type=int)
     args = parser.parse_args()
+
+    if args.seed is not None:
+        print(f"Setting seed to {args.seed}")
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        torch.manual_seed(args.seed)
+        torch.cuda.manual_seed(args.seed)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -204,7 +250,7 @@ if __name__ == "__main__":
         "model": model.to(device),
         "optimizer": optimizer,
         "scheduler": scheduler,
-        "loss_func": nn.MSELoss().to(device),
+        "loss_func": SSIMLoss(n_channels=1).to(device) if args.ssim else nn.MSELoss().to(device),
         "train_loader": train_loader,
         "val_loader": val_loader,
         "device": device,
