@@ -1,16 +1,8 @@
-import htm.encoders.scalar_encoder
-import matplotlib.image
-import torch
-import torchvision.models as models
-import torchvision.utils
 from torchvision.transforms import transforms
-from torch.utils.data import DataLoader
 import progressbar
 import dataset_to_video
 import utils
-import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-import vis_utils
 import model as m
 from FrameDataset import FrameDataset
 from htm.encoders.rdse import RDSE, RDSE_Parameters

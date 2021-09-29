@@ -1,7 +1,5 @@
 import glob
 import json
-import os
-import pickle
 import random
 import typing
 from pathlib import Path
@@ -17,7 +15,7 @@ from torch.utils.data.dataset import T_co
 from PIL import Image
 from torchvision.transforms import transforms
 
-import utils
+from src.htm_cnn_experiment import utils
 from piqa import SSIM
 
 
@@ -183,10 +181,13 @@ def train(params: Params):
                 # Save useful info during validation...
                 if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
                     torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
-                    latent_image = latent[0].reshape(-1, latent.shape[-1])
-                    latent_image = (latent_image-torch.min(latent_image))/torch.max(latent_image)
+                    latent_image = latent.transpose(1, 0)
                     torchvision.utils.save_image(latent_image,
-                                                 f"{params['name']}/images/latent_{epoch}.png")
+                                                 f"{params['name']}/images/latent_{epoch}.png",
+                                                 normalize=True,
+                                                 nrow=int(np.sqrt(latent_image.shape[0])),
+                                                 padding=0
+                                                 )
                     if epoch == 0:
                         torchvision.utils.save_image(targets[0, :, :, :], f"{params['name']}/images/in.png")
 

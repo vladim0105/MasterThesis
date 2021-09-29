@@ -1,6 +1,5 @@
 import torch
 import torchvision.models as models
-from torchsummary import summary
 from torchvision.transforms import transforms
 from torch.utils.data import DataLoader
 import progressbar
