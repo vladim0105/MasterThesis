@@ -78,8 +78,8 @@ def save_feature_maps_of_image(img: np.ndarray, model, vis_dim=8, index=-1, tag=
     save_feature_maps(feature_maps, vis_dim=vis_dim, tag=tag, index=index),
 
 
-def get_layer_activation(out_data):
+def get_layer_activation(out_data, name):
     def hook(model, input, output):
-        out_data["data"] = output.detach()
+        out_data[name] = output.detach()
 
     return hook
