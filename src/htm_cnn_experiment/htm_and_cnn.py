@@ -11,7 +11,7 @@ from datetime import datetime
 if __name__ == '__main__':
     seed = 1
     np.random.seed(seed+1)
-    dataset = FrameDataset("../../video_1.npy")
+    dataset = FrameDataset("../htm_only_experiment/video_1.npy")
 
     anomalies = []
     anomalies_likelihood=[]

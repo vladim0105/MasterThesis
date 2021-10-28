@@ -1,3 +1,4 @@
+import htm.encoders.coordinate
 import torch
 import torchvision.models as models
 from torchvision.transforms import transforms
@@ -15,11 +16,9 @@ from datetime import datetime
 if __name__ == '__main__':
     np.random.seed(2)
     dataset = FrameDataset("video_1.npy")
-
     anomalies = []
     anomalies_likelihood=[]
     preds = []
-    cnn_layer = m.CNNLayer()
     htm_layer = m.HTMLayer(shape=(140, 120), columnDimensions=(50, 50), seed=1)
     dataset_to_video.dataset_to_video(dataset.dataset, "test.avi")
     # First, expose the HTM network to the video several times
@@ -28,6 +27,8 @@ if __name__ == '__main__':
         for j in range(n):
             for i in range(len(dataset)):
                 sample = dataset[i]
+                sdr = utils.array_to_sdr(sample, encoder)
+                print(sdr)
                 htm_layer(sample, True)
                 bar.update(bar.value+1)
     dataset_to_video.dataset_to_video(dataset.dataset, "test.avi")

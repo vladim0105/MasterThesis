@@ -15,7 +15,7 @@ from torch.utils.data.dataset import T_co
 from PIL import Image
 from torchvision.transforms import transforms
 
-from src.htm_cnn_experiment import utils
+from htm_cnn_experiment import utils
 from piqa import SSIM
 
 
@@ -65,7 +65,7 @@ class Encoder(nn.Module):
         self.block1 = self.create_block(1, 2)
         self.block2 = self.create_block(2, 3)
         self.block3 = self.create_block(3, 4, dp=0)
-        self.pool = nn.MaxPool2d(2, 2)
+        self.fc = nn.Linear(in_features=32*32*4, out_features=1024)
 
     def create_block(self, in_channels, out_channels, kernel_size=(3, 3), padding=1, dp=0, residual=True):
         sequence = nn.Sequential(
@@ -91,18 +91,19 @@ class Encoder(nn.Module):
         x = self.block2(x)
 
         x = self.block3(x)
+        x = self.fc(x.reshape(x.shape[0], -1))
         return x
 
 
 class Decoder(nn.Module):
     def __init__(self, latent_dim):
         super().__init__()
-        self.block1 = self.create_block(4, 3)
-        self.block2 = self.create_block(3, 2)
-        self.block3 = self.create_block(2, 1, activation=nn.Sigmoid, dp=0)
+        self.block1 = self.create_block(1, 1)
+        self.block2 = self.create_block(1, 1)
+        self.block3 = self.create_block(1, 1, activation=nn.Sigmoid, dp=0)
         self.sigmoid = nn.Sigmoid()
 
-    def create_block(self, in_channels, out_channels, activation: typing.Type[nn.Module] = nn.LeakyReLU, dp=0.05):
+    def create_block(self, in_channels, out_channels, activation: typing.Type[nn.Module] = nn.LeakyReLU, dp=0):
         block = nn.Sequential(
             nn.ConvTranspose2d(in_channels=in_channels, stride=(2, 2), out_channels=out_channels, kernel_size=(2,2)),
             nn.BatchNorm2d(num_features=out_channels),
@@ -113,6 +114,7 @@ class Decoder(nn.Module):
         return block
 
     def forward(self, x):
+        x = x.reshape(-1, 1, 32, 32)
         x = self.block1(x)
         x = self.block2(x)
         x = self.block3(x)
@@ -175,18 +177,17 @@ def train(params: Params):
                 inputs = inputs.to(params["device"])
                 targets = targets.to(params["device"])
 
+
                 outputs, latent = params["model"](inputs)
                 loss = params["loss_func"](outputs, targets)
                 val_losses.append(loss.item())
                 # Save useful info during validation...
                 if batch_idx == 0 and epoch % (params["num_epochs"] / 10) == 0:
                     torchvision.utils.save_image(outputs[0, :, :, :], f"{params['name']}/images/out_{epoch}.png")
-                    latent_image = latent.transpose(1, 0)
+                    latent_image = latent.reshape(1, 32, 32)
                     torchvision.utils.save_image(latent_image,
                                                  f"{params['name']}/images/latent_{epoch}.png",
-                                                 normalize=True,
-                                                 nrow=int(np.sqrt(latent_image.shape[0])),
-                                                 padding=0
+                                                 normalize=True
                                                  )
                     if epoch == 0:
                         torchvision.utils.save_image(targets[0, :, :, :], f"{params['name']}/images/in.png")
