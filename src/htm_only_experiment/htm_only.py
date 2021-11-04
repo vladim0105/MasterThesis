@@ -1,8 +1,4 @@
-import htm.encoders.coordinate
-import torch
-import torchvision.models as models
-from torchvision.transforms import transforms
-from torch.utils.data import DataLoader
+
 import progressbar
 import dataset_to_video
 import utils
@@ -19,30 +15,48 @@ if __name__ == '__main__':
     anomalies = []
     anomalies_likelihood=[]
     preds = []
-    htm_layer = m.HTMLayer(shape=(140, 120), columnDimensions=(50, 50), seed=1)
+
+    sp_args = m.SpatialPoolerArgs()
+    sp_args.seed = 2
+    sp_args.inputDimensions = (140*120, )
+    sp_args.columnDimensions = (1000,)
+    sp_args.potentialPct = 0.5
+    sp_args.potentialRadius = 2048
+    sp_args.localAreaDensity = 0.05
+    sp_args.globalInhibition = True
+
+    tm_args = m.TemporalMemoryArgs()
+    tm_args.columnDimensions = sp_args.columnDimensions
+    tm_args.predictedSegmentDecrement = 0.001
+    tm_args.permanenceIncrement = 0.1
+    tm_args.permanenceDecrement = 0.001
+    tm_args.seed = sp_args.seed
+    print("aaa")
+    htm_layer = m.HTMLayer(sp_args, tm_args)
     dataset_to_video.dataset_to_video(dataset.dataset, "test.avi")
     # First, expose the HTM network to the video several times
-    n=5
+    n=10
     with progressbar.ProgressBar(max_value=n * len(dataset)) as bar:
         for j in range(n):
             for i in range(len(dataset)):
-                sample = dataset[i]
-                sdr = utils.array_to_sdr(sample, encoder)
-                print(sdr)
-                htm_layer(sample, True)
+                sample = dataset[i].flatten()
+                sdr = utils.tensor_to_sdr(sample)
+                pred, anom, _ = htm_layer(sdr, True)
+                anomalies.append(anom)
                 bar.update(bar.value+1)
     dataset_to_video.dataset_to_video(dataset.dataset, "test.avi")
     #Then expose it to the anomalies
-    dataset = FrameDataset("video_2.npy")
+    #dataset = FrameDataset("video_2.npy")
     dataset.create_anomalies(5, 20, True)
     dataset_to_video.dataset_to_video(dataset.dataset, "test2.avi")
     for i in range(len(dataset)):
-        sample = dataset[i]
-        pred, anom = htm_layer(sample, True)
+        sample = dataset[i].flatten()
+        sdr = utils.tensor_to_sdr(sample)
+        pred, anom, _ = htm_layer(sdr, True)
         preds.append(pred)
         anomalies.append(anom)
-
-    plt.plot(dataset.anomalies, color="red", label="anomalies")
+    print("AAAA")
+    #plt.plot(dataset.anomalies, color="red", label="anomalies")
     plt.plot(anomalies, color="blue", label="htm anomalies")
     plt.ylim([0, 1.2])
     plt.xlabel("Frame #")

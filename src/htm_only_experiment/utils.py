@@ -16,17 +16,6 @@ def sdr_to_tensor(sdr: SDR) -> torch.Tensor:
     tensor = torch.Tensor(sdr.dense)
     return tensor
 
-def coordinates_to_sdr(array: np.ndarray, encoder) -> SDR:
-    encodings = []
-    for val in np.nditer(flat):
-        encodings.append(encoder.encode(val))
-
-    sdr = SDR(dimensions=(encodings[0].dimensions[0] * len(encodings),))
-
-    sdr.concatenate(encodings)
-
-    return sdr
-
 def float_array_to_sdr(array: np.ndarray, encoder) -> SDR:
     flat = array.flatten()
     encodings = []

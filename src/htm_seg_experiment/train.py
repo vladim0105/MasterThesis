@@ -17,17 +17,18 @@ import utils
 
 def test(params, args):
     with torch.no_grad():
-        params["model"].load_state_dict(torch.load(f"./{args.name}/checkpoints/checkpoint_20.pt"))
+        params["model"].load_state_dict(torch.load(f"./{args.name}/checkpoints/best_iou.pt"))
         params["model"].eval()
         pil_img = Image.open(args.test).convert('RGB')
-        img = params["val_loader"].dataset.transform(pil_img).to(params["device"])
+        img, _ = params["val_loader"].dataset.transform(pil_img, None)
+        img = img.to(params["device"])
         img = img.unsqueeze(0)  # Add batch dimension
         torchvision.utils.save_image(img[0], f"{params['name']}/aaa.png")
         out = params["model"](img)
         out=torch.where(out > 0.05, 1.0, 0.0)
         print(out.shape)
         print(f"Saving output to {params['name']}/result.png...")
-        torchvision.utils.save_image(out[0][8:9].unsqueeze(1), f"{params['name']}/result.png", pad_value=1)
+        torchvision.utils.save_image(out[0].unsqueeze(1), f"{params['name']}/result.png", pad_value=1)
         print("Done")
 
 def train(params, args):
@@ -102,7 +103,7 @@ def train(params, args):
             print("New best IoU, saving model...")
             torch.save(params["model"].state_dict(), f"{params['name']}/checkpoints/best_iou.pt")
 
-        utils.log(f"Epoch: {epoch+1}, Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}, IoU: {val_iou:.3f}",
+        utils.log(f"Epoch: {epoch+1}, LR: {params['scheduler'].get_last_lr():.3f}, Train Loss: {train_loss:.3f}, Val Loss: {val_loss:.3f}, IoU: {val_iou:.3f}",
                   f"{params['name']}/log.txt")
         print("-")
 
@@ -119,22 +120,25 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int)
     args = parser.parse_args()
     scat = ["person", "vehicle", "outdoor", "plant", "building", "sky", "ground", "solid", "floor"]
-    model = smp.DeepLabV3Plus(encoder_name="resnet152", encoder_weights="imagenet", classes=len(scat))
+    model = smp.DeepLabV3Plus(encoder_name="resnet101", encoder_weights="imagenet", classes=len(scat))
+    model = torch.nn.DataParallel(model)
     dataloader_train = None
     if args.test is None:
-        dataset_train = datasets.COCOSegmentationDataset("../../train2017",
+        dataset_train = datasets.UAVIDSegmentationDataset("../../train2017",
                                                          "../../annotations/instances_train2017.json",
                                                          "../../annotations/stuff_train2017.json", scat)
         dataloader_train = DataLoader(dataset_train, batch_size=args.batch, shuffle=True, pin_memory=True,
                                       num_workers=args.workers, drop_last=True)
-    dataset_val = datasets.COCOSegmentationDataset("../../val2017", "../../annotations/instances_val2017.json",
+
+    dataset_val = datasets.COCOSegmentationDataset("../../val2017",
+                                                   "../../annotations/instances_val2017.json",
                                                    "../../annotations/stuff_val2017.json", scat, val=True)
 
     dataloader_val = DataLoader(dataset_val, batch_size=args.batch, shuffle=False, pin_memory=True,
                                 num_workers=args.workers, drop_last=True)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, verbose=True, patience=5)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=4e-05)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.94)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     params = {
         "num_epochs": args.epochs,
