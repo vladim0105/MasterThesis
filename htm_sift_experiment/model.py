@@ -60,12 +60,26 @@ class SpatialPoolerArgs:
             neighbors, which will lead to more efficient use of columns. However,
             too much boosting may also lead to instability of SP outputs."""
         self.stimulusThreshold = 1
-        self.wrapAround = True
+        self.wrapAround = False
         self.dutyCyclePeriod = 1000
         """The period used to calculate duty cycles.
             Higher values make it take longer to respond to changes in
             boost. Shorter values make it potentially more unstable and
             likely to oscillate."""
+        self.minPctOverlapDutyCycle = 0.001
+        """A number between 0 and 1.0, used to set
+            a floor on how often a column should have at least
+            stimulusThreshold active inputs. Periodically, each column looks
+            at the overlap duty cycle of all other column within its
+            inhibition radius and sets its own internal minimal acceptable
+            duty cycle to: minPctDutyCycleBeforeInh * max(other columns'
+            duty cycles). On each iteration, any column whose overlap duty
+            cycle falls below this computed value will get all of its
+            permanence values boosted up by synPermActiveInc. Raising all
+            permanences in response to a sub-par duty cycle before
+            inhibition allows a cell to search for new inputs when either
+            its previously learned inputs are no longer ever active, or when
+            the vast majority of them have been "hijacked" by other columns."""
         self.seed = 0
 
 
@@ -86,6 +100,26 @@ class TemporalMemoryArgs:
         self.permanenceDecrement = 0.01
 
 
+class SpatialPooler:
+    def __init__(self, sp_args: SpatialPoolerArgs):
+        self.sp = algos.SpatialPooler(**sp_args.__dict__)
+
+    def __call__(self, encoded_sdr, learn):
+        active_sdr = SDR(self.sp.getColumnDimensions())
+        # Run the spatial pooler
+        self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
+        return active_sdr
+class TemporalMemory:
+    def __init__(self, tm_args: TemporalMemoryArgs):
+        self.tm = algos.TemporalMemory(**tm_args.__dict__)
+    def __call__(self, active_sdr, learn):
+        self.tm.compute(activeColumns=active_sdr, learn=learn)
+        # Extract the predicted SDR and convert it to a tensor
+        predicted = self.tm.getActiveCells()
+        # Extract the anomaly score
+        anomaly = self.tm.anomaly
+        return predicted, anomaly
+
 class HTMLayer:
     def __init__(self, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs):
         super().__init__()
@@ -96,7 +130,6 @@ class HTMLayer:
         active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
         self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
-        self.sp.getSynPermConnected()
         # Run the temporal memory
         self.tm.compute(activeColumns=active_sdr, learn=learn)
         # Extract the predicted SDR and convert it to a tensor
