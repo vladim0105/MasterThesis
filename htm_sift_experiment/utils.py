@@ -9,7 +9,7 @@ def text_phantom(text, size):
     text_width, text_height = pil_font.getsize(text)
 
     # create a blank canvas with extra space between lines
-    canvas = Image.new('1', [size*5, size], 255)
+    canvas = Image.new('RGB', [size*5, size], (255, 255, 255))
 
     # draw the text onto the canvas
     draw = ImageDraw.Draw(canvas)
@@ -19,5 +19,8 @@ def text_phantom(text, size):
     draw.text(offset, text, font=pil_font, fill=white)
 
     # Convert the canvas into an array with values in [0, 1]
-    out = np.asarray(canvas)*255
+    out = np.asarray(canvas)
     return out
+def running_mean(x, N):
+    cumsum = np.cumsum(np.insert(x, 0, 0))
+    return (cumsum[N:] - cumsum[:-N]) / float(N)

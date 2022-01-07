@@ -98,7 +98,15 @@ class TemporalMemoryArgs:
         """Amount by which permanences of synapses are incremented during learning."""
 
         self.permanenceDecrement = 0.01
-
+        self.minThreshold = 10
+        """If the number of potential synapses active on a segment is at least
+            this threshold, it is said to be "matching" and is eligible for
+            learning."""
+        self.activationThreshold = 13
+        """
+        If the number of active connected synapses on a segment is at least
+        this threshold, the segment is actived.
+        """
 
 class SpatialPooler:
     def __init__(self, sp_args: SpatialPoolerArgs):

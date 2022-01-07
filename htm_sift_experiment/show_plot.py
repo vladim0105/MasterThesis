@@ -2,7 +2,7 @@ import argparse
 import pickle
 import matplotlib.pyplot as plt
 
-
+import utils
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -10,8 +10,9 @@ if __name__ == "__main__":
 
     args =argparser.parse_args()
 
-    fig = pickle.load(open(args.file,"rb"))
-    fig.show()
+    anoms = pickle.load(open(args.file,"rb"))
+    plt.plot(anoms)
+    plt.plot(utils.running_mean(anoms, 100))
     # for ax in fig.axes:
     #     for line in ax.lines:
     #         if line.get_label() == "diff":
