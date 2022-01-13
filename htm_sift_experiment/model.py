@@ -2,6 +2,7 @@ from typing import TypedDict, NamedTuple
 
 import htm.bindings.algorithms
 import htm.bindings.algorithms as algos
+import numpy as np
 from htm.bindings.sdr import SDR
 
 
@@ -107,26 +108,35 @@ class TemporalMemoryArgs:
         If the number of active connected synapses on a segment is at least
         this threshold, the segment is actived.
         """
+        self.cellsPerColumn = 16
+        """
+        Number of cells per mini-column
+        """
+
 
 class SpatialPooler:
     def __init__(self, sp_args: SpatialPoolerArgs):
         self.sp = algos.SpatialPooler(**sp_args.__dict__)
 
-    def __call__(self, encoded_sdr, learn):
+    def __call__(self, encoded_sdr: SDR, learn):
         active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
         self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
         return active_sdr
+
+
 class TemporalMemory:
     def __init__(self, tm_args: TemporalMemoryArgs):
         self.tm = algos.TemporalMemory(**tm_args.__dict__)
-    def __call__(self, active_sdr, learn):
+
+    def __call__(self, active_sdr: SDR, learn):
         self.tm.compute(activeColumns=active_sdr, learn=learn)
         # Extract the predicted SDR and convert it to a tensor
         predicted = self.tm.getActiveCells()
         # Extract the anomaly score
         anomaly = self.tm.anomaly
         return predicted, anomaly
+
 
 class HTMLayer:
     def __init__(self, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs):
@@ -145,3 +155,13 @@ class HTMLayer:
         # Extract the anomaly score
         anomaly = self.tm.anomaly
         return predicted, anomaly, active_sdr
+
+
+def numpy_to_sdr(arr: np.ndarray) -> SDR:
+    sdr = SDR(dimensions=arr.shape)
+    sdr.dense = arr.tolist()
+    return sdr
+
+
+def sdr_to_numpy(sdr: SDR) -> np.ndarray:
+    return np.array(sdr.dense)

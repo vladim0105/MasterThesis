@@ -1,5 +1,14 @@
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+from cv2 import cv2
+
+
+def value_to_hsv(val, min_val=0, max_val=1):
+    col = np.zeros(shape=(3,)).astype(np.uint8)
+    col[0] = int(60 * (max_val - val))
+    col[1] = 255
+    col[2] = 255
+    return col
 
 
 def text_phantom(text, size):
@@ -9,11 +18,11 @@ def text_phantom(text, size):
     text_width, text_height = pil_font.getsize(text)
 
     # create a blank canvas with extra space between lines
-    canvas = Image.new('RGB', [size*5, size], (255, 255, 255))
+    canvas = Image.new('RGB', [size * 5, size], (255, 255, 255))
 
     # draw the text onto the canvas
     draw = ImageDraw.Draw(canvas)
-    offset = ((size*5 - text_width) // 2,
+    offset = ((size * 5 - text_width) // 2,
               (size - text_height) // 2)
     white = "#000000"
     draw.text(offset, text, font=pil_font, fill=white)
@@ -21,6 +30,15 @@ def text_phantom(text, size):
     # Convert the canvas into an array with values in [0, 1]
     out = np.asarray(canvas)
     return out
+
+
 def running_mean(x, N):
     cumsum = np.cumsum(np.insert(x, 0, 0))
     return (cumsum[N:] - cumsum[:-N]) / float(N)
+
+
+def random_bit_array(shape, num_ones):
+    arr = np.zeros(shape=shape)
+    arr[:num_ones] = 1
+    np.random.shuffle(arr)
+    return arr
