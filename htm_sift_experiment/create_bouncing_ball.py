@@ -36,10 +36,11 @@ def create_video(path, r, sp: model.SpatialPooler, tm: model.TemporalMemory, sha
             anoms.append(anom)
             col = utils.value_to_hsv(anom, 0, 1)
             # Draw the borders
-            frame[:1, :, :] = 255
-            frame[:, :1, :] = 255
-            frame[:, -1:, :] = 255
-            frame[-1:, :, :] = 255
+            borderWidth =2
+            frame[:borderWidth, :, :] = 255
+            frame[:, :borderWidth, :] = 255
+            frame[:, -borderWidth:, :] = 255
+            frame[-borderWidth:, :, :] = 255
             # Apply HSV color
             frame[:, :, 0] = col[0]
             frame[:, :, 1] = col[1]
@@ -94,19 +95,19 @@ if __name__ == "__main__":
     sp_args.columnDimensions = (frame_size[0]//2, frame_size[1]//2)
     sp_args.potentialPct = 0.05
     sp_args.potentialRadius = 120
-    sp_args.localAreaDensity = 0.05
+    sp_args.localAreaDensity = 0.01
     sp_args.globalInhibition = True
     sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.1
-    sp_args.synPermInactiveDec = 0.05
-    sp_args.stimulusThreshold = 6
+    sp_args.synPermInactiveDec = 0.01
+    sp_args.stimulusThreshold = 3
 
     tm_args = model.TemporalMemoryArgs()
     tm_args.columnDimensions = sp_args.columnDimensions
-    tm_args.predictedSegmentDecrement = 0.03
-    tm_args.permanenceIncrement = 0.5
-    tm_args.permanenceDecrement = 0.01
-    tm_args.minThreshold = 11
+    tm_args.predictedSegmentDecrement = 0.003
+    tm_args.permanenceIncrement = 0.1
+    tm_args.permanenceDecrement = 0.001
+    tm_args.minThreshold = 10
     tm_args.activationThreshold = 13
     tm_args.cellsPerColumn = 16
     tm_args.seed = sp_args.seed
@@ -119,3 +120,4 @@ if __name__ == "__main__":
     path, anom_frames = bouncing_path(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
     anoms = create_video(path, r, sp, tm, shape=frame_size)
     pickle.dump(anoms, open(f'bb_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    pickle.dump(anoms, open(f'bb_latest.pkl', 'wb'))
