@@ -32,10 +32,10 @@ def text_phantom(text, size):
     return out
 
 
-def running_mean(x, N):
-    cumsum = np.cumsum(np.insert(x, 0, 0))
-    return (cumsum[N:] - cumsum[:-N]) / float(N)
-
+def moving_average(x, N):
+    return np.convolve(x, np.ones(N)/N, mode='valid')
+def trailing_average(x, N):
+    return np.convolve(x, np.ones(N)/N, mode='full')
 
 def random_bit_array(shape, num_ones):
     arr = np.zeros(shape=shape)

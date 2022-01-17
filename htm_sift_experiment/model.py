@@ -117,6 +117,7 @@ class TemporalMemoryArgs:
 class SpatialPooler:
     def __init__(self, sp_args: SpatialPoolerArgs):
         self.sp = algos.SpatialPooler(**sp_args.__dict__)
+        self.num_active_columns = round(self.sp.getNumColumns()*self.sp.getLocalAreaDensity())
 
     def __call__(self, encoded_sdr: SDR, learn):
         active_sdr = SDR(self.sp.getColumnDimensions())
@@ -130,12 +131,17 @@ class TemporalMemory:
         self.tm = algos.TemporalMemory(**tm_args.__dict__)
 
     def __call__(self, active_sdr: SDR, learn):
-        self.tm.compute(activeColumns=active_sdr, learn=learn)
+        # Calculate predictive cells by activating dendrites by themselves, does not affect output
+        self.tm.activateDendrites(learn=False)
+        n_pred_cells = self.tm.getPredictiveCells().getSum()
+
+        self.tm.compute(active_sdr, learn)
         # Extract the predicted SDR and convert it to a tensor
         predicted = self.tm.getActiveCells()
         # Extract the anomaly score
         anomaly = self.tm.anomaly
-        return predicted, anomaly
+
+        return predicted, anomaly, n_pred_cells
 
 
 class HTMLayer:

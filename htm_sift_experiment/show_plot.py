@@ -1,6 +1,7 @@
 import argparse
 import pickle
 import matplotlib.pyplot as plt
+import numpy as np
 
 import utils
 
@@ -14,14 +15,16 @@ if __name__ == "__main__":
     anoms = data["anom_scores"]
 
     #plt.plot(anoms)
-    plt.plot(utils.running_mean(anoms, 100), label="Anomaly Score")
-
+    plt.ylim(0, 1.1)
+    anom_score_plot, = plt.plot(utils.trailing_average(anoms, 100), label="Anomaly Score")
+    anom_marker_plots = []
     if "anom_markers" in data:
         anom_markers = data["anom_markers"]
         for anom_marker in anom_markers:
-            print("aaaa")
-            plt.axvline(anom_marker, c="red")
-    plt.legend()
+            plot = plt.axvline(anom_marker, c="red")
+            anom_marker_plots.append(plot)
+    #n_predictions = plt.bar(np.arange(len(data["predicted_things"])), data["predicted_things"], alpha=0.1)
+    plt.legend([anom_score_plot, tuple(anom_marker_plots)], ["HTM Anomaly Score", "Anomalies"])
     # for ax in fig.axes:
     #     for line in ax.lines:
     #         if line.get_label() == "diff":
