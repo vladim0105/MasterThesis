@@ -1,0 +1,192 @@
+\chapter{Background}
+The following is relevant background information on HTM Theory, Deep Learning, and Video Anomaly Detection.
+\section{Hierarchical Temporal Memory}
+Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \cite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
+The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain.
+\subsection{Structure}
+HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consists of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{resources/related_works/cortical_region.png}
+    \caption{Visualization of the HTM Cortical Region structure \cite{cortical_region}. Note that current HTM implementations only model layer 2/3.}
+    \label{fig:cortical_region}
+\end{figure}
+Neurons in HTM Theory are different from neurons in traditional machine learning. The term \textbf{neuron} in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron . A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian-like learning.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{resources/related_works/neuron_comparison.jpg}
+    \caption{Comparison of neurons \protect\cite{htm_neurons}: A) Traditional Machine Learning, B) Biological, C) HTM}
+    \label{fig:neuron_comparison}
+\end{figure}
+The HTM neuron has three inputs \cite{htm_neurons}:
+\begin{itemize}
+    \item Feedforward, which is the input data
+    \item Context, which is data from neighbouring neurons and acts as a prediction mechanism for the next feedforward input
+    \item Feedback, which is feedback from other neurons in the hierarchy and acts as a prediction mechanism for a sequence of feedforward inputs
+\end{itemize}
+\subsection{Common Algorithm}
+HTM Theory states that there is a common algorithm for the intelligence. That the signals from hearing, vision, and touch are at the core processed by the same common algorithm. By extension, this means that HTM networks should be able to solve all kinds of logical tasks. 
+\subsection{Sparse Distributed Representation}
+HTM Theory introduces Sparse Distributed Representation (SDR) as a way of representing data in HTM and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two SDRs by simply performing a binary AND operation.
+\begin{figure}[H]
+    \centering
+    \includegraphics{resources/related_works/sdr-semantics.png}
+    \caption{Semantic similarities between the two SDRs A and B}
+    \label{fig:sdr_semantics}
+\end{figure}
+Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.25\textwidth]{resources/related_works/SDR.png}
+    \caption{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid}
+\end{figure}
+\subsection{Encoders}
+To convert real-world data into an SDR, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an SDR with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output SDRs created by the encoder are sometimes referred to as just binary arrays.\par
+Writing an encoder is no easy task as it is important to keep semantic similarities between values. This also means that the encoder is perhaps the most important part of an HTM pipeline to get right as it is the part that can limit the system the most.\par
+
+A biological example would be an eye that takes in visual information and converts it into an SDR so that it can be processed by the neocortex. This is the most important part for this thesis as creating a high dimensional encoder for video is still being researched.\par
+There are principles that should be followed in order to create a good encoder:
+\begin{itemize}
+  \item Semantically similar data should result in SDRs with overlapping active bits 
+  \item The same input should always produce the same SDR
+  \item The output must have the same dimensionality (total number of bits) for all inputs
+  \item The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling
+\end{itemize}
+Several approaches for encoding visual data have been proposed, such as \cite{eyeencoder} which uses a neuroscientifical approach by replicating how the eye works, and \cite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. There are also deep learning approaches such as \cite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder, specifically they use the top $n$-features in a feature map as ones and set the rest to zeros in order to construct their SDRs. \par
+The reason for why a direct binary encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder; because two pictures of the same object, but in different scales have more or less the same semantic meaning yet result in vastly different SDRs.\par 
+An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. Additionally, minor variations in the feature map would case major variations in the resulting SDR. Alternatively one could follow \cite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often unclear in models trained for complex tasks. 
+\subsection{Learning}
+Similar to biological beings, HTM is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
+The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up the HTM neuron.\par
+The spatial pooler takes in SDRs produced by the encoder, and uses hebbian-like learning to extract semantically important information into output SDRs. These output SDRs usually have a fixed sparsity of about 2\% due to the fact the spatial pooler aims to produce SDRs that have similar sparsity to what has been observed in the neocortex, but this can be configured at will.\par
+The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the SDRs formed by the spatial pooler and does two things:
+\begin{itemize}
+    \item Learns sequences of SDRs formed by the spatial pooler
+    \item Forms a prediction, in the form of a predictive SDR,  given the context of previous SDRs
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{resources/related_works/htm_pipeline.png}
+    \caption{The HTM Pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
+    \label{fig:htm_pipeline}
+\end{figure}
+
+This gives HTM systems the property of on-line learning, meaning they learn as they go. There is no batch training because each input into the HTM system will update the system. The system effectively builds a predictive model of the data and learns by trying to minimize the error between the true values and the predicted values. This means that the system will continuously adapt to a changing environment. A spatial pooler followed by a temporal memory creates the HTM neuron described in \ref{fig:neuron_comparison}, where the color green indicates the responsibility of the Spatial Pooler and blue indicates the responsibility of the Temporal Memory.
+\subsubsection{Spatial Pooler}
+The spatial pooler consists of columns, where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius.\par 
+
+Each connection is described using a \textbf{permanence}-value which can be considered the "strength" of the connection, and it ranges between 0 and 1. During learning, the permanence value of the connections is increased or decreased depending on whether or not the corresponding bit in the input is active or inactive. When the permanence-value crosses above a \textbf{stimulus threshold}, the connection will be considered "active". 
+
+The amount of active connections for a given column is referred to as \textbf{overlap score}. If a column has a high enough overlap score which crosses the \textbf{overlap score threshold}, then the column will itself become active. The reason behind locking activation behind a minimum overlap score is to reduce the influence of noise in the input. Finally, out of all the active columns, only the top $n$ columns with the most overlap score will be selected to be included in the SP output. The value $n$ is chosen so that the SP output has a specific \textbf{sparsity}. Only the selected columns are allowed to learn (increase/decrease permanence).\par
+\begin{figure}[H]
+    \centering
+    \includegraphics[]{resources/related_works/sp_vis.png}
+    \caption{ This figure illustrates how a spatial pooler works. All connections are above the stimulus threshold. The receptive field is 3 bits wide for each column. Overlap score threshold is $1$, and $n=1$. Red means inactive, green means active, and blue means active and selected.}
+    \label{fig:sp_vis}
+\end{figure}
+Because only the active columns are allowed to learn, only a select few columns who got lucky during the random initialization will dominate the spatial pooler output and have a very high \textbf{active duty cycle}. Active duty cycle measures how often a column is active and ranges from 0 (never) to 1 (always). \par
+To counter dominating columns, the spatial pooler uses \textbf{boosting}. 
+The concept behind boosting it to "boost" the overlap score of underperforming columns and lower the overlap score of overperforming columns. The result is that more columns learn and contribute to the output, which means that the spatial pooler can then process the input data with a finer granularity.
+\par
+It is also possible to \textbf{topology} in the output by selecting the columns to be included in the output by their local neighborhood, instead of comparing their overlap score globally.  
+\par  
+All of the aforementioned concepts are configurable in technical implementations.
+
+\subsubsection{Temporal Memory}
+The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consists of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of sequences and contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, distal dendrite segments), where each segment consists of synapses connecting to other cells. 
+\par
+Essentially, it takes the "node"-based representation of the SP output, and turns it into a new representation which includes state, or context, from past timesteps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the SP output has 100 active columns and only one cell per column is active, then the TM has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active.
+\par
+The temporal memory algorithm consists of two phases. The first phase is to evaluate the SP output against predictions and choose a set of active cells. It does so by looking at the active columns and the cells they contain. If an active column contains predictive cells, then those cells are marked as active. If an active column has no predictive cells, usually caused by observing a new pattern for the first time, then the column "bursts" by activating all the cells that the column contains. Otherwise a cell is inactive.
+\par
+At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.  
+\begin{figure}[H]
+    \centering
+    \includegraphics[]{resources/related_works/tm_vis1.png}
+    \caption{Expanded SP example with TM component where the number of cells is set to 3. The leftmost column is bursting (all 3 cells activated in green) due to the active SP output and due to containing no predictive cells.}
+    \label{fig:tm_vis1}
+\end{figure}
+\par
+The second phase is to form a prediction by putting cells into a predictive state. For every segment on every cell, the number of synapses connected to active cells are counted. If the number exceeds an \textbf{activation threshold}, then the segment is marked as active and all the cells connected to the segment enter the predictive state. To summarise, a cell has three possible states:
+\begin{itemize}
+    \item Active, if the column is bursting or the cell was in a predictive state in the previous timestep.
+    \item Predictive, if a connected segment is active, which is in turn determined by the amount of active synapses. 
+    \item Inactive, if none of the other states apply.
+\end{itemize}
+One can configure how much the system can learn by setting the number of cells and the values by which permanence should be increased or decreased. If it is desired that the TM does not "forget" at all, then the permanence value by which synapses are decremented can be set to 0. If it is desired that the TM can only express patterns in the current context and the context of the previous timestep, then the number of cells can be set to 2.
+\par
+Finally, the TM compares the predictions $P$ it made in the previous timestep with the actual pattern $A$ in the current timestep and calculates an anomaly score:
+\begin{align*}
+    anomalyScore=\frac{|A_t-(P_{t-1}\cap A_t)|}{|A_t|}
+\end{align*}
+Which is a normalized value from 0 to 1. If the anomaly score is 1, then it means that none of the predicted columns matched the current active columns of the spatial pooler. If it is 0, then it means that all predicted columns matched the current active columns of the SP.\par
+It is also possible to estimate the number of predictions being made by the TM at any time \cite{htm_predictions_count}. This is done by counting the number of predictive cells, and dividing them by the number of active bits required to express a pattern. As an example, if sparsity is set so that patterns have 60 active bits and the number of predictive cells is 120, then the estimated number of predictions is given as
+\begin{align*}
+    numPredictions=\frac{predictiveCells}{activeBits}=\frac{120}{60}=2
+\end{align*}
+This is only an estimation because in reality the two patterns may have overlapping bits in their representations.
+\section{History}
+The HTM theory described in this thesis is not the first one to have been made, this one is actually the third generation which builds upon the second generation. The first generation had fundamentally different inner workings \cite{htm_zeta1}, but shared a lot of the terms with the current generation. This has made researching HTM challenging as there are still many research papers published that refer to the first generation.
+\section{Convolutional networks}
+A key element to understand is why one would want to use convolutional networks as a part of the encoder for an HTM network. The main reason is that a CNN is able to extract important spatial features from high dimensional data, effectively lowering the amount of dimensions. A CNN can also apply several properties that are useful, such as translational and distortional invariances \cite{cnn_invariance}. These properties stem from the three architectural ideas in a CNN:
+\begin{itemize}
+    \item Local receptive fields
+    \item Shared weights
+    \item Spatial sub-sampling
+\end{itemize}
+Through the use of data augmentation, it is also possible to not only improve the effectiveness of the aforementioned invariances, but to also introduce a degree of rotational invariance.
+\section{Thousand Brains Theory}
+One of the newest advancements in HTM Theory is the introduction of the Thousand Brains Theory. \cite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{0.55\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/related_works/hierarchy.png}
+    \caption{Classical Hierarchy}
+    \label{fig:my_label}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.3\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{resources/related_works/thousand_brains.png}
+    \caption{Hierarchy as in the Thousand Brains Theory}
+    \label{}
+\end{subfigure}
+\caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory}
+\end{figure}
+This new type of hierarchy is coincidentally similar to some state-of-the-art image recognition deep learning architectures such as \cite{fpn} and \cite{inceptionnet}, in the sense that they apply different sized convolutional filters on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{resources/models/inception_module.png}
+    \caption{How the Inception \cite{inceptionnet} architecture combines multiple filters}
+    \label{fig:inception_module}
+\end{figure}
+While the Thousand Brains Theory is not implemented in any way in a standard HTM model, it does show that recent developments within deep learning for image analysis have similarities with HTM theory. 
+\section{Anomaly detection}
+As reviewed by Pang et al.\cite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some of the complexities are as follows:
+\begin{itemize}
+    \item \textbf{Unknowness} Anomalies are associated with many unknowns which do not become known until the anomaly happens. 
+    \item \textbf{Rarity and class imbalance} Anomalies are by definition rare instances, which means that it becomes difficult to create a balanced dataset.
+    \item \textbf{Heterogenosity} Anomalies can take form in many different ways, and as such one class of anomalies can be vastly different from another.
+\end{itemize}
+\subsection{State of the Art Algorithms}
+The current state of the art algorithms are numerous, but the main approach is achieved by using deep learning. Within deep learning, the most popular approach is to use a GAN to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs. 
+\par The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give sub-optimal results given that it tries to generate good synthetic data rather than directly detect anomalies. \par
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{resources/models/ganomaly.png}
+    \caption{GANomaly \cite{ganomaly}, a variation of GAN for Anomaly detection}
+    \label{fig:ganomaly}
+\end{figure}
+Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies. The main disadvantage is that the learned feature representation can be biased by outliers and extremities in the data. \par
+A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset. They are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Additionally, they are very hard to design and train for the purpose of detecting anomalies in complex data such as surveillance.\par
+There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same; to get an anomaly measure using some sort of generated or reconstructed data. 
+\subsection{Smart Surveillance}
+Smart surveillance, which is the use of automatic video analysis in surveillance, has seen rapid development since its inception. \cite{anomalyvideo} presents and summarizes recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional auto-encoders (AE) and General Adversary Networks (GAN). The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. \par
+ The paper also discusses problems with using deep learning approaches for anomaly detection. One example is that in most instances a bicycle on a campus is not an anomaly, but if it is rare enough then it may be wrongly classified as so.
+\subsection{HTM Performance in Anomaly Detection}
+Knowing that deep learning approaches have a high degree of accuracy but suffer from problems related to generalizability, adaptability, and noise it stands to reason that HTM is a viable alternative for anomaly detection.\par  
+\cite{AHMAD2017134} explores the use of HTM for anomaly detection on low dimensional data such as temperature data from an industrial machine. The authors also discuss benchmarks for anomaly detection and compare different methods. The results show that HTM is very capable of performing anomaly detection, especially in a changing environment. HTM is able to outperform other anomaly detection methods and has the advantage of not requiring any per-problem parameter tuning. \par
+For high-dimensional anomaly detection, \cite{MotionAnomalyDetection} used a HTM system to find anomalous frames in videos of motions. The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results show that the HTM system was able to correctly detect some of the anomalies, but not an impressive amount. One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that HTM by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features. \subsection{Deep Learning HTM Encoder}
+A potential solution to most of the aforementioned issues could be to combine the deep learning approaches with an HTM network. This way it could be possible to leverage the self-supervision and noise resilience property of HTM, together with the powerful feature extraction and representation of deep learning approaches. Effectively combining the best of both approaches while eliminating the disadvantages that have been previously mentioned.
+\section{Summary}

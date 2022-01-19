@@ -1,0 +1,61 @@
+\documentclass[USenglish]{ifimaster}  %% ... or USenglish or norsk or nynorsk
+\usepackage[utf8]{inputenc}           %% ... or latin1
+\usepackage[T1]{fontenc,url}
+\urlstyle{sf}
+\usepackage{babel,textcomp,csquotes,duomasterforside,varioref,graphicx}
+\usepackage[backend=biber,style=numeric-comp, sorting=none, citestyle=ieee]{biblatex}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{textgreek}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage[font={color=darkgray, footnotesize}]{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\raggedbottom %%reduces the gaps between the paragraphs
+
+\title{Hierarchical Temporal Networks for anomaly detection in surveillance}        %% ... or whatever
+\subtitle{A subtitle of your thesis }         %% ... if any
+\author{Vladimir Monakhov}                      %% ... or whoever 
+
+\addbibresource{relatedworks.bib}            %% ... or whatever
+%% \addbibresource{additional.bib}    
+
+
+
+
+
+\begin{document}
+\duoforside[
+    dept={Department of Informatics},   %% ... or your department
+    program={Informatics: Robotics and Intelligent Systems},         %% ... or your programme
+    long
+    ]                                        %% ... or long (short = 30 credits, long = 60 credits)
+
+\frontmatter{}
+\mainmatter{}
+
+\chapter*{Abstract} \addcontentsline{toc}{chapter}{Abstract}
+Bla Bla Bla ...
+
+
+%\chapter*{Acknowledgments/Preface/...} \addcontentsline{toc}{chapter}{Acknowledgments}
+%I would like to thank ... * insert looong list here *
+
+\tableofcontents
+% \listoffigures
+% \listoftables
+
+\mainmatter
+\include{section/introduction}
+\include{section/background}
+\include{section/methodology}
+\chapter{Results}
+\include{section/experiments}
+\chapter{Summary \& Conclusions}
+\backmatter{}
+\printbibliography
+\end{document}
