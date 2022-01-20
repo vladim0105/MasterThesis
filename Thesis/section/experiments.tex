@@ -33,4 +33,48 @@ The reason for the anomaly spikes towards the end is because the spatial pooler 
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
     \caption{Bouncing ball without the ability of the SP to "forget" and with boosting enabled.}
 \end{figure}
+Final list of parameters:
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Parameter} & \textbf{Value}               & \textbf{Notes}                                      \\ \hline
+            inputDimensions    & frame\_size, frame\_size     &                                                     \\ \hline
+            columnDimensions   & frame\_size/2, frame\_size/2 &                                                     \\ \hline
+            potentialPct       & 0.1                          &                                                     \\ \hline
+            potentialRadius    & 120                          &                                                     \\ \hline
+            localAreaDensity   & 0.02                         &                                                     \\ \hline
+            globalInhibition   & True                         & Set to false to enable topology                     \\ \hline
+            wrapAround         & True                         & \begin{tabular}[c]{@{}l@{}}Allows the columns near the \\edges to "wrap around" and form\\ connections on the other side\end{tabular}                           \\ \hline
+            synPermActiveInc   & 0.1                          &                                                     \\ \hline
+            synPermInactiveDec & 0                            & Set to \textgreater{}0 to enable the SP to "forget" \\ \hline
+            stimulusThreshold  & 2                            &                                                     \\ \hline
+            seed               & 2                            &                                                     \\ \hline
+            boostStrength      & 0.1                          & Set to 0 to disable boosting                        \\ \hline
+            dutyCyclePeriod    & 250                          &                                                     \\ \hline
+        \end{tabular}
+    }
+    \caption{SP Parameters}
+    \label{tab:bb_sp_params}
+\end{table}
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Parameter}        & \textbf{Value}               & \textbf{Notes} \\ \hline
+            columnDimensions          & frame\_size/2, frame\_size/2 & Same as the SP \\ \hline
+            predictedSegmentDecrement & 0.003                        &                \\ \hline
+            permanenceIncrement       & 0.1                          &                \\ \hline
+            permanenceDecrement       & 0.001                        &                \\ \hline
+            minThreshold              & 3                            &                \\ \hline
+            activationThreshold       & 5                            &                \\ \hline
+            cellsPerColumn            & 16                           &                \\ \hline
+            seed                      & 2                            &                \\ \hline
+        \end{tabular}
+    }
+    \caption{TM Parameters}
+    \label{tab:bb_TM_params}
+\end{table}
 \section{Surveillance example}
