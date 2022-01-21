@@ -125,8 +125,16 @@ It is also possible to estimate the number of predictions being made by the TM a
     numPredictions=\frac{predictiveCells}{activeBits}=\frac{120}{60}=2
 \end{align*}
 This is only an estimation because in reality the two patterns may have overlapping bits in their representations.
-\section{History}
+\subsection{History}
 The HTM theory described in this thesis is not the first one to have been made, this one is actually the third generation which builds upon the second generation. The first generation had fundamentally different inner workings \cite{htm_zeta1}, but shared a lot of the terms with the current generation. This has made researching HTM challenging as there are still many research papers published that refer to the first generation.
+\subsection{Use cases}
+The general use case for HTM is to perform anomaly detection. More specifically, Numenta has made example programs showcasing how HTM can be used in practice \cite{numenta_example_apps}:
+\begin{itemize}
+    \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network.
+    \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material using speed and location data.
+    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and twitter volume.
+\end{itemize}
+There are also applications that are used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon HTM in order to perform language analysis. They made this possible by introducing Semantic Folding and Semantic Fingerprinting \cite{semantic_folding}.
 \section{Convolutional networks}
 A key element to understand is why one would want to use convolutional networks as a part of the encoder for an HTM network. The main reason is that a CNN is able to extract important spatial features from high dimensional data, effectively lowering the amount of dimensions. A CNN can also apply several properties that are useful, such as translational and distortional invariances \cite{cnn_invariance}. These properties stem from the three architectural ideas in a CNN:
 \begin{itemize}
@@ -135,8 +143,9 @@ A key element to understand is why one would want to use convolutional networks 
     \item Spatial sub-sampling
 \end{itemize}
 Through the use of data augmentation, it is also possible to not only improve the effectiveness of the aforementioned invariances, but to also introduce a degree of rotational invariance.
-\section{Thousand Brains Theory}
-One of the newest advancements in HTM Theory is the introduction of the Thousand Brains Theory. \cite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object.
+\section{The Thousand Brains Theory}
+One of the newest advancements in HTM Theory is the introduction of the Thousand Brains Theory. \cite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
+To summarize, the object is learned by the brain using multiple models that rely on different inputs. Each model can be thought of as a mini-brain, hence the name "The Thousand Brains Theory".
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.55\textwidth}
@@ -154,14 +163,14 @@ One of the newest advancements in HTM Theory is the introduction of the Thousand
     \end{subfigure}
     \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory}
 \end{figure}
-This new type of hierarchy is coincidentally similar to some state-of-the-art image recognition deep learning architectures such as \cite{fpn} and \cite{inceptionnet}, in the sense that they apply different sized convolutional filters on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
+This new type of hierarchy is coincidentally similar to some state-of-the-art image recognition deep learning architectures such as \cite{fpn} and \cite{inceptionnet}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
     \caption{How the Inception \cite{inceptionnet} architecture combines multiple filters}
     \label{fig:inception_module}
 \end{figure}
-While the Thousand Brains Theory is not implemented in any way in a standard HTM model, it does show that recent developments within deep learning for image analysis have similarities with HTM theory.
+While the Thousand Brains Theory is not yet implemented in any way in a standard HTM model, it does show that recent developments within deep learning for image analysis have similarities with HTM theory.
 \section{Anomaly detection}
 As reviewed by Pang et al.\cite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some of the complexities are as follows:
 \begin{itemize}
@@ -169,8 +178,9 @@ As reviewed by Pang et al.\cite{anomaly_detection}, anomaly detection is often d
     \item \textbf{Rarity and class imbalance} Anomalies are by definition rare instances, which means that it becomes difficult to create a balanced dataset.
     \item \textbf{Heterogenosity} Anomalies can take form in many different ways, and as such one class of anomalies can be vastly different from another.
 \end{itemize}
+This makes it hard to apply traditional deep learning for anomaly detection, because they are designed with pairs of $\{input, target\}$ in mind.
 \subsection{State of the Art Algorithms}
-The current state of the art algorithms are numerous, but the main approach is achieved by using deep learning. Within deep learning, the most popular approach is to use a GAN to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
+The current state of the art algorithms are numerous, but the main approach is achieved by using deep learning. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
 \par The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give sub-optimal results given that it tries to generate good synthetic data rather than directly detect anomalies. \par
 \begin{figure}[H]
     \centering
