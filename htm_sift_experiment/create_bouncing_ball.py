@@ -109,10 +109,10 @@ if __name__ == "__main__":
     sp_args.globalInhibition = True
     sp_args.wrapAround = True
     sp_args.synPermActiveInc = 0.1
-    sp_args.synPermInactiveDec = 0.001
+    sp_args.synPermInactiveDec = 0
     sp_args.stimulusThreshold = 2
     sp_args.seed=2
-    sp_args.boostStrength=0.1
+    sp_args.boostStrength=0
     sp_args.dutyCyclePeriod=250
 
     tm_args = model.TemporalMemoryArgs()

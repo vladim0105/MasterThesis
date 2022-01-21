@@ -30,4 +30,5 @@ if __name__ == "__main__":
     #         if line.get_label() == "diff":
     #             line.set_visible(False)
     #             fig.canvas.draw()
+    plt.xlabel("Frames")
     plt.show()
