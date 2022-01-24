@@ -59,7 +59,7 @@ def grid_tm(tms, sp_output: np.ndarray, grid_size, func, prev_sp_output: np.ndar
             tm = tms[i][j]
             val = sp_output[i * grid_size: (i + 1) * grid_size, j * grid_size: (j + 1) * grid_size]
             sdr_cell = model.numpy_to_sdr(val)
-            pred, anom = tm(sdr_cell, learn=True)
+            pred, anom, n_pred_cells = tm(sdr_cell, learn=True)
             prev_val = prev_sp_output[i * grid_size: (i + 1) * grid_size, j * grid_size: (j + 1) * grid_size]
             if (prev_val == 0).all():
                 anom = 0
@@ -99,9 +99,7 @@ if __name__ == '__main__':
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
-
-    print(scaled_frame_shape)
-
+    square_size = max(scaled_frame_shape[0], scaled_frame_shape[1])
     sp_grid_size = 32
     tm_grid_size = 16
     sparsity = 40  # How many ON bits per gridcell the encoding should produce
@@ -138,27 +136,27 @@ if __name__ == '__main__':
     sps = []
     tms = []
     # Spatial Pooler Init
-    for i in range(384 // sp_grid_size):
+    for i in range(square_size // sp_grid_size):
         sps_inner = []
-        for j in range(384 // sp_grid_size):
+        for j in range(square_size // sp_grid_size):
             sp_args.seed +=1
             sps_inner.append(model.SpatialPooler(sp_args))
         sps.append(sps_inner)
     # Temporal Memory Init
-    for i in range(192 // tm_grid_size):
+    for i in range(square_size // (2*tm_grid_size)):
         tms_inner = []
-        for j in range(192 // tm_grid_size):
+        for j in range(square_size // (2*tm_grid_size)):
             tms_inner.append(model.TemporalMemory(tm_args))
         tms.append(tms_inner)
 
     out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
-                          (384, 384), True)
+                          (square_size, square_size), True)
     frame_id = 1
     anoms = []
     ratios = []
     diff = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-    #total = 500
+    total = 500
     prev_sp_output = None
     with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
                                                            progressbar.ETA()]) as bar:
