@@ -96,12 +96,13 @@ if __name__ == '__main__':
     video_scale = 0.3
     sdr_vis_scale = 0.5
     vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
+    vidcap = cv2.VideoCapture('../data/sperm_seg.mp4')
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
     square_size = max(scaled_frame_shape[0], scaled_frame_shape[1])
-    sp_grid_size = 32
-    tm_grid_size = 16
+    sp_grid_size = 16
+    tm_grid_size = 8
     sparsity = 40  # How many ON bits per gridcell the encoding should produce
     empty_pattern = utils.random_bit_array(shape=(sp_grid_size, sp_grid_size), num_ones=sparsity)
     keypoint_detector = cv2.ORB_create(nfeatures=sparsity*5, edgeThreshold=0, fastThreshold=0, nlevels=20, patchSize=2)
@@ -116,7 +117,7 @@ if __name__ == '__main__':
     sp_args.globalInhibition = False
     sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.01
-    sp_args.synPermInactiveDec = 0.000001
+    sp_args.synPermInactiveDec = 0.001
     sp_args.stimulusThreshold = 3
     sp_args.boostStrength = 0
     sp_args.dutyCyclePeriod = 5
@@ -124,11 +125,11 @@ if __name__ == '__main__':
     tm_args = m.TemporalMemoryArgs()
 
     tm_args.columnDimensions = (tm_grid_size, tm_grid_size)
-    tm_args.predictedSegmentDecrement = 0.000001
+    tm_args.predictedSegmentDecrement = 0.003
     tm_args.permanenceIncrement = 0.01
-    tm_args.permanenceDecrement = 0.000001
+    tm_args.permanenceDecrement = 0.001
     tm_args.minThreshold = 1
-    tm_args.activationThreshold = 1
+    tm_args.activationThreshold = 2
     tm_args.cellsPerColumn = 32
     tm_args.seed = sp_args.seed
     scaled_column_shape = (
@@ -156,7 +157,7 @@ if __name__ == '__main__':
     ratios = []
     diff = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-    total = 500
+    #total = 500
     prev_sp_output = None
     with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
                                                            progressbar.ETA()]) as bar:
@@ -204,4 +205,6 @@ if __name__ == '__main__':
     # axs[2].plot(diff, label="diff")
     # axs[2].set_title("RAS*Ratio")
     # axs[2].sharex(axs[0])
-    pickle.dump(anoms, open(f'anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    dump_data = {"anom_scores": anoms, "anom_markers": []}
+    pickle.dump(dump_data, open(f'anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'anoms_latest.pkl', 'wb'))
