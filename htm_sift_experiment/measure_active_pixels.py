@@ -3,16 +3,16 @@ import progressbar
 from cv2 import cv2
 from matplotlib import pyplot as plt
 
-from main import concat_seg
+from sperm_experiment import concat_seg
 
 if __name__ == "__main__":
     video_scale = 0.3
-    vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
+    vidcap = cv2.VideoCapture('../data/sperm_seg2.mp4')
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))//10
-    cell_sizes = [8, 12, 14]
+    cell_sizes = [16]
     empty_pattern_pixels = 0
     num_active_pixels_list = {cell_size:[] for cell_size in cell_sizes}
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     #print(np.std(num_active_pixels_list))
     #non_zero_avg = np.median(num_active_pixels_list[np.nonzero(num_active_pixels_list)])
     for cell_size in cell_sizes:
-        plt.hist(num_active_pixels_list[cell_size], bins=20, log=True, alpha=0.3)
+        plt.hist(num_active_pixels_list[cell_size], bins="auto", log=True, alpha=0.3)
     #plt.axvline(non_zero_avg, c="red", label="Non-zero Median")
     plt.legend()
     plt.ylabel("Frames")
