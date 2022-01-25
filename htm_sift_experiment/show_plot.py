@@ -12,8 +12,8 @@ if __name__ == "__main__":
     args =argparser.parse_args()
 
     data = pickle.load(open(args.file,"rb"))
-    anoms = data["anom_scores"]
-    l1_scores = data["l1_scores"]
+    anoms = data["anom_scores"][100:]
+    l1_scores = data["l1_scores"][100:]
 
     # #plt.plot(anoms)
     # #plt.ylim(0, 1.1)

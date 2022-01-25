@@ -207,8 +207,8 @@ class GridHTM:
                 pred, anom, n_pred_cells = tm(sdr_cell, learn=True)
                 prev_val = prev_sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                            j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
-                #if (prev_val == 0).all():
-                #    anom = anom
+                if (prev_val == 0).all():
+                    anom = 0
 
                 colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 0] = int(

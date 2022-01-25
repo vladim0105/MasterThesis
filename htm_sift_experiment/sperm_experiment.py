@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     video_scale = 0.3
     sdr_vis_scale = 1
-    vidcap = cv2.VideoCapture('../data/sperm_seg.mp4')
+    vidcap = cv2.VideoCapture('../data/sperm_seg3.mp4')
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
@@ -72,19 +72,19 @@ if __name__ == '__main__':
     sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.01
     sp_args.synPermInactiveDec = 0.001
-    sp_args.stimulusThreshold = 5
+    sp_args.stimulusThreshold = 1
     sp_args.boostStrength = 0
     sp_args.dutyCyclePeriod = 2500
 
     tm_args = m.TemporalMemoryArgs()
 
     tm_args.columnDimensions = (tm_grid_size, tm_grid_size)
-    tm_args.predictedSegmentDecrement = 0.003
+    tm_args.predictedSegmentDecrement = 0.0005
     tm_args.permanenceIncrement = 0.01
     tm_args.permanenceDecrement = 0.001
     tm_args.minThreshold = 1
-    tm_args.activationThreshold = 3
-    tm_args.cellsPerColumn = 16
+    tm_args.activationThreshold = 2
+    tm_args.cellsPerColumn = 4
     tm_args.seed = sp_args.seed
 
     grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, sparsity=5, aggr_func=np.mean)
