@@ -3,7 +3,10 @@ from typing import TypedDict, NamedTuple
 import htm.bindings.algorithms
 import htm.bindings.algorithms as algos
 import numpy as np
+from cv2 import cv2
 from htm.bindings.sdr import SDR
+
+import utils
 
 
 class SpatialPoolerArgs:
@@ -117,7 +120,7 @@ class TemporalMemoryArgs:
 class SpatialPooler:
     def __init__(self, sp_args: SpatialPoolerArgs):
         self.sp = algos.SpatialPooler(**sp_args.__dict__)
-        self.num_active_columns = round(self.sp.getNumColumns()*self.sp.getLocalAreaDensity())
+        self.num_active_columns = round(self.sp.getNumColumns() * self.sp.getLocalAreaDensity())
 
     def __call__(self, encoded_sdr: SDR, learn):
         active_sdr = SDR(self.sp.getColumnDimensions())
@@ -144,23 +147,89 @@ class TemporalMemory:
         return predicted, anomaly, n_pred_cells
 
 
-class HTMLayer:
-    def __init__(self, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs):
-        super().__init__()
-        self.sp = algos.SpatialPooler(**sp_args.__dict__)
-        self.tm = algos.TemporalMemory(**tm_args.__dict__)
+class GridHTM:
+    def __init__(self, frame_shape, sp_grid_size, tm_grid_size, sp_args: SpatialPoolerArgs, tm_args:TemporalMemoryArgs, sparsity, aggr_func):
+        assert sp_grid_size == sp_args.inputDimensions[0], "SP grid size and SP input dimensions must match!"
+        assert tm_grid_size == tm_args.columnDimensions[0] == sp_args.columnDimensions[0], "TM grid size and SP/TM column dimensions must match!"
+        assert sp_grid_size % tm_grid_size == 0, "SP Grid size must be divisible by TM Grid side!"
+        self.sp_grid_size = sp_grid_size
+        self.tm_grid_size = tm_grid_size
+        self.sp_args = sp_args
+        self.tm_args = tm_args
+        self.sparsity = sparsity  # How many ON bits per gridcell the encoding should produce
+        self.empty_pattern = utils.random_bit_array(shape=(sp_grid_size, sp_grid_size), num_ones=sparsity)
+        self.aggr_func = aggr_func
+        self.sps = []
+        self.tms = []
+        # Spatial Pooler Init
+        for i in range(frame_shape[0] // sp_grid_size):
+            sps_inner = []
+            for j in range(frame_shape[1] // sp_grid_size):
+                sp_args.seed += 1
+                sps_inner.append(SpatialPooler(sp_args))
+            self.sps.append(sps_inner)
+        # Temporal Memory Init
+        ratio = sp_grid_size//tm_grid_size
+        for i in range(frame_shape[0] // (ratio * tm_grid_size)):
+            tms_inner = []
+            for j in range(frame_shape[1] // (ratio * tm_grid_size)):
+                tms_inner.append(TemporalMemory(tm_args))
+            self.tms.append(tms_inner)
 
-    def __call__(self, encoded_sdr, learn):
-        active_sdr = SDR(self.sp.getColumnDimensions())
-        # Run the spatial pooler
-        self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
-        # Run the temporal memory
-        self.tm.compute(activeColumns=active_sdr, learn=learn)
-        # Extract the predicted SDR and convert it to a tensor
-        predicted = self.tm.getActiveCells()
-        # Extract the anomaly score
-        anomaly = self.tm.anomaly
-        return predicted, anomaly, active_sdr
+    def grid_sp(self, sp_input: np.ndarray):
+        sp_output = np.zeros(shape=(self.tm_grid_size * len(self.sps), self.tm_grid_size * len(self.sps[0])))
+        for i in range(len(self.sps)):
+            for j in range(len(self.sps[i])):
+                sp = self.sps[i][j]
+                val = sp_input[i * self.sp_grid_size: (i + 1) * self.sp_grid_size,
+                      j * self.sp_grid_size: (j + 1) * self.sp_grid_size]
+                # Check if empty
+                if not (val == 1).any():
+                    val = self.empty_pattern
+                sdr_cell = numpy_to_sdr(val)
+                sp_cell_output = sdr_to_numpy(sp(sdr_cell, learn=True))
+                sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                j * self.tm_grid_size: (j + 1) * self.tm_grid_size] = sp_cell_output
+        return sp_output
+
+    def grid_tm(self, sp_output: np.ndarray, prev_sp_output: np.ndarray):
+        anoms = np.zeros(shape=(len(self.tms), len(self.tms[0])))
+        if prev_sp_output is None:
+            prev_sp_output = np.ones_like(sp_output)
+        colored_sdr_arr = np.zeros(shape=(sp_output.shape[0], sp_output.shape[1], 3), dtype=np.uint8)
+
+        for i in range(len(self.tms)):
+            for j in range(len(self.tms[i])):
+                tm = self.tms[i][j]
+                val = sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                      j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
+                sdr_cell = numpy_to_sdr(val)
+                pred, anom, n_pred_cells = tm(sdr_cell, learn=True)
+                prev_val = prev_sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                           j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
+                if (prev_val == 0).all():
+                    anom = 0
+
+                colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 0] = int(
+                    60 * (1 - anom))
+                colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 1] = 255
+                colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 2] = 255 * (
+                        1 - val)
+                anoms[i, j] = anom
+
+        colored_sdr_arr = cv2.cvtColor(colored_sdr_arr, cv2.COLOR_HSV2BGR)
+        return self.aggr_func(anoms.flatten()), colored_sdr_arr
+
+    prev_sp_output = None
+
+    def __call__(self, encoded_input):
+        sp_output = self.grid_sp(encoded_input)
+        anom_score, colored_sp_output = self.grid_tm(sp_output, self.prev_sp_output)
+        self.prev_sp_output = sp_output
+        return anom_score, colored_sp_output
 
 
 def numpy_to_sdr(arr: np.ndarray) -> SDR:
