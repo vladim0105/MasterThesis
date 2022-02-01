@@ -15,7 +15,7 @@ The video consists of a ball bouncing up and down until an anomaly occurs in the
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
     \caption{The 100-point moving average of the anomaly score in the bouncing ball experiment.}
 \end{figure}
-From the figure, it can be observed that it correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to mark $1$ and the anomaly spikes towards the end close to mark $2$. While the imperfections are not major and can be safely ignored, it is still important to understand their cases and what can be done to improve upon them. \par
+From the figure it can be observed that it correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to mark $1$ and the anomaly spikes towards the end close to mark $2$. While the imperfections are not major and can be safely ignored, it is still important to understand their cases and what can be done to improve upon them. \par
 The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting. This also helped with the spikes towards the end.\par
 \begin{figure}[H]
     \centering
@@ -78,5 +78,27 @@ Final list of parameters for reproducibility:
     \caption{TM Parameters}
     \label{tab:bb_TM_params}
 \end{table}
-\section{Sperm example}
 \section{Surveillance example}
+\section{Sperm example}
+As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is INSERT HERE, which consists of videos that are made up of several segments.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{example-image-a}
+    \caption{Sperm example frame.}
+\end{figure}
+The sperm cells will be segmented using a rough binary thresholding.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{example-image-b}
+    \caption{Segmentation.}
+\end{figure}
+To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
+\begin{align*}
+    E_t=\sum|F_t-F_{t-1}|
+\end{align*}
+Where $F_t$ denotes a segmented frame at time step $t$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{example-image-c}
+    \caption{Results.}
+\end{figure}
