@@ -10,12 +10,14 @@ To give credibility to the approach mentioned in Chapter 3, a simple test case t
     \label{fig:bb}
 \end{figure}
 The video consists of a ball bouncing up and down until an anomaly occurs in the form of a sudden introduction of a horizontal velocity. After a while this horizontal velocity is set back to 0 and the ball is once again bouncing up and down in-place.
+\par
+The model used is a standard HTM model, which covers the entire input. This is equivalent to a single cell in a Grid HTM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
     \caption{The 100-point moving average of the anomaly score in the bouncing ball experiment.}
 \end{figure}
-From the figure it can be observed that it correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to mark $1$ and the anomaly spikes towards the end close to mark $2$. While the imperfections are not major and can be safely ignored, it is still important to understand their cases and what can be done to improve upon them. \par
+From the figure it can be observed that the HTM correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to mark $1$ and the anomaly spikes towards the end close to mark $2$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
 The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting. This also helped with the spikes towards the end.\par
 \begin{figure}[H]
     \centering
@@ -79,6 +81,7 @@ Final list of parameters for reproducibility:
     \label{tab:bb_TM_params}
 \end{table}
 \section{Surveillance example}
+The video to be used is part of the VIRAT\cite{VIRAT} video dataset.
 \section{Sperm example}
 As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is INSERT HERE, which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
 \begin{figure}[H]
