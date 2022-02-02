@@ -80,18 +80,20 @@ Final list of parameters for reproducibility:
 \end{table}
 \section{Surveillance example}
 \section{Sperm example}
-As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is INSERT HERE, which consists of videos that are made up of several segments.
+As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is INSERT HERE, which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{example-image-a}
-    \caption{Sperm example frame.}
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_example.png}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
+    \end{subfigure}
+    \caption{Example frame from a sperm video and its corresponding segmentation.}
 \end{figure}
-The sperm cells will be segmented using a rough binary thresholding.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{example-image-b}
-    \caption{Segmentation.}
-\end{figure}
+
 To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
     E_t=\sum|F_t-F_{t-1}|
