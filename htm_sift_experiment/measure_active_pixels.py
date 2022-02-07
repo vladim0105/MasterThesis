@@ -12,10 +12,10 @@ if __name__ == "__main__":
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))//10
-    cell_sizes = [16]
+    cell_sizes = [12]
     empty_pattern_pixels = 0
     num_active_pixels_list = {cell_size:[] for cell_size in cell_sizes}
-
+    idx = 0
     with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
                                                            progressbar.ETA()]) as bar:
         while success:
@@ -29,10 +29,14 @@ if __name__ == "__main__":
                 num_active_pixels = (cell == 255)[:, :, 0].sum()
                 if num_active_pixels == 0:
                     num_active_pixels = empty_pattern_pixels
+                elif num_active_pixels_list[cell_size][-1] == 0:
+                    num_active_pixels = empty_pattern_pixels
 
                 num_active_pixels_list[cell_size].append(num_active_pixels)
             success, frame = vidcap.read()
-            bar.update(bar.value + 1)
+            idx += 1
+            bar.update(idx)
+
             if bar.value == total:
                 break
     #num_active_pixels_list = np.array(num_active_pixels_list)
