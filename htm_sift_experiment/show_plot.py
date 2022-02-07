@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     data = pickle.load(open(args.file,"rb"))
     anoms = data["anom_scores"][100:]
-    l1_scores = data["l1_scores"][100:]
+    #l1_scores = data["l1_scores"][100:]
 
     # #plt.plot(anoms)
     # #plt.ylim(0, 1.1)
@@ -43,12 +43,12 @@ if __name__ == "__main__":
     ax.set_ylabel("Anomaly Score")
     ax.set_xlabel("Frames")
     # Generate a new Axes instance, on the twin-X axes (same position)
-    ax2 = ax.twinx()
+    #ax2 = ax.twinx()
 
     # Plot exponential sequence, set scale to logarithmic and change tick color
-    ax2.plot(utils.trailing_average(l1_scores, 100), color='green', label="L1 Error", alpha=0.75)
-    ax2.tick_params(axis='y', labelcolor='green')
-    ax2.set_ylabel("L1 Error")
+    #ax2.plot(utils.trailing_average(l1_scores, 100), color='green', label="L1 Error", alpha=0.75)
+    #ax2.tick_params(axis='y', labelcolor='green')
+    #ax2.set_ylabel("L1 Error")
     anom_markers = data["anom_markers"]
     for anom_marker in anom_markers:
         plot = plt.axvline(anom_marker, c="red", alpha=0.3)

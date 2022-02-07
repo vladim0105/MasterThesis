@@ -8,7 +8,12 @@ from htm.bindings.sdr import SDR
 
 import utils
 
-
+def grid_mean_aggr_func(anoms):
+    anoms = anoms[np.nonzero(anoms)]
+    if anoms.size == 0:
+        return 0
+    else:
+        return np.mean(anoms)
 class SpatialPoolerArgs:
     def __init__(self):
         self.inputDimensions = (0,)
@@ -148,9 +153,11 @@ class TemporalMemory:
 
 
 class GridHTM:
-    def __init__(self, frame_shape, sp_grid_size, tm_grid_size, sp_args: SpatialPoolerArgs, tm_args:TemporalMemoryArgs, sparsity, aggr_func):
+    def __init__(self, frame_shape, sp_grid_size, tm_grid_size, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs,
+                 sparsity, aggr_func=grid_mean_aggr_func):
         assert sp_grid_size == sp_args.inputDimensions[0], "SP grid size and SP input dimensions must match!"
-        assert tm_grid_size == tm_args.columnDimensions[0] == sp_args.columnDimensions[0], "TM grid size and SP/TM column dimensions must match!"
+        assert tm_grid_size == tm_args.columnDimensions[0] == sp_args.columnDimensions[
+            0], "TM grid size and SP/TM column dimensions must match!"
         assert sp_grid_size % tm_grid_size == 0, "SP Grid size must be divisible by TM Grid side!"
         self.sp_grid_size = sp_grid_size
         self.tm_grid_size = tm_grid_size
@@ -169,7 +176,7 @@ class GridHTM:
                 sps_inner.append(SpatialPooler(sp_args))
             self.sps.append(sps_inner)
         # Temporal Memory Init
-        ratio = sp_grid_size//tm_grid_size
+        ratio = sp_grid_size // tm_grid_size
         for i in range(frame_shape[0] // (ratio * tm_grid_size)):
             tms_inner = []
             for j in range(frame_shape[1] // (ratio * tm_grid_size)):
@@ -225,11 +232,14 @@ class GridHTM:
 
     prev_sp_output = None
 
-    def __call__(self, encoded_input):
+    def __call__(self, encoded_input: np.ndarray):
         sp_output = self.grid_sp(encoded_input)
         anom_score, colored_sp_output = self.grid_tm(sp_output, self.prev_sp_output)
         self.prev_sp_output = sp_output
         return anom_score, colored_sp_output
+
+
+
 
 
 def numpy_to_sdr(arr: np.ndarray) -> SDR:
