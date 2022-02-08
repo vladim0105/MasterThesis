@@ -50,7 +50,7 @@ The solution for the last rule is two-fold, and  consists of imposing a soft upp
     \item Pick a cell size so that the distribution of number of active pixels is as tight as possible, while containing enough semantic information and also being small enough so that the desired invariance is achieved. The cell size acts as a soft upper bound for the possible number of active pixels.
     \item Create a pattern representing emptiness, where the number of active bits is similar to what can be expected on average when there are cars inside a cell. This acts as a soft lower bound for the number of active pixels.
 \end{itemize}
-There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. In the following example, the number of active pixels within a cell centered in the video was used to build the following distributions:
+There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. An improvement for noisy data would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the following distributions:
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -73,12 +73,10 @@ There could be situations where a few pixels are active within a cell, which cou
 With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would be a part of the calibration process.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{example-image-c}
-    \caption{Encoder output.}
-    \label{fig:encoder_output}
+    \includegraphics[width=\textwidth]{resources/methodology/htm_grid_output.png}
+    \caption{Example Grid HTM output and the corresponding input.}
 \end{figure}
 Another issue occurs when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, and therefore the first frame that a car enters a cell will cause a high anomaly output for that cell. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
 \section{Use Cases}
 The most intuitive use case is to use Grid HTM for semi-active surveillance. One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid HTM has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
-\par
 \section{Summary}
