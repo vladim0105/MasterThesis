@@ -1,6 +1,7 @@
-To give credibility to the approach mentioned in Chapter 3, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
-\section{Bouncing Ball Test}
+\chapter{Experiments and Results}
 
+\section{Bouncing Ball Test}
+To give credibility to the approach mentioned in Chapter 3, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updown1.png}\hfill
@@ -80,20 +81,63 @@ Final list of parameters for reproducibility:
     \caption{TM Parameters}
     \label{tab:bb_TM_params}
 \end{table}
+This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid HTM would be suitable if there was two or more independent bouncing balls. Still, it is interesting to see how Grid HTM performs compared to normal HTM. The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
+    \caption{Grid HTM}
+\end{figure}
+It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM and that the parameters are probably not optimal:
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                  \\ \hline
+            inputDimensions    & 30, 30         &                                                                 \\ \hline
+            columnDimensions   & 15, 15         &                                                                 \\ \hline
+            potentialPct       & 0.5            & Increased in order to compensate for the smaller potential pool \\ \hline
+            potentialRadius    & 5              &                                                                 \\ \hline
+            localAreaDensity   & 0.02           &                                                                 \\ \hline
+            globalInhibition   & True           & Set to False to enable topology                                 \\ \hline
+            wrapAround         & False          &                                                                 \\ \hline
+            synPermActiveInc   & 0.1            &                                                                 \\ \hline
+            synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget"             \\ \hline
+            stimulusThreshold  & 2              &                                                                 \\ \hline
+            seed               & 2              &                                                                 \\ \hline
+            boostStrength      & 0              & Causes instability in empty cells                               \\ \hline
+            dutyCyclePeriod    & 250            &                                                                 \\ \hline
+        \end{tabular}
+    }
+    \caption{SP Parameters}
+\end{table}
+\begin{table}[H]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\ \hline
+            columnDimensions          & 15, 15         & Same as the SP \\ \hline
+            predictedSegmentDecrement & 0.003          &                \\ \hline
+            permanenceIncrement       & 0.1            &                \\ \hline
+            permanenceDecrement       & 0.001          &                \\ \hline
+            minThreshold              & 3              &                \\ \hline
+            activationThreshold       & 5              &                \\ \hline
+            cellsPerColumn            & 16             &                \\ \hline
+            seed                      & 2              &                \\ \hline
+        \end{tabular}
+    }
+    \caption{TM Parameters}
+\end{table}
+
 \section{Surveillance example}
 The video to be used is part of the VIRAT\cite{VIRAT} video dataset.
 \section{Sperm example}
-As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is INSERT HERE, which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
+As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is VISEM \cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_example.png}
-    \end{subfigure}%
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
-    \end{subfigure}
+    \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_example.png}
+    \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
     \caption{Example frame from a sperm video and its corresponding segmentation.}
 \end{figure}
 
