@@ -52,13 +52,13 @@ if __name__ == '__main__':
 
     video_scale = 0.3
     sdr_vis_scale = 1
-    vidcap = cv2.VideoCapture('../data/sperm_seg3.mp4')
+    vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
 
-    sp_grid_size = 16
-    tm_grid_size = 8
+    sp_grid_size = 32
+    tm_grid_size = 16
     new_width, new_height = get_divisible_shape(scaled_frame_shape, sp_grid_size)
 
     sp_args = m.SpatialPoolerArgs()
@@ -67,42 +67,40 @@ if __name__ == '__main__':
     sp_args.columnDimensions = (tm_grid_size, tm_grid_size)
     sp_args.potentialPct = 0.2
     sp_args.potentialRadius = 5
-    sp_args.localAreaDensity = 0.1
-    sp_args.globalInhibition = False
+    sp_args.localAreaDensity = 0.05
+    sp_args.globalInhibition = True
     sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.01
-    sp_args.synPermInactiveDec = 0.001
-    sp_args.stimulusThreshold = 1
+    sp_args.synPermInactiveDec = 0.00001
+    sp_args.stimulusThreshold = 3
     sp_args.boostStrength = 0
     sp_args.dutyCyclePeriod = 2500
 
     tm_args = m.TemporalMemoryArgs()
 
     tm_args.columnDimensions = (tm_grid_size, tm_grid_size)
-    tm_args.predictedSegmentDecrement = 0.0005
+    tm_args.predictedSegmentDecrement = 0.001
     tm_args.permanenceIncrement = 0.01
-    tm_args.permanenceDecrement = 0.001
+    tm_args.permanenceDecrement = 0.00001
     tm_args.minThreshold = 1
-    tm_args.activationThreshold = 2
-    tm_args.cellsPerColumn = 4
+    tm_args.activationThreshold = 3
+    tm_args.cellsPerColumn = 16
     tm_args.seed = sp_args.seed
 
-    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, sparsity=5, aggr_func=np.mean)
+    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean)
 
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
+    out = cv2.VideoWriter('surveillance_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
                           (new_height, new_width*2), True)
     anoms = []
-    l1_scores = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-    #total = 250
-    prev_encoded_input = None
+    total = total//2
     with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
                                                            progressbar.ETA()]) as bar:
         while success:
-            # Encode
+            # Encode --------------------------------------------------------------------
             frame = cv2.resize(frame, dsize=(scaled_frame_shape[1], scaled_frame_shape[0]),
                                interpolation=cv2.INTER_NEAREST)
             frame = frame
@@ -110,15 +108,10 @@ if __name__ == '__main__':
             frame = (frame > 200) * 255
             frame = frame.astype(np.uint8)
             encoded_input = (frame == 255)[:, :, 0].astype(np.uint8)
-            # L1 Score
-            if prev_encoded_input is not None:
-                l1_score = np.abs(encoded_input.astype(int) - prev_encoded_input.astype(int)).sum()
-                l1_scores.append(l1_score)
-            prev_encoded_input = encoded_input
-            # Run HTM
+            # Run HTM -------------------------------------------------------------------
             anom, colored_sp_output = grid_htm(encoded_input)
             anoms.append(anom)
-            # Create output
+            # Create output -------------------------------------------------------------
             frame_out = np.zeros(shape=(frame.shape[0]*2, frame.shape[1], 3), dtype=np.uint8)
             colored_sp_output = cv2.resize(colored_sp_output, dsize=(scaled_sdr_shape[1], scaled_sdr_shape[0]),
                                            interpolation=cv2.INTER_NEAREST)
@@ -129,8 +122,7 @@ if __name__ == '__main__':
             frame_out[0:12, -(12 * 5):] = frame_number
             out.write(frame_out)
 
-            # Get next frame
-            prev_frame = frame
+            # Get next frame -------------------------------------------------------------
             success, frame = vidcap.read()
             frame = concat_seg(frame, success)
 
@@ -138,6 +130,6 @@ if __name__ == '__main__':
             if bar.value == total:
                 break
 
-    dump_data = {"anom_scores": anoms, "anom_markers": [1510, 7540, 9000], "l1_scores": l1_scores}
-    pickle.dump(dump_data, open(f'anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'anoms_latest.pkl', 'wb'))
+    dump_data = {"anom_scores": anoms, "anom_markers": None}
+    pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'surveillance_results/latest.pkl', 'wb'))

@@ -8,12 +8,15 @@ from htm.bindings.sdr import SDR
 
 import utils
 
+
 def grid_mean_aggr_func(anoms):
     anoms = anoms[np.nonzero(anoms)]
     if anoms.size == 0:
         return 0
     else:
         return np.mean(anoms)
+
+
 class SpatialPoolerArgs:
     def __init__(self):
         self.inputDimensions = (0,)
@@ -127,7 +130,7 @@ class SpatialPooler:
         self.sp = algos.SpatialPooler(**sp_args.__dict__)
         self.num_active_columns = round(self.sp.getNumColumns() * self.sp.getLocalAreaDensity())
 
-    def __call__(self, encoded_sdr: SDR, learn):
+    def __call__(self, encoded_sdr: SDR, learn) -> SDR:
         active_sdr = SDR(self.sp.getColumnDimensions())
         # Run the spatial pooler
         self.sp.compute(input=encoded_sdr, learn=learn, output=active_sdr)
@@ -154,7 +157,7 @@ class TemporalMemory:
 
 class GridHTM:
     def __init__(self, frame_shape, sp_grid_size, tm_grid_size, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs,
-                 sparsity, aggr_func=grid_mean_aggr_func):
+                 min_sparsity=1, sparsity=15, aggr_func=grid_mean_aggr_func):
         assert sp_grid_size == sp_args.inputDimensions[0], "SP grid size and SP input dimensions must match!"
         assert tm_grid_size == tm_args.columnDimensions[0] == sp_args.columnDimensions[
             0], "TM grid size and SP/TM column dimensions must match!"
@@ -163,7 +166,8 @@ class GridHTM:
         self.tm_grid_size = tm_grid_size
         self.sp_args = sp_args
         self.tm_args = tm_args
-        self.sparsity = sparsity  # How many ON bits per gridcell the encoding should produce
+        self.sparsity = sparsity  # How many ON bits per cell in the grid the encoding should produce
+        self.min_sparsity = min_sparsity  # Minimum bits required before a cell is considered not empty
         self.empty_pattern = utils.random_bit_array(shape=(sp_grid_size, sp_grid_size), num_ones=sparsity)
         self.aggr_func = aggr_func
         self.sps = []
@@ -191,7 +195,7 @@ class GridHTM:
                 val = sp_input[i * self.sp_grid_size: (i + 1) * self.sp_grid_size,
                       j * self.sp_grid_size: (j + 1) * self.sp_grid_size]
                 # Check if empty
-                if not (val == 1).any():
+                if val.sum() < self.min_sparsity:
                     val = self.empty_pattern
                 sdr_cell = numpy_to_sdr(val)
                 sp_cell_output = sdr_to_numpy(sp(sdr_cell, learn=True))
@@ -237,9 +241,6 @@ class GridHTM:
         anom_score, colored_sp_output = self.grid_tm(sp_output, self.prev_sp_output)
         self.prev_sp_output = sp_output
         return anom_score, colored_sp_output
-
-
-
 
 
 def numpy_to_sdr(arr: np.ndarray) -> SDR:

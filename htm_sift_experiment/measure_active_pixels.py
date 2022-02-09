@@ -7,7 +7,7 @@ from sperm_experiment import concat_seg
 
 if __name__ == "__main__":
     video_scale = 0.3
-    vidcap = cv2.VideoCapture('../data/sperm_seg2.mp4')
+    vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
@@ -27,9 +27,7 @@ if __name__ == "__main__":
                        scaled_frame_shape[1] // 2 - cell_size // 2:scaled_frame_shape[1] // 2 + cell_size // 2
                        ]
                 num_active_pixels = (cell == 255)[:, :, 0].sum()
-                if num_active_pixels == 0:
-                    num_active_pixels = empty_pattern_pixels
-                elif num_active_pixels_list[cell_size][-1] == 0:
+                if num_active_pixels < 5:
                     num_active_pixels = empty_pattern_pixels
 
                 num_active_pixels_list[cell_size].append(num_active_pixels)
@@ -41,10 +39,11 @@ if __name__ == "__main__":
                 break
     #num_active_pixels_list = np.array(num_active_pixels_list)
     #print(np.std(num_active_pixels_list))
-    #non_zero_avg = np.median(num_active_pixels_list[np.nonzero(num_active_pixels_list)])
+
     for cell_size in cell_sizes:
-        plt.hist(num_active_pixels_list[cell_size], bins="auto", log=True, alpha=0.3)
-    #plt.axvline(non_zero_avg, c="red", label="Non-zero Median")
+        #non_zero_avg = np.median(num_active_pixels_list[cell_size][np.nonzero(num_active_pixels_list[cell_size])])
+        plt.hist(num_active_pixels_list[cell_size], bins="auto", log=True, alpha=1)
+        #plt.axvline(non_zero_avg, c="red", label="Non-zero Median")
     plt.legend()
     plt.ylabel("Frames")
     plt.xlabel("Number of Active Pixels")
