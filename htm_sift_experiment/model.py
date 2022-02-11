@@ -172,6 +172,9 @@ class GridHTM:
         self.aggr_func = aggr_func
         self.sps = []
         self.tms = []
+        self.temporal_size = 5
+
+        tm_args.columnDimensions = (tm_args.columnDimensions[0] * self.temporal_size, tm_args.columnDimensions[1])
         # Spatial Pooler Init
         for i in range(frame_shape[0] // sp_grid_size):
             sps_inner = []
@@ -186,6 +189,10 @@ class GridHTM:
             for j in range(frame_shape[1] // (ratio * tm_grid_size)):
                 tms_inner.append(TemporalMemory(tm_args))
             self.tms.append(tms_inner)
+        # Shape tm_grid_x, tm_grid_y, time, tm_grid_size, tm_grid_size
+        self.prev_sp_grid_outputs = np.zeros(shape=(
+            len(self.tms), len(self.tms[0]), self.temporal_size,
+            self.tm_grid_size, self.tm_grid_size))
 
     def grid_sp(self, sp_input: np.ndarray):
         sp_output = np.zeros(shape=(self.tm_grid_size * len(self.sps), self.tm_grid_size * len(self.sps[0])))
@@ -205,6 +212,7 @@ class GridHTM:
 
     def grid_tm(self, sp_output: np.ndarray, prev_sp_output: np.ndarray):
         anoms = np.zeros(shape=(len(self.tms), len(self.tms[0])))
+
         if prev_sp_output is None:
             prev_sp_output = np.ones_like(sp_output)
         colored_sdr_arr = np.zeros(shape=(sp_output.shape[0], sp_output.shape[1], 3), dtype=np.uint8)
@@ -212,15 +220,21 @@ class GridHTM:
         for i in range(len(self.tms)):
             for j in range(len(self.tms[i])):
                 tm = self.tms[i][j]
-                val = sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
-                      j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
+                sp_grid_output = sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
+                                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
+                # Shift old sp_outputs out and add the prev one. 0 is newest.
+                for k in range(self.prev_sp_grid_outputs.shape[2]-1, 0, -1):
+                    self.prev_sp_grid_outputs[i, j, k] = self.prev_sp_grid_outputs[i, j, k-1]
+                self.prev_sp_grid_outputs[i, j, 0] = sp_grid_output
+                val = sp_grid_output
+                for k in range(1, self.prev_sp_grid_outputs.shape[2]):
+                    val = np.concatenate((val, self.prev_sp_grid_outputs[i, j, k]), axis=0)
                 sdr_cell = numpy_to_sdr(val)
                 pred, anom, n_pred_cells = tm(sdr_cell, learn=True)
                 prev_val = prev_sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                            j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
                 if (prev_val == 0).all():
                     anom = 0
-
                 colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 0] = int(
                     60 * (1 - anom))
@@ -228,7 +242,7 @@ class GridHTM:
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 1] = 255
                 colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 2] = 255 * (
-                        1 - val)
+                        1 - val[:self.tm_grid_size, :self.tm_grid_size])
                 anoms[i, j] = anom
 
         colored_sdr_arr = cv2.cvtColor(colored_sdr_arr, cv2.COLOR_HSV2BGR)

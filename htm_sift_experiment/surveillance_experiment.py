@@ -53,9 +53,9 @@ if __name__ == '__main__':
     video_scale = 0.3
     sdr_vis_scale = 1
     vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
-    success, frame = vidcap.read()
-    frame = concat_seg(frame, success)
-    scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
+    success, orig_frame = vidcap.read()
+    orig_frame = concat_seg(orig_frame, success)
+    scaled_frame_shape = (int(orig_frame.shape[0] * video_scale), int(orig_frame.shape[1] * video_scale))
 
     sp_grid_size = 32
     tm_grid_size = 16
@@ -81,10 +81,10 @@ if __name__ == '__main__':
     tm_args.columnDimensions = (tm_grid_size, tm_grid_size)
     tm_args.predictedSegmentDecrement = 0.001
     tm_args.permanenceIncrement = 0.01
-    tm_args.permanenceDecrement = 0.00001
+    tm_args.permanenceDecrement = 0.001
     tm_args.minThreshold = 1
-    tm_args.activationThreshold = 3
-    tm_args.cellsPerColumn = 16
+    tm_args.activationThreshold = 1
+    tm_args.cellsPerColumn = 4
     tm_args.seed = sp_args.seed
 
     grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean)
@@ -92,16 +92,20 @@ if __name__ == '__main__':
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter('surveillance_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
+    out = cv2.VideoWriter('surveillance_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
                           (new_height, new_width*2), True)
     anoms = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-    total = total//2
-    with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
+    #total = total//10
+    frame_repeats = 500
+    frame_repeat_start_idx = total//1.1
+    frame_skip = 6
+    with progressbar.ProgressBar(max_value=total+frame_repeats, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
                                                            progressbar.ETA()]) as bar:
+        bar.update(0)
         while success:
             # Encode --------------------------------------------------------------------
-            frame = cv2.resize(frame, dsize=(scaled_frame_shape[1], scaled_frame_shape[0]),
+            frame = cv2.resize(orig_frame, dsize=(scaled_frame_shape[1], scaled_frame_shape[0]),
                                interpolation=cv2.INTER_NEAREST)
             frame = frame
             frame = force_divisible(frame, sp_grid_size)
@@ -123,10 +127,16 @@ if __name__ == '__main__':
             out.write(frame_out)
 
             # Get next frame -------------------------------------------------------------
-            success, frame = vidcap.read()
-            frame = concat_seg(frame, success)
+            # Do not get next frame if it is currently set to be repeating the same frame
+            for i in range(frame_skip):
+                if bar.value < frame_repeat_start_idx or bar.value > frame_repeat_start_idx+frame_repeats:
 
-            bar.update(bar.value + 1)
+                    success, orig_frame = vidcap.read()
+                    orig_frame = concat_seg(orig_frame, success)
+
+                bar.update(bar.value + 1)
+                if bar.value == total:
+                    break
             if bar.value == total:
                 break
 
