@@ -1,6 +1,6 @@
 \chapter{Grid HTM}
 \section{Introduction}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs.
+When it comes to applying HTM on videos, this thesis proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be everything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as \cite{orb_detector} could be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT \cite{VIRAT} dataset.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.45\textwidth]{resources/methodology/original.png}
@@ -10,33 +10,34 @@ As previously mentioned, both binary thresholding and deep learning feature map 
 The idea is that the SP will learn to find an optimal general representation of cars. How general this representation is can be configured using the various parameters, but ideally they should be set so that different cars will be represented similarly while trucks and motorcycles will be represented differently.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.45\textwidth]{resources/methodology/car_segmentation.png}
-    \includegraphics[width=.45\textwidth]{example-image-b}
+    \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation.png}
+    \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation_sp.png}
     \caption{The SDR and its corresponding SP representation. Note that the SP is untrained.}
 \end{figure}
 \par
-The task of the TM will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the system to quickly learn the norm, even if there is little activity, while still reacting to anomalies. \par
-Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing anomaly detection, but is just learning the patterns.\par
+The task of the TM will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the system to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
+\par
+Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.\par
 \section{Refinement}
-One issue that becomes evident is the lack of invariance. Because the TM is learning the global patterns, it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the TM learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate SP and TM for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
+One issue that becomes evident is the lack of invariance. Because the TM is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the TM learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate SP and TM for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{example-image-a}
+    \includegraphics[width=\textwidth]{resources/methodology/car_segmentation_grid.png}
     \caption{The encoder output divided into a grid.}
     \label{fig:grid}
 \end{figure}
-It might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.  An example is that one cell with a high anomaly score will lead to the same overall anomaly score as every cell having a small anomaly score. That being said, the selection of an aggregation function will be based off the problem at hand. A potential aggregation function could be the non-zero mean:
+It might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.  An example is that one cell with a high anomaly score will lead to the same average anomaly score as every cell having a small anomaly score. That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
     X         & :\{x : x > 0\} \\
     anomScore & =
     \begin{cases}
-        \sum X/|X| & \text{if } |X| > 0 \\
-        0          & \text{else}
+        \frac{\sum_{x \in X}x}{|X|} & \text{if } |X| > 0 \\
+        0                           & \text{else}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem.
+Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being a cell somewhere with a high anomaly score.
 
-Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid HTM it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach. In addition, it is also possible to configure the SP and the TM in each cell independently, giving the system increased flexibility.
+Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid HTM it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach. In addition, it is also possible to configure the SP and the TM in each cell independently, giving the system increased flexibility. Last but not least, dividing it into smaller cells makes it possible to run each cell in parallel for increased performance.
 \par
 That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder may not be respected, and therefore should be reviewed:
 \begin{itemize}
@@ -50,7 +51,7 @@ The solution for the last rule is two-fold, and  consists of imposing a soft upp
     \item Pick a cell size so that the distribution of number of active pixels is as tight as possible, while containing enough semantic information and also being small enough so that the desired invariance is achieved. The cell size acts as a soft upper bound for the possible number of active pixels.
     \item Create a pattern representing emptiness, where the number of active bits is similar to what can be expected on average when there are cars inside a cell. This acts as a soft lower bound for the number of active pixels.
 \end{itemize}
-There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. An improvement for noisy data would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the following distributions:
+There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. If it does affect the distribution, which can be the case with noisy data, then an improvement would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the following distributions:
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -65,7 +66,7 @@ There could be situations where a few pixels are active within a cell, which cou
         \caption{With empty pattern.}
         \label{fig:num_active_pixels_cell2}
     \end{subfigure}
-    \caption{Distribution of number of active pixels within a cell of size $12\times 12$}
+    \caption{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement.}
     \label{fig:test}
 \end{figure}
 
@@ -74,7 +75,7 @@ With a carefully selected empty pattern sparsity, \textbf{the standard deviation
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/methodology/htm_grid_output.png}
-    \caption{Example Grid HTM output and the corresponding input.}
+    \caption{Example Grid HTM output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid HTM has not seen before during its 300 frame long lifetime.}
 \end{figure}
 Another issue occurs when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, and therefore the first frame that a car enters a cell will cause a high anomaly output for that cell. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
 \section{Use Cases}

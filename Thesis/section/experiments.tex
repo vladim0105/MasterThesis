@@ -131,7 +131,23 @@ It can be observed that Grid HTM performs worse than the normal HTM, but the res
 \end{table}
 
 \section{Surveillance example}
-The video to be used is part of the VIRAT\cite{VIRAT} video dataset.
+As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
+The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera. The downside is that the video does not contain any anomalies, and also consists of several segments with sudden frame skips in between.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{example-image-a}
+\end{figure}
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system. The segmentation model used is ResNet101\cite{resnet} enhanced with PointRend\cite{pointrend}, pretrained on ImageNet\cite{imagenet} and implemented using PixelLib\cite{pixellib}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{resources/methodology/car_segmentation.png}
+    \includegraphics[width=0.45\textwidth]{resources/methodology/person_segmentation.png}
+    \caption{Example segmentation of cars and persons.}
+\end{figure}
+For the sake of simplicity, this experiment will focus only on the segmentation of cars.
+\par
+While on the topic of segmentation, it is important to mention that the segmentation model is not perfect and that there are cases where objects are misclassified as well as cases where cars repeatedly go above and below the confidence threshold.
+\par
 \section{Sperm example}
 As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is VISEM \cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
 \begin{figure}[H]
