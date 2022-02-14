@@ -57,7 +57,8 @@ As of now, there exists encoders for numbers, categories, geospatial locations, 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\linewidth]{resources/related_works/cyclical_encoder.png}
-    \caption{Visualization of a cyclical date encoder, which is currently encoding Friday. Source: \cite{BAMI}}
+    \caption{Visualization of a cyclical date encoder, which is currently encoding Friday. Note that also Thursday and Saturday are included in the encoding of Friday in order to emphasize that Thursday and Saturday are both equally distanced from Friday. Source: \cite{BAMI}}
+    \label{fig:cyclical_encoder}
 \end{figure}
 Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values one by one and then concatenate them into a single SDR before passing it to the HTM.
 \par

@@ -18,7 +18,8 @@ The idea is that the SP will learn to find an optimal general representation of 
 The task of the TM will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the system to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
 \par
 Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.\par
-\section{Refinement}
+\section{Improvements}
+\subsection{Invariance and explainability}
 One issue that becomes evident is the lack of invariance. Because the TM is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the TM learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate SP and TM for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
@@ -26,7 +27,9 @@ One issue that becomes evident is the lack of invariance. Because the TM is lear
     \caption{The encoder output divided into a grid.}
     \label{fig:grid}
 \end{figure}
-It might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.  An example is that one cell with a high anomaly score will lead to the same average anomaly score as every cell having a small anomaly score. That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
+It might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.
+\par
+An example is that one cell with a high anomaly score will lead to the same average anomaly score as every cell having a small anomaly score. That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
     X         & :\{x : x > 0\} \\
     anomScore & =
@@ -38,7 +41,7 @@ It might be tempting to use the mean of all the anomaly scores as the aggregatio
 Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being a cell somewhere with a high anomaly score.
 
 Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid HTM it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach. In addition, it is also possible to configure the SP and the TM in each cell independently, giving the system increased flexibility. Last but not least, dividing it into smaller cells makes it possible to run each cell in parallel for increased performance.
-\par
+\subsection{Reviewing encoder rules}
 That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder may not be respected, and therefore should be reviewed:
 \begin{itemize}
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
@@ -77,13 +80,19 @@ With a carefully selected empty pattern sparsity, \textbf{the standard deviation
     \includegraphics[width=\textwidth]{resources/methodology/htm_grid_output.png}
     \caption{Example Grid HTM output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid HTM has not seen before during its 300 frame long lifetime.}
 \end{figure}
-Another issue occurs when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, and therefore the first frame that a car enters a cell will cause a high anomaly output for that cell. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
+\subsection{Stabilizing anomaly output}
+Another issue occurs when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, and therefore the first frame that a car enters a cell will cause a high anomaly output for that cell. This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{example-image-a}
     \caption{Empty vs not empty.}
 \end{figure}
-Since the TM can only grow segments to cells that were active in the previous timestep, it means that it struggles to learn temporal patterns. One example of such a pattern is when a car stands still for a long time. This means that if a car were to suddenly stop in the middle of a road, then the system would not mark it as an anomaly as the pattern is the same as if the car was in motion. The solution is to concatenate the past $n$ SP outputs as input into the TM.
+\subsection{Multistep Temporal Patterns}
+Since the TM can only grow segments to cells that were active in the previous timestep, it means that it struggles to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has the same representation at timestep $t$ and $t-1$ as a car standing still.
+\par
+The solution is to concatenate the past $n$ SP outputs as input into the TM. This follows the core idea behind the cyclical date encoder described in \ref{fig:cyclical_encoder}. This is implemented by keeping a buffer of past SP outputs, and shifting its contents out as new SP outputs are inserted.
+\par
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{example-image-a}
