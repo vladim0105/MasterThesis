@@ -19,7 +19,7 @@ The task of the TM will then be to learn the common patterns that the cars exhib
 \par
 Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.\par
 \section{Improvements}
-\subsection{Invariance and explainability}
+\subsection{Invariance and Explainability}
 One issue that becomes evident is the lack of invariance. Because the TM is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the TM learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate SP and TM for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
@@ -41,7 +41,7 @@ An example is that one cell with a high anomaly score will lead to the same aver
 Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being a cell somewhere with a high anomaly score.
 
 Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid HTM it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach. In addition, it is also possible to configure the SP and the TM in each cell independently, giving the system increased flexibility. Last but not least, dividing it into smaller cells makes it possible to run each cell in parallel for increased performance.
-\subsection{Reviewing encoder rules}
+\subsection{Reviewing Encoder Rules}
 That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder may not be respected, and therefore should be reviewed:
 \begin{itemize}
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
@@ -80,18 +80,23 @@ With a carefully selected empty pattern sparsity, \textbf{the standard deviation
     \includegraphics[width=\textwidth]{resources/methodology/htm_grid_output.png}
     \caption{Example Grid HTM output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid HTM has not seen before during its 300 frame long lifetime.}
 \end{figure}
-\subsection{Stabilizing anomaly output}
+\subsection{Stabilizing Anomaly Output}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{resources/methodology/empty_to_notempty.png}
-    \caption{High anomaly score when empty cell changes to being not empty, as something enters the cell.}
+    \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty.png}
+    \caption{High anomaly score when an empty cell (represented with an empty pattern) changes to being not empty, as something enters the cell.}
 \end{figure}
-Another issue occurs when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, and therefore the first frame that a car enters a cell will cause a high anomaly output for that cell. This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
-
+Another issue with the gird based approach is when a car first comes into a cell. The TM in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty_fixed.png}
+    \caption{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
+\end{figure}
+A more permanent solution would be to allow the TM to grow synapses to the TMs in the neighboring cells, but this might hinder invariance.
 \subsection{Multistep Temporal Patterns}
 Since the TM can only grow segments to cells that were active in the previous timestep, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t-1$ as a car standing still.
 \par
-The solution is to concatenate the past $n$ SP outputs as input into the TM. This follows the core idea behind the cyclical date encoder described in \ref{fig:cyclical_encoder}. This is implemented by keeping a buffer of past SP outputs, and shifting its contents out as new SP outputs are inserted.
+The solution is to concatenate the past $n$ SP outputs as input into the TM. This follows the core idea behind the cyclical date encoder described in \ref{fig:cyclical_encoder}, where they include the day before and the day after in the encoding. This solution is implemented by keeping a buffer of past SP outputs, and shifting its contents out as new SP outputs are inserted.
 \par
 
 \begin{figure}[H]
@@ -99,9 +104,9 @@ The solution is to concatenate the past $n$ SP outputs as input into the TM. Thi
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation.png}
     \unskip\ \vrule\
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation_still.png}
-    \caption{Example of concatenation $n=3$ when an object is moving from left to right, compared to when an object is not in motion.}
+    \caption{Example of concatenation $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
 \end{figure}
-This will force the TM input for when an object is in motion and when an object is still, to be unique.
+This will force the TM input, for when an object is in motion and when an object is still, to be unique.
 \section{Use Cases}
 The most intuitive use case is to use Grid HTM for semi-active surveillance. One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid HTM has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
 \section{Summary}
