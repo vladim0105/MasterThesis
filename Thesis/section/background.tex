@@ -68,10 +68,10 @@ The reason for why a direct binary encoding might not perform well is due to the
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/resnet18_layer_10.png}
-    \caption{The feature map activations in the 10th layer of ResNet18. This is only 16 of them, there are many more in the layer that are not shown.}
+    \caption{The feature map activations in the 10th layer of ResNet18\cite{resnet}. This is only 16 of them, there are many more in the layer that are not shown.}
 \end{figure}
 \par
-An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively one could follow \cite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations.
+An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively, one could follow \cite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations.
 \subsection{Learning}
 Similar to biological beings, HTM is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
 The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up the HTM neuron.\par
@@ -119,7 +119,8 @@ It is also possible to have \textbf{topology} in the output by selecting the col
 All the aforementioned concepts are configurable in technical implementations.
 
 \subsubsection{Temporal Memory}
-The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consist of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of sequences and contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, distal dendrite segments), where each segment consists of synapses connecting to other cells.
+\label{sec:temporal_memory}
+The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consist of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, distal dendrite segments), where each segment consists of synapses connecting to other cells.
 \par
 Essentially, it takes the "node" based representation of the SP output, and turns it into a new representation which includes state, or context, from previous time steps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the SP output has 100 active columns and only one cell per column is active, then the TM has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active.
 \begin{figure}[H]
@@ -130,13 +131,15 @@ Essentially, it takes the "node" based representation of the SP output, and turn
 \par
 The temporal memory algorithm consists of two phases. The first phase is to evaluate the SP output against predictions and choose a set of active cells. It does so by looking at the active columns and the cells they contain. If an active column contains predictive cells, then those cells are marked as active. If an active column has no predictive cells, usually caused by observing a new pattern for the first time, then the column "bursts" by activating all the cells that the column contains. Otherwise, a cell is inactive.
 \par
-At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{resources/related_works/tm_vis1.png}
     \caption{Expanded SP example with TM component where the number of cells is set to 3. The leftmost column is bursting (all 3 cells activated in green) due to the active SP output and due to containing no predictive cells.}
     \label{fig:tm_vis1}
 \end{figure}
+At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.
+\par
+Since the TM can only grow synapses to cells that were previously active, the TM struggles to express sequences of patterns over multiple timesteps, as has been discussed on HTM forums \cite{tm_sequence_problem}. The solution has been to also encode some temporal information, such as the time of day \cite{AHMAD2017134,tm_sequence_problem}, so that it can use timestamps as anchor points for its contexts.
 \par
 The second phase is to form a prediction by putting cells into a predictive state. For every segment on every cell, the number of synapses connected to active cells are counted. If the number exceeds an \textbf{activation threshold}, then the segment is marked as active and all the cells connected to the segment enter the predictive state. To summarize, a cell has three possible states:
 \begin{itemize}
@@ -165,8 +168,8 @@ This is only an estimation, in reality the two patterns may have overlapping bit
 The general use case for HTM is to perform anomaly detection. More specifically, Numenta has made example programs showcasing how HTM can be used in practice \cite{numenta_example_apps}:
 \begin{itemize}
     \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network \cite{htm_rogue}.
-    \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material using speed and location data \cite{htm_geospatial}.
-    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and twitter volume\cite{htm_finance}.
+    \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material, using speed and location data \cite{htm_geospatial}.
+    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter volume \cite{htm_finance}.
 \end{itemize}
 There are also applications that are used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon HTM in order to perform language analysis. They made this possible by introducing Semantic Folding and Semantic Fingerprinting \cite{semantic_folding}.
 \section{Convolutional networks}
@@ -197,7 +200,7 @@ To summarize, the object is learned by the brain using multiple models that may 
     \end{subfigure}
     \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory}
 \end{figure}
-This new type of hierarchy is also coincidentally similar to some state-of-the-art image recognition deep learning architectures such as \cite{fpn} and \cite{inceptionnet}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
+This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as \cite{fpn} and \cite{inceptionnet}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
@@ -205,7 +208,7 @@ This new type of hierarchy is also coincidentally similar to some state-of-the-a
     \label{fig:inception_module}
 \end{figure}
 
-While the Thousand Brains Theory is not yet implemented in any way in a standard HTM model, it does show that recent developments within deep learning for image analysis have similarities with HTM theory.
+While the Thousand Brains Theory is not yet technically implemented in any way in a standard HTM model, it does show that recent developments within deep learning for image analysis have similarities with HTM theory.
 \section{Anomaly detection}
 As reviewed by Pang et al. \cite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some complexities are as follows:
 \begin{itemize}
@@ -214,8 +217,8 @@ As reviewed by Pang et al. \cite{anomaly_detection}, anomaly detection is often 
     \item \textbf{Heterogeneity} Anomalies can take form in many ways, and as such one class of anomalies can be vastly different from another. Approaches such as \cite{heterogeneous1} have been proposed to alleviate the problem.
 \end{itemize}
 This makes it hard to apply traditional deep learning methods for anomaly detection, because they are designed with pairs of $\{input, target\}$ in mind.
-\subsection{State-of-the-Art Algorithms}
-The current state-of-the-art algorithms are numerous, but the main approach is achieved by using deep learning \cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs \cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
+\subsection{State-of-the-Art Algorithms for Anomaly Detection}
+The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning \cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs \cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
 \par The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that it tries to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
 \par
 \begin{figure}[H]
@@ -240,6 +243,7 @@ Approaches such as Grad-CAM \cite{GradCAM} and Guided Backpropagation \cite{guid
 Smart surveillance, which is the use of automatic video analysis in surveillance, has seen rapid development since its inception. \cite{anomalyvideo} presents and summarizes recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional auto-encoders (AE) and Generative Adversarial Networks (GAN). The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. \par
 The paper also discusses problems with using deep learning approaches for anomaly detection. One of the examples that it uses is about a bicycle on campus, which related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
 \subsection{HTM Performance in Anomaly Detection}
+\label{sec:htm_perf}
 Knowing that deep learning approaches have a high degree of accuracy but suffer from problems related to generalizability, adaptability, and noise it stands to reason that HTM is a viable alternative for anomaly detection.\par
 \cite{AHMAD2017134} explores the use of HTM for anomaly detection on low dimensional data such as temperature data from an industrial machine. The authors also discuss benchmarks for anomaly detection and compare different methods. The results show that HTM is very capable of performing anomaly detection, especially in a changing environment. HTM is able to outperform other anomaly detection methods and has the advantage of not requiring any per-problem parameter tuning.
 \begin{figure}[H]
