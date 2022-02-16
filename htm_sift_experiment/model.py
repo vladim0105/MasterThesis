@@ -123,6 +123,10 @@ class TemporalMemoryArgs:
         """
         Number of cells per mini-column
         """
+        self.maxNewSynapseCount = 20
+        """
+        The maximum number of synapses added to a segment during learning.
+        """
 
 
 class SpatialPooler:
@@ -143,25 +147,27 @@ class TemporalMemory:
 
     def __call__(self, active_sdr: SDR, learn):
         # Calculate predictive cells by activating dendrites by themselves, does not affect output
-        self.tm.activateDendrites(learn=False)
-        n_pred_cells = self.tm.getPredictiveCells().getSum()
+        #self.tm.activateDendrites(learn=False)
+        #n_pred_cells = self.tm.getPredictiveCells().getSum()
 
         self.tm.compute(active_sdr, learn)
         # Extract the predicted SDR and convert it to a tensor
         predicted = self.tm.getActiveCells()
         # Extract the anomaly score
         anomaly = self.tm.anomaly
-
+        n_pred_cells = 0
         return predicted, anomaly, n_pred_cells
 
 
 class GridHTM:
     def __init__(self, frame_shape, sp_grid_size, tm_grid_size, sp_args: SpatialPoolerArgs, tm_args: TemporalMemoryArgs,
-                 min_sparsity=1, sparsity=15, aggr_func=grid_mean_aggr_func):
+                 min_sparsity=1, sparsity=15, temporal_size=1, aggr_func=grid_mean_aggr_func):
         assert sp_grid_size == sp_args.inputDimensions[0], "SP grid size and SP input dimensions must match!"
         assert tm_grid_size == tm_args.columnDimensions[0] == sp_args.columnDimensions[
             0], "TM grid size and SP/TM column dimensions must match!"
         assert sp_grid_size % tm_grid_size == 0, "SP Grid size must be divisible by TM Grid side!"
+        self.input_shape = frame_shape
+        self.prev_input = np.ones(shape=self.input_shape)
         self.sp_grid_size = sp_grid_size
         self.tm_grid_size = tm_grid_size
         self.sp_args = sp_args
@@ -172,7 +178,7 @@ class GridHTM:
         self.aggr_func = aggr_func
         self.sps = []
         self.tms = []
-        self.temporal_size = 5
+        self.temporal_size = temporal_size
 
         tm_args.columnDimensions = (tm_args.columnDimensions[0] * self.temporal_size, tm_args.columnDimensions[1])
         # Spatial Pooler Init
@@ -210,11 +216,8 @@ class GridHTM:
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size] = sp_cell_output
         return sp_output
 
-    def grid_tm(self, sp_output: np.ndarray, prev_sp_output: np.ndarray):
+    def grid_tm(self, sp_output: np.ndarray, current_input: np.ndarray, prev_input: np.ndarray):
         anoms = np.zeros(shape=(len(self.tms), len(self.tms[0])))
-
-        if prev_sp_output is None:
-            prev_sp_output = np.ones_like(sp_output)
         colored_sdr_arr = np.zeros(shape=(sp_output.shape[0], sp_output.shape[1], 3), dtype=np.uint8)
 
         for i in range(len(self.tms)):
@@ -231,9 +234,13 @@ class GridHTM:
                     val = np.concatenate((val, self.prev_sp_grid_outputs[i, j, k]), axis=0)
                 sdr_cell = numpy_to_sdr(val)
                 pred, anom, n_pred_cells = tm(sdr_cell, learn=True)
-                prev_val = prev_sp_output[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
-                           j * self.tm_grid_size: (j + 1) * self.tm_grid_size]
-                if (prev_val == 0).all():
+
+                # Stabilize Anomaly Score
+                prev_val = prev_input[i * self.sp_grid_size: (i + 1) * self.sp_grid_size,
+                           j * self.sp_grid_size: (j + 1) * self.sp_grid_size]
+                current_val = current_input[i * self.sp_grid_size: (i + 1) * self.sp_grid_size,
+                           j * self.sp_grid_size: (j + 1) * self.sp_grid_size]
+                if (prev_val == 0).all() and (current_val == 1).any():
                     anom = 0
                 colored_sdr_arr[i * self.tm_grid_size: (i + 1) * self.tm_grid_size,
                 j * self.tm_grid_size: (j + 1) * self.tm_grid_size, 0] = int(
@@ -248,12 +255,12 @@ class GridHTM:
         colored_sdr_arr = cv2.cvtColor(colored_sdr_arr, cv2.COLOR_HSV2BGR)
         return self.aggr_func(anoms.flatten()), colored_sdr_arr
 
-    prev_sp_output = None
+
 
     def __call__(self, encoded_input: np.ndarray):
         sp_output = self.grid_sp(encoded_input)
-        anom_score, colored_sp_output = self.grid_tm(sp_output, self.prev_sp_output)
-        self.prev_sp_output = sp_output
+        anom_score, colored_sp_output = self.grid_tm(sp_output, encoded_input, self.prev_input)
+        self.prev_input = encoded_input
         return anom_score, colored_sp_output
 
 

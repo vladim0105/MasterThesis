@@ -19,9 +19,9 @@ def fill_circle(cx, cy, r, arr) -> np.ndarray:
 
 
 def create_video(path, r, sp: model.SpatialPooler, tm: model.TemporalMemory, shape):
-    out = cv2.VideoWriter('bouncing_ball.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20,
+    out = cv2.VideoWriter('bb_results/bouncing_ball.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20,
                           (shape[0], shape[1]), True)
-    sp_vidw = cv2.VideoWriter('bouncing_ball_sp.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20,
+    sp_vidw = cv2.VideoWriter('bb_results/bouncing_ball_sp.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20,
                               (shape[0] // 2, shape[1] // 2), False)
     anoms = []
     n_predicted_things_list = []
@@ -97,17 +97,59 @@ def bouncing_path(startx, starty, r, shape, num_bounces=20):
     anom_frames = [start_xvel_frame, stop_xvel_frame]
     return path, anom_frames
 
+def bouncing_path2(startx, starty, r, shape, num_bounces=20):
+    current_x = startx
+    current_y = starty
+    path = []
+    current_bounce = 0
+    g = 2
+    yvel = 0
+    xvel = 0
+    print("Simulating path...")
+    frame_id = 0
+    start_xvel_frame = None
+    stop_xvel_frame = None
+    count = 0
+    while current_bounce < num_bounces:
 
+        if current_y+yvel >= shape[1] - r:
+            yvel = -yvel
+            current_bounce += 1
+        else:
+            yvel += g
+        if current_bounce == num_bounces // 4 and xvel == 0:
+            xvel = 4
+            if start_xvel_frame is None:
+                start_xvel_frame = frame_id
+        if current_x+xvel > shape[1] - r:
+            xvel = -4
+        if current_x+xvel < r:
+            xvel = 4
+
+        if current_bounce >= int(num_bounces * 0.8):
+            xvel = 0
+            yvel = 0
+            count+=1
+            if count == 200:
+                break
+            if stop_xvel_frame is None:
+                stop_xvel_frame = frame_id
+        current_y += yvel
+        current_x += xvel
+        path.append([current_x, current_y])
+        frame_id += 1
+    anom_frames = [start_xvel_frame, stop_xvel_frame]
+    return path, anom_frames
 if __name__ == "__main__":
     frame_size = (120, 120, 3)
     sp_args = model.SpatialPoolerArgs()
     sp_args.inputDimensions = (frame_size[0], frame_size[1])
     sp_args.columnDimensions = (frame_size[0] // 2, frame_size[1] // 2)
     sp_args.potentialPct = 0.1
-    sp_args.potentialRadius = 120
+    sp_args.potentialRadius = 5
     sp_args.localAreaDensity = 0.1
     sp_args.globalInhibition = True
-    sp_args.wrapAround = True
+    sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.1
     sp_args.synPermInactiveDec = 0
     sp_args.stimulusThreshold = 2
@@ -128,8 +170,8 @@ if __name__ == "__main__":
     sp = model.SpatialPooler(sp_args)
     tm = model.TemporalMemory(tm_args)
     r = 3
-    path, anom_frames = bouncing_path(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
+    path, anom_frames = bouncing_path2(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
     anom_scores, predicted_things = create_video(path, r, sp, tm, shape=frame_size)
     dump_data = {"anom_scores": anom_scores, "anom_markers": anom_frames, "predicted_things": predicted_things}
-    pickle.dump(dump_data, open(f'bb_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'bb_latest.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'bb_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'bb_results/latest.pkl', 'wb'))

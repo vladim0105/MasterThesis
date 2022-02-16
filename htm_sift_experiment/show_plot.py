@@ -38,7 +38,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
 
     # Plot linear sequence, and set tick labels to the same color
-    anom_score_plot, = ax.plot(utils.trailing_average(anoms, 500), color='blue', label="Anomaly Score", alpha=0.75)
+    anom_score_plot, = ax.plot(utils.trailing_average(anoms, 50), color='blue', label="Anomaly Score", alpha=0.75)
     ax.tick_params(axis='y', labelcolor='blue')
     ax.set_ylabel("Anomaly Score")
     ax.set_xlabel("Frames")
