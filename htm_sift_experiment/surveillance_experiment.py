@@ -82,9 +82,9 @@ if __name__ == '__main__':
     tm_args.predictedSegmentDecrement = 0.001
     tm_args.permanenceIncrement = 0.01
     tm_args.permanenceDecrement = 0.001
-    tm_args.minThreshold = 1
-    tm_args.activationThreshold = 1
-    tm_args.cellsPerColumn = 4
+    tm_args.minThreshold = 10
+    tm_args.activationThreshold = 10
+    tm_args.cellsPerColumn = 32
     tm_args.seed = sp_args.seed
 
     grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean)
