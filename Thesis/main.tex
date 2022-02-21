@@ -16,6 +16,7 @@
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{nameref}
+\usepackage[acronyms]{glossaries}
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 \captionsetup[subfigure]{width=0.9\textwidth}
@@ -31,13 +32,14 @@
 \addbibresource{citations/experiments.bib} 
 
 
-
-
 \begin{document}
+\newacronym{htm}{HTM}{Hierarchical Temporal Memory}
+\newacronym{tm}{TM}{Temporal Memory}
+\newacronym{sp}{SP}{Spatial Pooler}
 \duoforside[
-    dept={Department of Informatics},   %% ... or your department
-    program={Informatics: Robotics and Intelligent Systems},         %% ... or your programme
-    long
+  dept={Department of Informatics},   %% ... or your department
+  program={Informatics: Robotics and Intelligent Systems},         %% ... or your programme
+  long
 ]                                        %% ... or long (short = 30 credits, long = 60 credits)
 
 \frontmatter{}
@@ -46,8 +48,8 @@
 \chapter*{Abstract} \addcontentsline{toc}{chapter}{Abstract}
 Bla bla bla...
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\linewidth]{resources/introduction/neuron_activation_monkey.png}
+  \centering
+  \includegraphics[width=0.5\linewidth]{resources/introduction/neuron_activation_monkey.png}
 \end{figure}
 
 
