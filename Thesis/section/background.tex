@@ -1,20 +1,52 @@
 \chapter{Background}
 The following is relevant background information on HTM theory, Deep Learning, and Video Anomaly Detection.
 \section{Deep Learning}
-As mentioned in the introduction, deep learning has seen increased popularity for the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced. The perceptron was a machine learning algorithm which was inspired by the theory of how a neuron worked at that time.
+As mentioned in the introduction, deep learning has seen increased popularity for the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
+\subsection{Perceptron}
+The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based off a simplification of the theory, at the time, on how a neuron worked. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{resources/related_works/perceptron.png}
+    \caption{Perceptron}
 \end{figure}
-The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
+It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
-As shown by \textcite{perceptron3}, the perceptron is able to solve linearly separable problems such as the OR function, but is unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a multilayer perceptron, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}. Unfortunately, the work by \textcite{perceptron3} lead to the misconception that multilayer networks would have the same limitations as a single perceptron, and that further progress was impossible which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no approaches to train a multilayer perceptron, lead to a decline in the research of neuron-inspired approaches.
+As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}. Unfortunately, the work by \textcite{perceptron3} lead to the misconception that \glspl*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no viable approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \par
-It was not until the late 1980s\cite{perceptron_misconceptions} that the neural net approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be trained, and gave birth to the modern neural networks.
+It was not until the late 1980s\cite{perceptron_misconceptions} that the \gls*{g_mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be trained, and gave birth to modern neural networks.
+\subsection{Backpropagation}
+Backpropagation\cite{backprop}, which is shorthand for "backward propagation of errors",  is a method for efficiently calculating the gradient of the error function, so that it is possible to adjust each individual weight with the purpose of lowering the error. The error function is a function that quantifies the difference between a prediction and the corresponding label, and is differentiable. An example of such an error function, is the \gls*{g_mse}:
+\begin{align*}
+    MSE=\frac{1}{n}\sum_{i=1}^n (y_i-\hat{y}_i)^2
+\end{align*}
+The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that in an image, a collection of pixels could be represented as a line.
+\subsection{Neural Networks}
+Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to what was theorized earlier. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. The gradients are calculated using backpropagation which are then used by optimization methods to update the weights with the goal of reducing the error. Examples of optimizers are \gls*{g_sgd} and AdamW.
 \par
-
+Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. The main reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit, and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
+\par
+In order to improve upon regularization, techniques such as Dropout, \gls*{g_bn}, and data augmentation were introduced. As for representing features across time, architectures such as \glspl*{g_rnn} and attention-based models such as Transformer models were created. The vanishing/exploding gradient problem was alleviated by implementing residual connections\cite{resnet} between layers, among other techniques.
+\subsection{Convolutional Neural Networks}
+In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance \cite{cnn}. These properties stem from the three architectural ideas in a CNN:
+\begin{itemize}
+    \item Local receptive fields
+    \item Shared weights
+    \item Spatial sub-sampling
+\end{itemize}
+Through the use of data augmentation, it is also possible to not only improve the effectiveness of the aforementioned invariances, but to also introduce a degree of rotational and scale invariance.
+\par
+However, the progress, in the context of machine vision, stagnated due to a lack of computing power when training on large datasets. This stagnation lasted until 2012 when AlexNet was introduced by \textcite{alexnet}, which marked a major turning point in the history of deep learning. In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was the first case of running a \gls*{g_cnn} on a GPU, which meant that a vast of computational power, for the purpose of training deep learning models, suddenly became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
+\subsection{Generative Models}
+\subsection{Explainability}
+As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they decide as they do. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{resources/related_works/gradcam.jpg}
+    \caption{Grad-CAM visualization for cat and dog.}
+\end{figure}
+Approaches such as Grad-CAM \cite{GradCAM} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}. Since generative models make up most of the state-of-the-art approaches in anomaly detection, this means that there is a lack of explainability in the field of anomaly detection in videos.
 \section{Hierarchical Temporal Memory}
-Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \cite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
+Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
 The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain \cite{spiking_neural_networks}.
 \subsection{Structure}
 HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons.
@@ -94,7 +126,7 @@ The reason for why a direct binary encoding might not perform well is due to the
     \label{fig:cnn_features}
 \end{figure}
 \par
-An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the features in a single layer, which highlights how intangible this approach is.
+An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
 \par
 Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively, one could follow \textcite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations.
 \subsection{Learning}
@@ -200,14 +232,6 @@ The general use case for HTM is to perform anomaly detection. More specifically,
     \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter volume \cite{htm_finance}.
 \end{itemize}
 There are also applications that are used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon HTM in order to perform language analysis. They made this possible by introducing Semantic Folding and Semantic Fingerprinting \cite{semantic_folding}.
-\section{Convolutional networks}
-A key element to understand is why one would want to use convolutional networks as a part of the encoder for an HTM network. The main reason is that a CNN is able to extract important spatial features from high dimensional data, effectively lowering the amount of dimensions. A CNN can also apply several properties that are useful, such as translational invariance \cite{cnn_invariance}. These properties stem from the three architectural ideas in a CNN:
-\begin{itemize}
-    \item Local receptive fields
-    \item Shared weights
-    \item Spatial sub-sampling
-\end{itemize}
-Through the use of data augmentation, it is also possible to not only improve the effectiveness of the aforementioned invariances, but to also introduce a degree of rotational and scale invariance.
 \section{The Thousand Brains Theory}
 One of the newest advancements in HTM Theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
 To summarize, the object is learned by the brain using multiple models that may rely on different inputs, the models then vote to reach a consensus on what they are sensing. This is coincidentally similar to ensemble learning such as \textcite{divergentNets}. Each model can be thought of as a mini-brain, hence the name "The Thousand Brains Theory".
@@ -259,14 +283,7 @@ Another common approach is autoencoders, which aim to minimize the reconstructio
 \par
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}. They are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Additionally, they are very hard to design and train for the purpose of detecting anomalies in complex data such as surveillance.\par
 There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same; to get an anomaly measure using some sort of generated or reconstructed data.
-\subsection{Explainability}
-As stated in \cite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they decide as they do. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{resources/related_works/gradcam.jpg}
-    \caption{Grad-CAM visualization for cat and dog.}
-\end{figure}
-Approaches such as Grad-CAM \cite{GradCAM} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}. Since generative models make up most of the state-of-the-art approaches in anomaly detection, this means that there is a lack of explainability in the field of anomaly detection in videos.
+
 \subsection{Smart Surveillance}
 Smart surveillance, which is the use of automatic video analysis in surveillance, has seen rapid development since its inception. \cite{anomalyvideo} presents and summarizes recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional auto-encoders (AE) and Generative Adversarial Networks (GAN). The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. \par
 The paper also discusses problems with using deep learning approaches for anomaly detection. One of the examples that it uses is about a bicycle on campus, which related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.

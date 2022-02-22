@@ -119,7 +119,7 @@ The solution is to concatenate the past $n$ \gls*{sp} outputs as input into the 
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation_still.png}
     \caption{Example of concatenation with $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
 \end{figure}
-This will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$.
+This will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$. One could feed the past $n$ encoder outputs into the \gls*{sp} instead, but this will lead to a much higher computational requirement, as well as force the \gls*{tm} parameters to be dependent on $n$.
 \par
 Adding support for multistep temporal patterns to the method used in \cite{MotionAnomalyDetection}, mentioned in section \ref{sec:htm_perf}, could improve their results.
 \section{Use Cases}
