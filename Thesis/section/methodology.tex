@@ -1,4 +1,5 @@
 \chapter{Grid HTM}
+\label{sec:grid_htm}
 \section{Introduction}
 When it comes to applying \gls*{htm} on videos, this thesis proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be everything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB\cite{orb_detector} could be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT \cite{VIRAT} dataset.
 \begin{figure}[H]
@@ -86,16 +87,18 @@ Since there are now cells that are observing an empty pattern for a lot of the t
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty.png}
     \caption{High anomaly score when an empty cell (represented with an empty pattern with a sparsity value of 5) changes to being not empty, as something enters the cell.}
+    \label{fig:empty_to_notempty}
 \end{figure}
-Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty.
+Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output (\autoref{fig:empty_to_notempty}). This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty (\autoref{fig:empty_to_notempty_fixed}).
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty_fixed.png}
     \caption{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
+    \label{fig:empty_to_notempty_fixed}
 \end{figure}
 A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
 \subsection{Multistep Temporal Patterns}
-Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep (see \ref{sec:temporal_memory}), it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still.
+Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_moving.png}
@@ -109,7 +112,7 @@ This could cause situations where an object that is supposed to be moving, sudde
     \includegraphics[width=0.7\textwidth]{resources/methodology/contextual_loop.png}
     \caption{Example of a contextual loop.}
 \end{figure}
-The solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that can be used as contextual anchors, so as a replacement, the past observations are encoded instead.
+A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that can be used as contextual anchors, so as a replacement, the past observations are encoded instead.
 \par
 
 \begin{figure}[H]
@@ -121,7 +124,9 @@ The solution is to concatenate the past $n$ \gls*{sp} outputs as input into the 
 \end{figure}
 This will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$. One could feed the past $n$ encoder outputs into the \gls*{sp} instead, but this will lead to a much higher computational requirement, as well as force the \gls*{tm} parameters to be dependent on $n$.
 \par
-Adding support for multistep temporal patterns to the method used in \cite{MotionAnomalyDetection}, mentioned in section \ref{sec:htm_perf}, could improve their results.
+Adding support for multistep temporal patterns to the method used by \textcite{MotionAnomalyDetection}, which is mentioned in \autoref{sec:htm_perf}, could improve their results.
 \section{Use Cases}
-The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance. One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
+The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
+\par
+One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
 \section{Summary}

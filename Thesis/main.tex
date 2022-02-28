@@ -17,11 +17,20 @@
 \usepackage{hyperref}
 \usepackage{nameref}
 \usepackage[acronyms]{glossaries}
+\usepackage{booktabs}
+\usepackage{tabularx}
+% Autoref section config
+\addto\extrasUSenglish{%
+  \def\subsectionautorefname{Section}
+  \def\chapterautorefname{Chapter}
+  \def\subsubsectionautorefname{Section}
+}
+%---------------------------
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 \captionsetup[subfigure]{width=0.9\textwidth}
 \raggedbottom %%reduces the gaps between the paragraphs
-
+\renewcommand{\arraystretch}{1.3} % More space between rows in tables
 \title{Hierarchical Temporal Networks for Anomaly Detection in Videos}        %% ... or whatever
 \subtitle{A subtitle of your thesis }         %% ... if any
 \author{Vladimir Monakhov}                      %% ... or whoever 

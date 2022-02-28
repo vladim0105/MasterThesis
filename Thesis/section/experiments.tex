@@ -1,7 +1,7 @@
 \chapter{Experiments and Results}
 
 \section{Bouncing Ball Test}
-To give credibility to the approach mentioned in Chapter 3, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
+To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updown1.png}\hfill
@@ -12,76 +12,92 @@ To give credibility to the approach mentioned in Chapter 3, a simple test case t
 \end{figure}
 The video consists of a ball bouncing up and down until an anomaly occurs in the form of a sudden introduction of a horizontal velocity. After a while this horizontal velocity is set back to 0 and the ball is once again bouncing up and down in-place.
 \par
+\subsection{HTM}
 The model used is a standard HTM model, which covers the entire input. This is equivalent to a single cell in a Grid HTM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
     \caption{The 100-point moving average of the anomaly score in the bouncing ball experiment.}
 \end{figure}
-From the figure it can be observed that the HTM correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to mark $1$ and the anomaly spikes towards the end close to mark $2$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
-The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting. This also helped with the spikes towards the end.\par
+From the figure it can be observed that the HTM correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to $(1)$ and the anomaly spikes towards the end close to $(2)$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
+\subsubsection{Boosting}
+The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting, as explained in \autoref{sec:spatial_pooler}. This also helped with the spikes towards the end, as can be seen in \autoref{fig:bb_boosting}.\par
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_boosting.png}
     \caption{Bouncing ball with boosting enabled.}
+    \label{fig:bb_boosting}
 \end{figure}
-The reason for the anomaly spikes towards the end is because the spatial pooler had found an optimal representation when the ball was bouncing freely, but when the ball stops and starts bouncing in-place the spatial pooler ends up unlearning the old optimal representation while it learns the new optimal representation. This causes a sudden minor change in the SP output, which the TM reports as anomalous. The solution is to set the value by which permanence is decreased by to zero, effectively disabling the ability of the spatial pooler to "forget". That being said, the ability to decrement permanence is important in HTM systems, therefore disabling it is not always feasible.
+\subsubsection{Zero Permanence Decrement}
+The reason for the anomaly spikes towards the end is because the spatial pooler has found an optimal representation when the ball is bouncing freely, but when the ball stops and starts bouncing in-place the spatial pooler ends up unlearning the old optimal representation while it learns the new optimal representation. This causes a sudden minor change in the SP output, which the TM reports as anomalous.
+\par
+The solution is to set the value by which permanence is decreased by to zero, effectively disabling the ability of the spatial pooler to "forget", as can be seen in \autoref{fig:bb_forget}. That being said, the ability to decrement permanence is important in HTM systems, therefore disabling it is not always feasible.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting.png}
     \caption{Bouncing ball without the ability of the SP to "forget".}
+    \label{fig:bb_forget}
 \end{figure}
-
+\subsubsection{Boosting + Zero Permanence Decrement}
+Finally, for the sake of interest, the bouncing ball test was performed with both boosting enabled and with zero permanence decrement. Results can be seen in \autoref{fig:bb_boosting_forget}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
     \caption{Bouncing ball without the ability of the SP to "forget" and with boosting enabled.}
+    \label{fig:bb_boosting_forget}
 \end{figure}
+\subsubsection{Parameters}
 Final list of parameters for reproducibility:
 \begin{table}[H]
     \centering
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{|l|l|l|}
-            \hline
-            \textbf{Parameter} & \textbf{Value}               & \textbf{Notes}                                      \\ \hline
-            inputDimensions    & frame\_size, frame\_size     &                                                     \\ \hline
-            columnDimensions   & frame\_size/2, frame\_size/2 &                                                     \\ \hline
-            potentialPct       & 0.1                          &                                                     \\ \hline
-            potentialRadius    & 120                          &                                                     \\ \hline
-            localAreaDensity   & 0.02                         &                                                     \\ \hline
-            globalInhibition   & True                         & Set to False to enable topology                     \\ \hline
-            wrapAround         & True                         & \begin{tabular}[c]{@{}l@{}}Allows the columns near the \\edges to "wrap around" and form\\ connections on the other side\end{tabular}                           \\ \hline
-            synPermActiveInc   & 0.1                          &                                                     \\ \hline
-            synPermInactiveDec & 0                            & Set to \textgreater{}0 to enable the SP to "forget" \\ \hline
-            stimulusThreshold  & 2                            &                                                     \\ \hline
-            seed               & 2                            &                                                     \\ \hline
-            boostStrength      & 0.1                          & Set to 0 to disable boosting                        \\ \hline
-            dutyCyclePeriod    & 250                          &                                                     \\ \hline
-        \end{tabular}
-    }
+    \begin{tabularx}{\linewidth}{@{}lXX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value}               & \textbf{Notes}                                      \\
+        \midrule
+        inputDimensions    & frame\_size, frame\_size     &                                                     \\
+        columnDimensions   & frame\_size/2, frame\_size/2 &                                                     \\
+        potentialPct       & 0.1                          &                                                     \\
+        potentialRadius    & 120                          &                                                     \\
+        localAreaDensity   & 0.02                         &                                                     \\
+        globalInhibition   & True                         & Set to False to enable topology                     \\
+        wrapAround         & True                         &
+        Allows the columns near the edges to "wrap around" and form connections on the other side               \\
+        synPermActiveInc   & 0.1                          &                                                     \\
+        synPermInactiveDec & 0                            & Set to \textgreater{}0 to enable the SP to "forget" \\
+        stimulusThreshold  & 2                            &                                                     \\
+        seed               & 2                            &                                                     \\
+        boostStrength      & 0.1                          & Set to 0 to disable boosting                        \\
+        dutyCyclePeriod    & 250                          &                                                     \\
+        \bottomrule
+    \end{tabularx}
+
     \caption{SP Parameters}
     \label{tab:bb_sp_params}
 \end{table}
 \begin{table}[H]
     \centering
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{|l|l|l|}
-            \hline
-            \textbf{Parameter}        & \textbf{Value}               & \textbf{Notes} \\ \hline
-            columnDimensions          & frame\_size/2, frame\_size/2 & Same as the SP \\ \hline
-            predictedSegmentDecrement & 0.003                        &                \\ \hline
-            permanenceIncrement       & 0.1                          &                \\ \hline
-            permanenceDecrement       & 0.001                        &                \\ \hline
-            minThreshold              & 3                            &                \\ \hline
-            activationThreshold       & 5                            &                \\ \hline
-            cellsPerColumn            & 16                           &                \\ \hline
-            seed                      & 2                            &                \\ \hline
-        \end{tabular}
-    }
+    \begin{tabularx}{\linewidth}{@{}lXX@{}}
+        \toprule
+        \textbf{Parameter}        & \textbf{Value}               & \textbf{Notes} \\
+        \midrule
+        columnDimensions          & frame\_size/2, frame\_size/2 & Same as the SP \\
+        predictedSegmentDecrement & 0.003                        &                \\
+        permanenceIncrement       & 0.1                          &                \\
+        permanenceDecrement       & 0.001                        &                \\
+        minThreshold              & 3                            &                \\
+        activationThreshold       & 5                            &                \\
+        cellsPerColumn            & 16                           &                \\
+        seed                      & 2                            &                \\
+        \bottomrule
+    \end{tabularx}
+
     \caption{TM Parameters}
     \label{tab:bb_TM_params}
 \end{table}
-This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid HTM would be suitable if there was two or more independent bouncing balls. Still, it is interesting to see how Grid HTM performs compared to normal HTM. The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function.
+\subsection{Grid HTM}
+This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid HTM would be suitable if there were two or more independent bouncing balls, due to its improved invariance. Still, it is interesting to see how Grid HTM performs compared to normal HTM.
+\par
+The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
@@ -90,43 +106,44 @@ This is a very simple problem which does not require invariances, making it unsu
 It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM and that the parameters are probably not optimal:
 \begin{table}[H]
     \centering
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{|l|l|l|}
-            \hline
-            \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                  \\ \hline
-            inputDimensions    & 30, 30         &                                                                 \\ \hline
-            columnDimensions   & 15, 15         &                                                                 \\ \hline
-            potentialPct       & 0.5            & Increased in order to compensate for the smaller potential pool \\ \hline
-            potentialRadius    & 5              &                                                                 \\ \hline
-            localAreaDensity   & 0.02           &                                                                 \\ \hline
-            globalInhibition   & True           & Set to False to enable topology                                 \\ \hline
-            wrapAround         & False          &                                                                 \\ \hline
-            synPermActiveInc   & 0.1            &                                                                 \\ \hline
-            synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget"             \\ \hline
-            stimulusThreshold  & 2              &                                                                 \\ \hline
-            seed               & 2              &                                                                 \\ \hline
-            boostStrength      & 0              & Causes instability in empty cells                               \\ \hline
-            dutyCyclePeriod    & 250            &                                                                 \\ \hline
-        \end{tabular}
-    }
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                  \\
+        \midrule
+        inputDimensions    & 30, 30         &                                                                 \\
+        columnDimensions   & 15, 15         &                                                                 \\
+        potentialPct       & 0.5            & Increased in order to compensate for the smaller potential pool \\
+        potentialRadius    & 5              &                                                                 \\
+        localAreaDensity   & 0.02           &                                                                 \\
+        globalInhibition   & True           & Set to False to enable topology                                 \\
+        wrapAround         & False          &                                                                 \\
+        synPermActiveInc   & 0.1            &                                                                 \\
+        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget"             \\
+        stimulusThreshold  & 2              &                                                                 \\
+        seed               & 2              &                                                                 \\
+        boostStrength      & 0              & Causes instability in empty cells                               \\
+        dutyCyclePeriod    & 250            &                                                                 \\
+        \bottomrule
+    \end{tabularx}
     \caption{SP Parameters}
 \end{table}
 \begin{table}[H]
     \centering
-    \resizebox{\textwidth}{!}{
-        \begin{tabular}{|l|l|l|}
-            \hline
-            \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\ \hline
-            columnDimensions          & 15, 15         & Same as the SP \\ \hline
-            predictedSegmentDecrement & 0.003          &                \\ \hline
-            permanenceIncrement       & 0.1            &                \\ \hline
-            permanenceDecrement       & 0.001          &                \\ \hline
-            minThreshold              & 3              &                \\ \hline
-            activationThreshold       & 5              &                \\ \hline
-            cellsPerColumn            & 16             &                \\ \hline
-            seed                      & 2              &                \\ \hline
-        \end{tabular}
-    }
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \midrule
+        columnDimensions          & 15, 15         & Same as the SP \\
+        predictedSegmentDecrement & 0.003          &                \\
+        permanenceIncrement       & 0.1            &                \\
+        permanenceDecrement       & 0.001          &                \\
+        minThreshold              & 3              &                \\
+        activationThreshold       & 5              &                \\
+        cellsPerColumn            & 16             &                \\
+        seed                      & 2              &                \\
+        \bottomrule
+    \end{tabularx}
+
     \caption{TM Parameters}
 \end{table}
 
@@ -137,7 +154,7 @@ The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was sel
     \centering
     \includegraphics[width=0.5\textwidth]{example-image-a}
 \end{figure}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system. The segmentation model used is ResNet101\cite{resnet} enhanced with PointRend\cite{pointrend}, pretrained on ImageNet\cite{imagenet} and implemented using PixelLib\cite{pixellib}.
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system. The segmentation model used is PointRend\cite{pointrend} with a ResNet101\cite{resnet} backbone, pretrained on ImageNet\cite{imagenet}, and implemented using PixelLib\cite{pixellib}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{resources/methodology/car_segmentation.png}

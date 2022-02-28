@@ -26,11 +26,12 @@ Backpropagation\cite{backprop}, which is shorthand for "backward propagation of 
 \end{align*}
 The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that in an image, a collection of pixels could be represented as a line.
 \subsection{Neural Networks}
-Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to what was theorized earlier. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, in other words they are "deeper", hence the name "deep learning".
+Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to what was theorized earlier. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers (\autoref{fig:nn}), hence the name "deep" learning.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/nn.png}
     \caption{Example of a neural network. Source: \cite{nn_image}}
+    \label{fig:nn}
 \end{figure}
 The gradients are calculated using backpropagation which are then used by optimization methods to update the weights with the goal of reducing the error. Examples of optimizers are \gls*{g_sgd}\cite{sgd} and AdamW\cite{adamw}.
 \begin{figure}[H]
@@ -212,6 +213,7 @@ This gives HTM systems the property of on-line learning, meaning they learn as t
 \end{figure}
 \autoref{fig:sp_tm_responsibility} shows that a spatial pooler followed by a temporal memory forms the HTM neuron, where the color green indicates the responsibility of the Spatial Pooler and blue indicates the responsibility of the Temporal Memory.
 \subsubsection{Spatial Pooler}
+\label{sec:spatial_pooler}
 The spatial pooler consists of columns (mini-columns), where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input space within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius.\par
 \begin{figure}[H]
     \centering
