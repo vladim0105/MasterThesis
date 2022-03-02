@@ -87,7 +87,7 @@ if __name__ == '__main__':
     tm_args.cellsPerColumn = 32
     tm_args.seed = sp_args.seed
 
-    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean)
+    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean, temporal_size=15)
 
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))

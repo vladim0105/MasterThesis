@@ -165,10 +165,10 @@ if __name__ == "__main__":
     tm_args.seed = sp_args.seed
     r = 3
     A = int(math.pi * (r ** 2))
-    grdhtm = model.GridHTM(frame_size, sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=1, sparsity=A, temporal_size=1)
+    gridhtm = model.GridHTM(frame_size, sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=1, sparsity=A, temporal_size=1)
 
-    path, anom_frames = bouncing_path2(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
-    anom_scores, predicted_things = create_video(path, r, grdhtm, shape=frame_size)
+    path, anom_frames = bouncing_path(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
+    anom_scores, predicted_things = create_video(path, r, gridhtm, shape=frame_size)
     dump_data = {"anom_scores": anom_scores, "anom_markers": anom_frames, "predicted_things": predicted_things}
     pickle.dump(dump_data, open(f'bb_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'bb_results/latest.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'bb_results/grid_latest.pkl', 'wb'))
