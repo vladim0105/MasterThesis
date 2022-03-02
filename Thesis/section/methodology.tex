@@ -78,7 +78,7 @@ There could be situations where a few pixels are active within a cell, which cou
 With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would be a part of the calibration process.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/methodology/htm_grid_output.png}
+    \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
     \caption{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
 \end{figure}
 Since there are now cells that are observing an empty pattern for a lot of the time in sparse data, boosting is recommended to be turned off, otherwise the \gls*{sp} output for the empty cells would change back and forth in order to adjust the active duty cycle.
@@ -112,7 +112,7 @@ This could cause situations where an object that is supposed to be moving, sudde
     \includegraphics[width=0.7\textwidth]{resources/methodology/contextual_loop.png}
     \caption{Example of a contextual loop.}
 \end{figure}
-A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that can be used as contextual anchors, so as a replacement, the past observations are encoded instead.
+A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that are suitable to be used as contextual anchors, so as a replacement, the past observations are encoded instead.
 \par
 
 \begin{figure}[H]

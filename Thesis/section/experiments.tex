@@ -50,24 +50,24 @@ Finally, for the sake of interest, the bouncing ball test was performed with bot
 Final list of parameters for reproducibility:
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\linewidth}{@{}lXX@{}}
+    \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value}               & \textbf{Notes}                                      \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                      \\
         \midrule
-        inputDimensions    & frame\_size, frame\_size     &                                                     \\
-        columnDimensions   & frame\_size/2, frame\_size/2 &                                                     \\
-        potentialPct       & 0.1                          &                                                     \\
-        potentialRadius    & 120                          &                                                     \\
-        localAreaDensity   & 0.02                         &                                                     \\
-        globalInhibition   & True                         & Set to False to enable topology                     \\
-        wrapAround         & True                         &
-        Allows the columns near the edges to "wrap around" and form connections on the other side               \\
-        synPermActiveInc   & 0.1                          &                                                     \\
-        synPermInactiveDec & 0                            & Set to \textgreater{}0 to enable the SP to "forget" \\
-        stimulusThreshold  & 2                            &                                                     \\
-        seed               & 2                            &                                                     \\
-        boostStrength      & 0.1                          & Set to 0 to disable boosting                        \\
-        dutyCyclePeriod    & 250                          &                                                     \\
+        inputDimensions    & 120, 120       & The shape of the entire frame                       \\
+        columnDimensions   & 60, 60         &                                                     \\
+        potentialPct       & 0.1            &                                                     \\
+        potentialRadius    & 120            &                                                     \\
+        localAreaDensity   & 0.02           &                                                     \\
+        globalInhibition   & True           & Set to False to enable topology                     \\
+        wrapAround         & True           &
+        Allows the columns near the edges to "wrap around" and form connections on the other side \\
+        synPermActiveInc   & 0.1            &                                                     \\
+        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget" \\
+        stimulusThreshold  & 2              &                                                     \\
+        seed               & 2              &                                                     \\
+        boostStrength      & 0.1            & Set to 0 to disable boosting                        \\
+        dutyCyclePeriod    & 250            &                                                     \\
         \bottomrule
     \end{tabularx}
 
@@ -76,18 +76,18 @@ Final list of parameters for reproducibility:
 \end{table}
 \begin{table}[H]
     \centering
-    \begin{tabularx}{\linewidth}{@{}lXX@{}}
+    \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value}               & \textbf{Notes} \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
         \midrule
-        columnDimensions          & frame\_size/2, frame\_size/2 & Same as the SP \\
-        predictedSegmentDecrement & 0.003                        &                \\
-        permanenceIncrement       & 0.1                          &                \\
-        permanenceDecrement       & 0.001                        &                \\
-        minThreshold              & 3                            &                \\
-        activationThreshold       & 5                            &                \\
-        cellsPerColumn            & 16                           &                \\
-        seed                      & 2                            &                \\
+        columnDimensions          & 60, 60         & Same as the SP \\
+        predictedSegmentDecrement & 0.003          &                \\
+        permanenceIncrement       & 0.1            &                \\
+        permanenceDecrement       & 0.001          &                \\
+        minThreshold              & 3              &                \\
+        activationThreshold       & 5              &                \\
+        cellsPerColumn            & 16             &                \\
+        seed                      & 2              &                \\
         \bottomrule
     \end{tabularx}
 
@@ -103,29 +103,46 @@ The SP and TM parameters were selected so that they were as close as possible to
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
     \caption{Grid HTM}
 \end{figure}
-It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM and that the parameters are probably not optimal:
+It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                             \\
+        \midrule
+        sp\_grid\_size     & 30, 30         & Size of each grid                                                          \\
+        tm\_grid\_size     & 15, 15         & Size of each SP grid output.                                               \\
+        min\_sparsity      & 1              &                                                                            \\
+        sparsity           & A              & Area of the bouncing ball with radius=3                                    \\
+        temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Grid HTM specific parameters}
+    \label{tab:bb_gridhtm_params}
+\end{table}
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                  \\
         \midrule
-        inputDimensions    & 30, 30         &                                                                 \\
-        columnDimensions   & 15, 15         &                                                                 \\
+        inputDimensions    & sp\_grid\_size &                                                                 \\
+        columnDimensions   & tm\_grid\_size &                                                                 \\
         potentialPct       & 0.5            & Increased in order to compensate for the smaller potential pool \\
         potentialRadius    & 5              &                                                                 \\
-        localAreaDensity   & 0.02           &                                                                 \\
+        localAreaDensity   & 0.1            &                                                                 \\
         globalInhibition   & True           & Set to False to enable topology                                 \\
         wrapAround         & False          &                                                                 \\
         synPermActiveInc   & 0.1            &                                                                 \\
-        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget"             \\
+        synPermInactiveDec & 0.001                                                                            \\
         stimulusThreshold  & 2              &                                                                 \\
-        seed               & 2              &                                                                 \\
         boostStrength      & 0              & Causes instability in empty cells                               \\
-        dutyCyclePeriod    & 250            &                                                                 \\
         \bottomrule
     \end{tabularx}
     \caption{SP Parameters}
+    \label{tab:bb_sp_gridhtm_param}
 \end{table}
 \begin{table}[H]
     \centering
@@ -133,18 +150,17 @@ It can be observed that Grid HTM performs worse than the normal HTM, but the res
         \toprule
         \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
         \midrule
-        columnDimensions          & 15, 15         & Same as the SP \\
+        columnDimensions          & tm\_grid\_size & Same as the SP \\
         predictedSegmentDecrement & 0.003          &                \\
         permanenceIncrement       & 0.1            &                \\
         permanenceDecrement       & 0.001          &                \\
-        minThreshold              & 3              &                \\
-        activationThreshold       & 5              &                \\
+        minThreshold              & 1              &                \\
+        activationThreshold       & 1              &                \\
         cellsPerColumn            & 16             &                \\
-        seed                      & 2              &                \\
         \bottomrule
     \end{tabularx}
-
     \caption{TM Parameters}
+    \label{tab:bb_tm_gridhtm_param}
 \end{table}
 
 \section{Surveillance example}
@@ -166,21 +182,35 @@ For the sake of simplicity, this experiment will focus only on the segmentation 
 While on the topic of segmentation, it is important to mention that the segmentation model is not perfect and that there are cases where objects are misclassified as well as cases where cars repeatedly go above and below the confidence threshold.
 \par
 \section{Sperm example}
-As seen in the surveillance example, it seems the HTM can detect when segments begin and end. This experiment will explore this ability in greater detail. The dataset is VISEM \cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
+As seen in the surveillance example, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
+\subsection{Data}
+The dataset used is VISEM \cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_example.png}
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
     \caption{Example frame from a sperm video and its corresponding segmentation.}
 \end{figure}
-
+It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern.
+\subsection{Benchmark}
 To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
     E_t=\sum|F_t-F_{t-1}|
 \end{align*}
 Where $F_t$ denotes a segmented frame at time step $t$.
+\subsection{Results}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{example-image-c}
+    \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result1.png}
     \caption{Results.}
+    \label{fig:sperm_results1}
+\end{figure}
+As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent spikes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, the Grid HTM is still able to learn something general about the current state. This is most likely a single cell that is standing still, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
+\par
+That being said, the parameters for the Grid HTM were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, not stationary), which makes Grid HTM useless. This can be observed in \autoref{fig:sperm_results2}, where both the Grid HTM and the L1 error struggle.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result2.png}
+    \caption{Results.}
+    \label{fig:sperm_results2}
 \end{figure}
