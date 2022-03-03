@@ -48,7 +48,6 @@ def keypoints_to_bits(shape, kps):
 
 
 if __name__ == '__main__':
-    pass
 
     video_scale = 0.3
     sdr_vis_scale = 1
@@ -72,19 +71,19 @@ if __name__ == '__main__':
     sp_args.wrapAround = False
     sp_args.synPermActiveInc = 0.01
     sp_args.synPermInactiveDec = 0.001
-    sp_args.stimulusThreshold = 1
+    sp_args.stimulusThreshold = 5
     sp_args.boostStrength = 0
     sp_args.dutyCyclePeriod = 2500
 
     tm_args = m.TemporalMemoryArgs()
 
     tm_args.columnDimensions = (tm_grid_size, tm_grid_size)
-    tm_args.predictedSegmentDecrement = 0.0005
+    tm_args.predictedSegmentDecrement = 0.003
     tm_args.permanenceIncrement = 0.01
     tm_args.permanenceDecrement = 0.001
     tm_args.minThreshold = 1
-    tm_args.activationThreshold = 2
-    tm_args.cellsPerColumn = 4
+    tm_args.activationThreshold = 3
+    tm_args.cellsPerColumn = 16
     tm_args.seed = sp_args.seed
 
     grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, sparsity=5, aggr_func=np.mean)
@@ -92,7 +91,7 @@ if __name__ == '__main__':
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
+    out = cv2.VideoWriter('sperm_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 30,
                           (new_height, new_width*2), True)
     anoms = []
     l1_scores = []
@@ -137,7 +136,9 @@ if __name__ == '__main__':
             bar.update(bar.value + 1)
             if bar.value == total:
                 break
-
-    dump_data = {"anom_scores": anoms, "anom_markers": [1510, 7540, 9000], "l1_scores": l1_scores}
-    pickle.dump(dump_data, open(f'anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'anoms_latest.pkl', 'wb'))
+    anom_markers1 = [1510, 7540, 9000]
+    anom_markers2 = [4469]
+    anom_markers3 = [1036, 8993, 11352]
+    dump_data = {"anom_scores": anoms, "anom_markers": anom_markers3, "l1_scores": l1_scores}
+    pickle.dump(dump_data, open(f'sperm_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'sperm_results/latest.pkl', 'wb'))
