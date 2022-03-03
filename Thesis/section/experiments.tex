@@ -104,8 +104,6 @@ The SP and TM parameters were selected so that they were as close as possible to
     \caption{Grid HTM}
 \end{figure}
 It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
-% Please add the following required packages to your document preamble:
-% \usepackage{booktabs}
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -191,26 +189,86 @@ The dataset used is VISEM \cite{VISEM}, a sperm dataset which consists of videos
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
     \caption{Example frame from a sperm video and its corresponding segmentation.}
 \end{figure}
-It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern.
+It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern. Because the data is noisy, the mean was used as the aggregation function.
 \subsection{Benchmark}
 To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
     E_t=\sum|F_t-F_{t-1}|
 \end{align*}
-Where $F_t$ denotes a segmented frame at time step $t$.
+Where $F_t$ denotes a segmented frame at time step $t$. The L2 error could also have been used, but it would not matter since this experiment will be comparing relative values.
+\subsection{Parameters}
+For both results the following parameters were used:
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                             \\
+        \midrule
+        sp\_grid\_size     & 16, 16         & Size of each grid                                                          \\
+        tm\_grid\_size     & 8, 8           & Size of each SP grid output.                                               \\
+        min\_sparsity      & 1              &                                                                            \\
+        sparsity           & 5              &                                                                            \\
+        temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Grid HTM specific parameters}
+    \label{tab:sperm_params}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                    \\
+        \midrule
+        inputDimensions    & sp\_grid\_size &                                   \\
+        columnDimensions   & tm\_grid\_size &                                   \\
+        potentialPct       & 0.2            &                                   \\
+        potentialRadius    & 5              &                                   \\
+        localAreaDensity   & 0.1            &                                   \\
+        globalInhibition   & False          &                                   \\
+        wrapAround         & False          &                                   \\
+        synPermActiveInc   & 0.01           &                                   \\
+        synPermInactiveDec & 0.001                                              \\
+        stimulusThreshold  & 5              &                                   \\
+        boostStrength      & 0              & Causes instability in empty cells \\
+        \bottomrule
+    \end{tabularx}
+    \caption{SP Parameters}
+    \label{tab:sperm_sp_param}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \midrule
+        columnDimensions          & tm\_grid\_size & Same as the SP \\
+        predictedSegmentDecrement & 0.003          &                \\
+        permanenceIncrement       & 0.01           &                \\
+        permanenceDecrement       & 0.001          &                \\
+        minThreshold              & 1              &                \\
+        activationThreshold       & 3              &                \\
+        cellsPerColumn            & 16             &                \\
+        \bottomrule
+    \end{tabularx}
+    \caption{TM Parameters}
+    \label{tab:sperm_tm_param}
+\end{table}
 \subsection{Results}
+As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent spikes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid HTM able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result1.png}
-    \caption{Results.}
+    \caption{Results on a stationary sperm video.}
     \label{fig:sperm_results1}
 \end{figure}
-As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent spikes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, the Grid HTM is still able to learn something general about the current state. This is most likely a single cell that is standing still, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
+
 \par
-That being said, the parameters for the Grid HTM were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, not stationary), which makes Grid HTM useless. This can be observed in \autoref{fig:sperm_results2}, where both the Grid HTM and the L1 error struggle.
+That being said, the parameters for the Grid HTM were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, the video is not stationary), which makes Grid HTM useless. This can be observed in \autoref{fig:sperm_results2}, where both the Grid HTM and the L1 error struggle.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result2.png}
-    \caption{Results.}
+    \caption{Results on a sperm video with drift.}
     \label{fig:sperm_results2}
 \end{figure}
+Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it nearly impossible to threshold.
