@@ -20,7 +20,7 @@ The task of the \gls*{tm} will then be to learn the common patterns that the car
 \par
 Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.\par
 \section{Improvements}
-\subsection{Invariance and Explainability}
+\subsection{Invariance}
 One issue that becomes evident is the lack of invariance. Because the \gls*{tm} is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
@@ -28,9 +28,10 @@ One issue that becomes evident is the lack of invariance. Because the \gls*{tm} 
     \caption{The encoder output divided into a grid.}
     \label{fig:grid}
 \end{figure}
-It might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.
-\par
-An example is that one cell with a high anomaly score will lead to the same average anomaly score as every cell having a small anomaly score. That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
+\subsubsection{Aggregation Function}
+Selecting the correct aggregation function is important because it affects the final anomaly output. For instance, it might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.
+
+That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
     X         & :\{x : x > 0\} \\
     anomScore & =
@@ -39,11 +40,45 @@ An example is that one cell with a high anomaly score will lead to the same aver
         0                           & \text{else}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being a cell somewhere with a high anomaly score.
+Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/methodology/aggr_noisy_mean.png}
+        \caption{Mean.}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/methodology/aggr_noisy_nzmean.png}
+        \caption{Non-zero mean.}
+    \end{subfigure}
+    \caption{How the two aggregation functions perform on the same noisy data.}
+    \label{fig:aggr_noisy}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_mean.png}
+        \caption{Mean.}
 
-Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach. In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. Last but not least, dividing it into smaller cells makes it possible to run each cell in parallel for increased performance.
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_nzmean.png}
+        \caption{Non-zero mean.}
+    \end{subfigure}
+    \caption{How the two aggregation functions perform on the same clean data.}
+    \label{fig:aggr_clean}
+\end{figure}
+\autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is virtually useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clear range between 0 and 1.
+\subsection{Explainability}
+Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this a desirable approach.
+\subsection{Flexibility and Performance}
+In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
-That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder may not be respected, and therefore should be reviewed:
+That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder (\autoref{sec:encoders}) may not be respected, and therefore should be reviewed:
 \begin{itemize}
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
     \item \textbf{The same input should always produce the same SDR}. The segmentation model produces a deterministic output given the same input.

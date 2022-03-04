@@ -2,6 +2,7 @@
 
 \section{Bouncing Ball Test}
 To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
+\subsection{Data}
 \begin{figure}[H]
     \centering
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updown1.png}\hfill
@@ -38,7 +39,7 @@ The solution is to set the value by which permanence is decreased by to zero, ef
     \caption{Bouncing ball without the ability of the SP to "forget".}
     \label{fig:bb_forget}
 \end{figure}
-\subsubsection{Boosting + Zero Permanence Decrement}
+\subsubsection{Boosting and Zero Permanence Decrement}
 Finally, for the sake of interest, the bouncing ball test was performed with both boosting enabled and with zero permanence decrement. Results can be seen in \autoref{fig:bb_boosting_forget}.
 \begin{figure}[H]
     \centering
@@ -96,14 +97,15 @@ Final list of parameters for reproducibility:
 \end{table}
 \subsection{Grid HTM}
 This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid HTM would be suitable if there were two or more independent bouncing balls, due to its improved invariance. Still, it is interesting to see how Grid HTM performs compared to normal HTM.
-\par
-The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function.
+\subsubsection{Results}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
     \caption{Grid HTM}
 \end{figure}
 It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
+\subsubsection{Parameters}
+The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function, because there is no noisy due to the controlled environment.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -189,7 +191,7 @@ The dataset used is VISEM \cite{VISEM}, a sperm dataset which consists of videos
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
     \caption{Example frame from a sperm video and its corresponding segmentation.}
 \end{figure}
-It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern. Because the data is noisy, the mean was used as the aggregation function.
+It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
 \subsection{Benchmark}
 To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
@@ -254,6 +256,7 @@ For both results the following parameters were used:
     \caption{TM Parameters}
     \label{tab:sperm_tm_param}
 \end{table}
+For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise. Because the data is noisy, the mean was used as the aggregation function.
 \subsection{Results}
 As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent spikes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid HTM able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
 \begin{figure}[H]

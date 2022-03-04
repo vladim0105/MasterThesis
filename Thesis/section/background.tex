@@ -161,6 +161,7 @@ Observations of the brain has found that at any given point in time, a small per
     \caption{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
 \end{figure}
 \subsection{Encoders}
+\label{sec:encoders}
 To convert real-world data into an SDR, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an SDR with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output SDRs created by the encoder are sometimes referred to as just binary arrays.\par
 Writing an encoder is no easy task as it is important to keep semantic similarities between values. This also means that the encoder is perhaps the most important part of an HTM pipeline to get right as it is the part that can limit the system the most.\par
 
