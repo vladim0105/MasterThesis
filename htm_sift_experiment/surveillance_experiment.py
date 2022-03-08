@@ -95,6 +95,7 @@ if __name__ == '__main__':
     out = cv2.VideoWriter('surveillance_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
                           (new_height, new_width*2), True)
     anoms = []
+    x_vals = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
     #total = total//10
     frame_repeats = 500
@@ -115,6 +116,7 @@ if __name__ == '__main__':
             # Run HTM -------------------------------------------------------------------
             anom, colored_sp_output = grid_htm(encoded_input)
             anoms.append(anom)
+            x_vals.append(bar.value)
             # Create output -------------------------------------------------------------
             frame_out = np.zeros(shape=(frame.shape[0]*2, frame.shape[1], 3), dtype=np.uint8)
             colored_sp_output = cv2.resize(colored_sp_output, dsize=(scaled_sdr_shape[1], scaled_sdr_shape[0]),
@@ -140,6 +142,6 @@ if __name__ == '__main__':
             if bar.value == total:
                 break
 
-    dump_data = {"anom_scores": anoms, "anom_markers": None}
+    dump_data = {"anom_scores": anoms, "anom_markers": [35850, 102000, 117700, 138620], "x_vals": x_vals}
     pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
     pickle.dump(dump_data, open(f'surveillance_results/latest.pkl', 'wb'))
