@@ -45,16 +45,13 @@ if __name__ == "__main__":
     # Generate a new Axes instance, on the twin-X axes (same position)
     #ax2 = ax.twinx()
 
-    # Plot exponential sequence, set scale to logarithmic and change tick color
-    #ax2.plot(utils.trailing_average(l1_scores, 100), color='green', label="L1 Error", alpha=0.75)
-    #ax2.tick_params(axis='y', labelcolor='green')
-    #ax2.set_ylabel("L1 Error")
     anom_marker_plots = None
     if "anom_markers" in data:
         anom_marker_plots = []
         anom_markers = data["anom_markers"]
-        for anom_marker in anom_markers:
-            plot = plt.axvline(anom_marker, c="red", alpha=0.3)
-            anom_marker_plots.append(plot)
+        #for anom_marker in anom_markers:
+            #plot = plt.axvline(anom_marker, c="red", alpha=0.3)
+            #anom_marker_plots.append(plot)
     #plt.legend([anom_score_plot, tuple(anom_marker_plots) if "anom_markers" in data else None], ["HTM Anomaly Score", "Anomalies"])
+    plt.legend()
     plt.show()

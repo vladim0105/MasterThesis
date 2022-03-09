@@ -5,23 +5,35 @@ import numpy as np
 
 import utils
 
+
+def diff_window(arr: np.ndarray, n: int):
+    assert n > 1, "n must be greater than 1!"
+    out = []
+    for idx in range(arr.shape[0]-n):
+        window = arr[idx:idx+n]
+        diff = np.max(window)-np.min(window)
+        out.append(diff)
+    return np.array(out)
+
+
+
+
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument("file", type=str)
 
-    args =argparser.parse_args()
+    args = argparser.parse_args()
 
-    data = pickle.load(open(args.file,"rb"))
-    offset = 200
+    data = pickle.load(open(args.file, "rb"))
+    offset = 500
     anoms = data["anom_scores"][offset:]
     l1_scores = data["l1_scores"][offset:]
 
-    anoms = utils.trailing_average(anoms, 100)
-    l1_scores = utils.trailing_average(l1_scores, 100)
+    anoms = utils.trailing_average(anoms, 500)
+    l1_scores = utils.trailing_average(l1_scores, 500)
 
-    #anoms = np.diff(anoms, n=1)
-    #l1_scores = np.diff(l1_scores, n=1)
-
+    anoms = diff_window(anoms, n=150)
+    l1_scores = diff_window(l1_scores, n=150)
 
     fig, ax = plt.subplots()
 
@@ -43,8 +55,9 @@ if __name__ == "__main__":
         anom_marker_plots = []
         anom_markers = data["anom_markers"]
         for anom_marker in anom_markers:
-            plot = plt.axvline(anom_marker-offset, c="red", alpha=0.3)
+            plot = plt.axvline(anom_marker - offset, c="red", alpha=0.3)
             anom_marker_plots.append(plot)
 
-    plt.legend([anom_score_plot, l1_plot, tuple(anom_marker_plots) if "anom_markers" in data else None], ["Grid HTM", "L1 Error", "Segments"])
+    plt.legend([anom_score_plot, l1_plot, tuple(anom_marker_plots) if "anom_markers" in data else None],
+               ["Grid HTM", "L1 Error", "Segments"])
     plt.show()

@@ -13,6 +13,7 @@ if __name__ == "__main__":
 
     data = pickle.load(open(args.file,"rb"))
     offset = 200
+    moving_avg = 100
     anoms = data["anom_scores"][offset:]
     l1_scores = data["l1_scores"][offset:]
 
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     fig, ax = plt.subplots()
 
     # Plot linear sequence, and set tick labels to the same color
-    anom_score_plot, = ax.plot(utils.trailing_average(anoms, 100), color='blue', label="Anomaly Score", alpha=0.75)
+    anom_score_plot, = ax.plot(utils.trailing_average(anoms, moving_avg), color='blue', label="Anomaly Score", alpha=0.75)
     ax.tick_params(axis='y', labelcolor='blue')
     ax.set_ylabel("Anomaly Score")
     ax.set_xlabel("Frames")
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     ax2 = ax.twinx()
 
     # Plot exponential sequence, set scale to logarithmic and change tick color
-    l1_plot, = ax2.plot(utils.trailing_average(l1_scores, 100), color='green', label="L1 Error", alpha=0.75)
+    l1_plot, = ax2.plot(utils.trailing_average(l1_scores, moving_avg), color='green', label="L1 Error", alpha=0.75)
     ax2.tick_params(axis='y', labelcolor='green')
     ax2.set_ylabel("L1 Error")
 
