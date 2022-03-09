@@ -162,7 +162,6 @@ The SP and TM parameters were selected so that they were as close as possible to
     \caption{TM Parameters}
     \label{tab:bb_tm_gridhtm_param}
 \end{table}
-
 \section{Surveillance example}
 As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
 The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera. The downside is that the video does not contain any anomalies, and also consists of several segments with sudden frame skips in between.
@@ -170,7 +169,9 @@ The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was sel
     \centering
     \includegraphics[width=0.5\textwidth]{example-image-a}
 \end{figure}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system. The segmentation model used is PointRend\cite{pointrend} with a ResNet101\cite{resnet} backbone, pretrained on ImageNet\cite{imagenet}, and implemented using PixelLib\cite{pixellib}.
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system.
+\par
+The segmentation model used is PointRend\cite{pointrend} with a ResNet101\cite{resnet} backbone, pretrained on ImageNet\cite{imagenet}, and implemented using PixelLib\cite{pixellib}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{resources/methodology/car_segmentation.png}
@@ -180,7 +181,14 @@ As previously mentioned, both binary thresholding and deep learning feature map 
 For the sake of simplicity, this experiment will focus only on the segmentation of cars.
 \par
 While on the topic of segmentation, it is important to mention that the segmentation model is not perfect and that there are cases where objects are misclassified as well as cases where cars repeatedly go above and below the confidence threshold.
-\par
+\subsection{Parameters}
+\subsection{Results}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{example-image-a}
+    \caption{Anomaly Scores.}
+\end{figure}
+
 \section{Sperm example}
 As seen in the surveillance example, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
 \subsection{Data}
@@ -275,3 +283,4 @@ That being said, the parameters for the Grid HTM were selected carefully to achi
     \label{fig:sperm_results2}
 \end{figure}
 Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it nearly impossible to threshold.
+\section{Summary}

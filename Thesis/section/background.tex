@@ -3,7 +3,7 @@ The following is relevant background information on HTM theory, Deep Learning, a
 \section{Deep Learning}
 As mentioned in the introduction, deep learning has seen increased popularity for the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
-The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based off a simplification of the theory, at the time, on how a neuron worked. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
+The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{resources/related_works/perceptron.png}
@@ -11,7 +11,9 @@ The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm th
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
-As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}. Unfortunately, the work by \textcite{perceptron3} lead to the misconception that \glspl*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
+As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}.
+\par
+Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/mlp.png}
@@ -24,23 +26,23 @@ Backpropagation\cite{backprop}, which is shorthand for "backward propagation of 
 \begin{align*}
     MSE=\frac{1}{n}\sum_{i=1}^n (y_i-\hat{y}_i)^2
 \end{align*}
-The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that in an image, a collection of pixels could be represented as a line.
+The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that no longer did researcher have to use line detection algorithms, instead the \gls*{g_mlp} could learn to represent a collection of pixels as a line automatically.
 \subsection{Neural Networks}
-Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to what was theorized earlier. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers (\autoref{fig:nn}), hence the name "deep" learning.
+Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the name "deep" learning.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/nn.png}
     \caption{Example of a neural network. Source: \cite{nn_image}}
     \label{fig:nn}
 \end{figure}
-The gradients are calculated using backpropagation which are then used by optimization methods to update the weights with the goal of reducing the error. Examples of optimizers are \gls*{g_sgd}\cite{sgd} and AdamW\cite{adamw}.
+The gradients are calculated using backpropagation which are then used by optimization methods to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{example-image-a}
-    \caption{Gradient Descent}
+    \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent.png}
+    \caption{Comparison between \gls*{g_sgd} and gradient descent \cite{gradient_descent}}
 \end{figure}
 \par
-Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)\cite{svm}, which put neural networks in the background.
+Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)\cite{svm}, which stole the highlight.
 \par
 The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit, and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
 \par
@@ -74,7 +76,15 @@ Some of the latest progress within deep learning can be contributed to generativ
 \end{figure}
 The idea is that the models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
 \subsection{Disadvantages}
-A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}. They are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective. They also suffer from issues with out-of-distribution performance. Susceptible to noise in the data. Also issues with explainability.
+A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
+\par
+Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on volume of training data\cite{deeplearning_dataset}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{resources/related_works/deeplearning_datasize.png}
+    \caption{Accuracy increase in relation to size of dataset \cite{deeplearning_dataset}.}
+\end{figure}
+They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain\cite{deeplearning_ood}.
 \subsubsection{Explainability}
 As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they decide as they do. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
 \begin{figure}[H]
@@ -291,7 +301,7 @@ It is also possible to estimate the number of predictions being made by the \gls
     numPredictions=\frac{predictiveCells}{activeBits}=\frac{120}{60}=2
 \end{align*}
 This is only an estimation, in reality the two patterns may have overlapping bits in their representations, and the number of active bits for each representation may have minor deviations.
-\subsection{Use cases}
+\subsection{Use Cases}
 The general use case for HTM is to perform anomaly detection. More specifically, Numenta has made example applications showcasing how HTM can be used in practice \cite{numenta_example_apps}:
 \begin{itemize}
     \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network \cite{htm_rogue}.

@@ -72,9 +72,9 @@ Meaning that only the cells with a non-zero anomaly score will be contributing t
     \caption{How the two aggregation functions perform on the same clean data.}
     \label{fig:aggr_clean}
 \end{figure}
-\autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is virtually useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clear range between 0 and 1.
+\autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is rendered useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clearly defined range between 0 and 1.
 \subsection{Explainability}
-Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this a desirable approach.
+Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach.
 \subsection{Flexibility and Performance}
 In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
@@ -105,12 +105,12 @@ There could be situations where a few pixels are active within a cell, which cou
         \caption{With empty pattern.}
         \label{fig:num_active_pixels_cell2}
     \end{subfigure}
-    \caption{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement.}
+    \caption{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement of $\sim 5$.}
     \label{fig:test}
 \end{figure}
 
 
-With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would be a part of the calibration process.
+With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
