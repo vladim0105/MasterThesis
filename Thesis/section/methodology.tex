@@ -29,9 +29,9 @@ One issue that becomes evident is the lack of invariance. Because the \gls*{tm} 
     \label{fig:grid}
 \end{figure}
 \subsubsection{Aggregation Function}
-Selecting the correct aggregation function is important because it affects the final anomaly output. For instance, it might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore.
+Selecting the correct aggregation function is important because it affects the final anomaly output. For instance, it might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore. Using the mean also means that anomalies that take up a lot of space will be weighted more than anomalies that take up a little space, which might not be desirable.
 
-That being said, the selection of an aggregation function depends on how noisy the input data is. For data with little noise, a potential aggregation function could be the non-zero mean:
+To solve the aforementioned problem and if the data has little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
     X         & :\{x : x > 0\} \\
     anomScore & =
@@ -40,7 +40,7 @@ That being said, the selection of an aggregation function depends on how noisy t
         0                           & \text{else}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
+Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -78,7 +78,7 @@ Having the encoder output divided into a grid has the added benefit of introduci
 \subsection{Flexibility and Performance}
 In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
-That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder (\autoref{sec:encoders}) may not be respected, and therefore should be reviewed:
+That being said, a potential problem with this approach is that the previously mentioned rules for creating a good encoder, see \autoref{sec:encoders}, may not be respected and therefore should be reviewed:
 \begin{itemize}
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
     \item \textbf{The same input should always produce the same SDR}. The segmentation model produces a deterministic output given the same input.
@@ -90,31 +90,31 @@ The solution for the last rule is two-fold, and  consists of imposing a soft upp
     \item Pick a cell size so that the distribution of number of active pixels is as tight as possible, while containing enough semantic information and also being small enough so that the desired invariance is achieved. The cell size acts as a soft upper bound for the possible number of active pixels.
     \item Create a pattern representing emptiness, where the number of active bits is similar to what can be expected on average when there are cars inside a cell. This acts as a soft lower bound for the number of active pixels.
 \end{itemize}
-There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. If it does affect the distribution, which can be the case with noisy data, then an improvement would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the following distributions:
+There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. If it does affect the distribution, which can be the case with noisy data, then an improvement would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the distributions seen in \autoref{fig:num_active_pixels_dist}:
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist.png}
         \caption{Without empty pattern.}
-        \label{fig:num_active_pixels_cell}
     \end{subfigure}%
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist2.png}
         \caption{With empty pattern.}
-        \label{fig:num_active_pixels_cell2}
     \end{subfigure}
     \caption{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement of $\sim 5$.}
-    \label{fig:test}
+    \label{fig:num_active_pixels_dist}
 \end{figure}
 
 
-With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.
+With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.\par
+The visual output resulting from these changes, which is an equally important output as the aggregated anomaly score, can be seen in \autoref{fig:gridhtm_output}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
     \caption{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
+    \label{fig:gridhtm_output}
 \end{figure}
 Since there are now cells that are observing an empty pattern for a lot of the time in sparse data, boosting is recommended to be turned off, otherwise the \gls*{sp} output for the empty cells would change back and forth in order to adjust the active duty cycle.
 \subsection{Stabilizing Anomaly Output}
@@ -124,7 +124,7 @@ Since there are now cells that are observing an empty pattern for a lot of the t
     \caption{High anomaly score when an empty cell (represented with an empty pattern with a sparsity value of 5) changes to being not empty, as something enters the cell.}
     \label{fig:empty_to_notempty}
 \end{figure}
-Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output (\autoref{fig:empty_to_notempty}). This causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty (\autoref{fig:empty_to_notempty_fixed}).
+Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This is illustrated in \autoref{fig:empty_to_notempty} where it can be observed that this effect causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty, which is illustrated in \autoref{fig:empty_to_notempty_fixed}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty_fixed.png}

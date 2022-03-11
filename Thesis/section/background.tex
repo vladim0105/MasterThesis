@@ -11,13 +11,14 @@ The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm th
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
-As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}.
+As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp} which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}.
 \par
 Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/mlp.png}
     \caption{Example of a MLP. Source: \cite{mlp_image}}
+    \label{fig:mlp}
 \end{figure}
 \par
 It was not until the late 1980s\cite{perceptron_misconceptions} that the \gls*{g_mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave birth to modern neural networks.
@@ -35,21 +36,22 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
     \caption{Example of a neural network. Source: \cite{nn_image}}
     \label{fig:nn}
 \end{figure}
-The gradients are calculated using backpropagation which are then used by optimization methods to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset.
+The gradients are calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent.png}
     \caption{Comparison between \gls*{g_sgd} and gradient descent \cite{gradient_descent}}
+    \label{fig:gd_sgd}
 \end{figure}
 \par
 Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)\cite{svm}, which stole the highlight.
 \par
 The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit, and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
 \par
-In order to improve upon regularization, techniques such as Dropout\cite{dropout}, \gls*{g_bn}\cite{batchnorm}, and data augmentation\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
+In order to improve upon regularization, techniques such as Dropout\cite{dropout}, \gls*{g_bn}\cite{batchnorm}, and Data Augmentation\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
-As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru}, and later attention\cite{attention}-based models such as Transformer\cite{transformer} models were created.\par
-The vanishing/exploding gradient problem was alleviated by implementing residual connections\cite{resnet} between layers, among other techniques.
+As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru}, and later, attention\cite{attention}-based models such as Transformer\cite{transformer} models were indtroduced.\par
+The vanishing and the exploding gradient problem was alleviated by implementing residual connections\cite{resnet} between layers, among other techniques.
 \subsection{Convolutional Neural Networks}
 In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance \cite{cnn}. These properties stem from the three architectural ideas in a CNN:
 \begin{itemize}
@@ -64,7 +66,7 @@ Through the use of data augmentation, it is also possible to not only improve th
     \caption{LeNet\cite{cnn}, an example of a \gls*{g_cnn}.}
 \end{figure}
 \par
-However, the progress within the context of machine vision stagnated due to a lack of computing power when training on large datasets. This stagnation lasted until 2012 when AlexNet was introduced by \textcite{alexnet}, which marked a major turning point in the history of deep learning, as their results proved that deep learning was they way forward for solving advanced problems.
+However, the progress within the context of machine vision stagnated due to a lack of computing power when training large models as well as a lack of sufficiently large datasets. This stagnation lasted until 2012 when AlexNet was introduced by \textcite{alexnet}, which marked a major turning point in the history of deep learning, as their record-breaking results proved that deep learning was they way forward for solving complex machine learning problems.
 \par
 In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
 \subsection{Generative Models}
@@ -86,7 +88,7 @@ Due to the nature of training deep learning models, they are also in most cases 
 \end{figure}
 They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain\cite{deeplearning_ood}.
 \subsubsection{Explainability}
-As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they decide as they do. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
+As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they make those predictions. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gradcam.jpg}
@@ -94,14 +96,16 @@ As stated by \textcite{XAI}, as "black-box" approaches such as deep learning sur
 \end{figure}
 Approaches such as Grad-CAM \cite{GradCAM} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}.
 \section{Anomaly detection}
+\label{sec:anomaly_detection}
 As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some complexities are as follows:
 \begin{itemize}
-    \item \textbf{Unknowns} Anomalies are associated with many unknowns which do not become known until the anomaly happens. \cite{unknown_detection1,unknown_detection2} are works that address this.
-    \item \textbf{Rarity and class imbalance} Anomalies are by definition rare instances, which means that it becomes difficult to create a balanced dataset. \cite{class_imbalance1} reviews the current solutions to this problem.
-    \item \textbf{Heterogeneity} Anomalies can take form in many ways, and as such one class of anomalies can be vastly different from another. Approaches such as \cite{heterogeneous1} have been proposed to alleviate the problem.
+    \item \textbf{Unknowns} Anomalies are associated with many unknowns which do not become known until the anomaly happens. \textcite{unknown_detection1,unknown_detection2} are works that address this.
+    \item \textbf{Rarity and class imbalance} Anomalies are by definition rare instances, which means that it becomes difficult to create a balanced dataset. \textcite{class_imbalance1} reviews the current solutions to this problem.
+    \item \textbf{Heterogeneity} Anomalies can take form in many ways, and as such one class of anomalies can be vastly different from another. Approaches such as the one introduced by \textcite{heterogeneous1} have been proposed to alleviate the problem.
 \end{itemize}
-This makes it hard to apply traditional deep learning methods for anomaly detection, because they are designed with pairs of $\{input, target\}$ in mind.
+These complexities make it hard to apply traditional deep learning methods for anomaly detection, because they are designed to be trained with pairs of $\{input, target\}$ in mind.
 \subsection{Deep Learning and Anomaly Detection}
+\label{sec:dl_anom_detection}
 The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning \cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs \cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
 \par The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that it tries to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
 \par
@@ -113,12 +117,13 @@ The current state-of-the-art algorithms for anomaly detection are numerous, but 
 \end{figure}
 Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space \cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
 \par
-Additionally, they are very hard to design and train for the purpose of detecting anomalies in complex data such as surveillance. As previously stated, since generative models make up most of the state-of-the-art approaches in anomaly detection, this means that there is a lack of explainability in the field of anomaly detection in videos.
+As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it becomes safe to say that there is a lack of explainability in the field of anomaly detection in videos.
 \par
-There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same; to get an anomaly measure using some sort of generated or reconstructed data.
+There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
 \subsection{Smart Surveillance}
-Smart surveillance, which is the use of automatic video analysis in surveillance, has seen rapid development since its inception. \cite{anomalyvideo} presents and summarizes recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional auto-encoders (AE) and \glspl*{g_gan}. The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. \par
-The paper also discusses problems with using deep learning approaches for anomaly detection. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
+Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
+\par
+The paper also discusses problems with using deep learning approaches for anomaly detection, and further emphasizes the complexities mentioned in \autoref{sec:anomaly_detection}. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
 
 \section{Hierarchical Temporal Memory}
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par

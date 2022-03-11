@@ -162,12 +162,16 @@ The SP and TM parameters were selected so that they were as close as possible to
     \caption{TM Parameters}
     \label{tab:bb_tm_gridhtm_param}
 \end{table}
+\clearpage
 \section{Surveillance example}
 As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
-The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera. The downside is that the video does not contain any anomalies, and also consists of several segments with sudden frame skips in between.
+The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera (\autoref{fig:selected_frame}). The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of freezing the video for a couple of seconds, in order to test whether Grid HTM is able to understand how objects should be moving in time.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{example-image-a}
+    \includegraphics[width=0.45\textwidth]{resources/methodology/original.png}
+    \includegraphics[width=0.45\textwidth]{resources/experiments/surveillance/parking_frame.png}
+    \caption{Example frames from the selected video.}
+    \label{fig:selected_frame}
 \end{figure}
 As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system.
 \par
@@ -185,10 +189,120 @@ While on the topic of segmentation, it is important to mention that the segmenta
 \subsection{Results}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{example-image-a}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_result.png}
     \caption{Anomaly Scores.}
+    \label{fig:surveillance_results}
+\end{figure}
+We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{The first segment anomaly and the corresponding changes detected by Grid HTM}
+    \label{fig:surveillance_segment}
 \end{figure}
 
+This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. With that in mind, it is safe to conclude that with the aggregation functions presented in this thesis, looking at the anomaly score output is meaningless for complex data such as surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM.
+\par
+In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{Road example}
+\end{figure}
+To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is frozen in time and see if the system marks the cars standing still on the road as anomalies.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{Freeze example}
+\end{figure}
+It can be observed that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross. On the other hand, the car on the road in the parking lot is marked as an anomaly, and in this case it is rare for cars to stop there.
+\par
+Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{example-image-a}
+    \caption{Points of interests.}
+    \label{fig:surveillance_poi}
+\end{figure}
+FIRST POI:
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{First}
+\end{figure}
+SECOND POI:
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{Second}
+\end{figure}
+THIRD POI:
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-a}
+        \caption*{$t$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{example-image-b}
+        \caption*{$t+1$}
+    \end{subfigure}
+    \caption{Third}
+\end{figure}
+\clearpage
 \section{Sperm example}
 As seen in the surveillance example, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
 \subsection{Data}
