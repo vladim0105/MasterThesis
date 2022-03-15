@@ -9,12 +9,12 @@ from htm.bindings.sdr import SDR
 import utils
 
 
-def grid_mean_aggr_func(anoms):
-    anoms = anoms[np.nonzero(anoms)]
-    if anoms.size == 0:
-        return 0
-    else:
-        return np.mean(anoms)
+def grid_mean_aggr_func(anoms, axis=None):
+    anoms[anoms==0] = np.nan
+    mean = np.nanmean(anoms, axis=axis)
+    mean[np.isnan(mean)] = 0
+    print(np.isnan(mean).any())
+    return mean
 
 
 class SpatialPoolerArgs:
@@ -254,15 +254,13 @@ class GridHTM:
                 anoms[i, j] = anom
 
         colored_sdr_arr = cv2.cvtColor(colored_sdr_arr, cv2.COLOR_HSV2BGR)
-        return self.aggr_func(anoms.flatten()), colored_sdr_arr
-
-
+        return self.aggr_func(anoms.flatten()), colored_sdr_arr, anoms
 
     def __call__(self, encoded_input: np.ndarray):
         sp_output = self.grid_sp(encoded_input)
-        anom_score, colored_sp_output = self.grid_tm(sp_output, encoded_input, self.prev_input)
+        anom_score, colored_sp_output, raw_anoms = self.grid_tm(sp_output, encoded_input, self.prev_input)
         self.prev_input = encoded_input
-        return anom_score, colored_sp_output
+        return anom_score, colored_sp_output, raw_anoms
 
 
 def numpy_to_sdr(arr: np.ndarray) -> SDR:
