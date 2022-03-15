@@ -165,11 +165,13 @@ The SP and TM parameters were selected so that they were as close as possible to
 \clearpage
 \section{Surveillance example}
 As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
-The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera (\autoref{fig:selected_frame}). The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of freezing the video for a couple of seconds, in order to test whether Grid HTM is able to understand how objects should be moving in time.
+The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera (\autoref{fig:selected_frame}).
+\par
+The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of freezing the video for a couple of seconds, in order to test whether Grid HTM is able to understand how objects should be moving in time.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{resources/methodology/original.png}
-    \includegraphics[width=0.45\textwidth]{resources/experiments/surveillance/parking_frame.png}
+    \includegraphics[width=0.8\textwidth]{resources/methodology/original.png}
+    \includegraphics[width=0.8\textwidth]{resources/experiments/surveillance/parking_frame.png}
     \caption{Example frames from the selected video.}
     \label{fig:selected_frame}
 \end{figure}
@@ -193,60 +195,32 @@ While on the topic of segmentation, it is important to mention that the segmenta
     \caption{Anomaly Scores.}
     \label{fig:surveillance_results}
 \end{figure}
-We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
+We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. \par
+With that in mind, it is safe to conclude that with the aggregation functions presented in this thesis, looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
-    \caption{The first segment anomaly and the corresponding changes detected by Grid HTM}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_anomaly_1.png}
+    \caption{The first segment anomaly, which is marked with red text,  and the corresponding changes detected by Grid HTM}
     \label{fig:surveillance_segment}
 \end{figure}
-
-This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. With that in mind, it is safe to conclude that with the aggregation functions presented in this thesis, looking at the anomaly score output is meaningless for complex data such as surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM.
-\par
+\subsubsection{Road}
 In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_road_1.png}
     \caption{Road example}
 \end{figure}
+\subsubsection{Freeze}
 To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is frozen in time and see if the system marks the cars standing still on the road as anomalies.
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
-    \caption{Freeze example}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_1.png}
+    \caption{Anomaly output when the video is frozen in time, the start of the freeze is marked with red text.}
 \end{figure}
-It can be observed that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross. On the other hand, the car on the road in the parking lot is marked as an anomaly, and in this case it is rare for cars to stop there.
+It can be observed that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross.
 \par
+On the other hand, when looking at the anomaly marked with a red circle, the car on the road in the parking lot is marked as an anomaly that increases in severity as the video stays frozen. The reason why that car causes an anomaly is because, unlike the cars on the main road, a car is rarely observed as standing still at that position.
+\subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
     \centering
@@ -396,5 +370,5 @@ That being said, the parameters for the Grid HTM were selected carefully to achi
     \caption{Results on a sperm video with drift.}
     \label{fig:sperm_results2}
 \end{figure}
-Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it nearly impossible to threshold.
+Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value.
 \section{Summary}

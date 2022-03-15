@@ -17,7 +17,7 @@ Unfortunately, the work by \textcite{perceptron3} lead to the misconception that
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/mlp.png}
-    \caption{Example of a MLP. Source: \cite{mlp_image}}
+    \caption{Example of an MLP. Source: \cite{mlp_image}}
     \label{fig:mlp}
 \end{figure}
 \par
@@ -36,6 +36,7 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
     \caption{Example of a neural network. Source: \cite{nn_image}}
     \label{fig:nn}
 \end{figure}
+\subsubsection{Learning}
 The gradients are calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
@@ -50,7 +51,7 @@ The other reason is that neural networks did not have a lot of applications at t
 \par
 In order to improve upon regularization, techniques such as Dropout\cite{dropout}, \gls*{g_bn}\cite{batchnorm}, and Data Augmentation\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
-As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru}, and later, attention\cite{attention}-based models such as Transformer\cite{transformer} models were indtroduced.\par
+As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru}, and later, attention\cite{attention}-based models such as Transformer\cite{transformer} models were introduced.\par
 The vanishing and the exploding gradient problem was alleviated by implementing residual connections\cite{resnet} between layers, among other techniques.
 \subsection{Convolutional Neural Networks}
 In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance \cite{cnn}. These properties stem from the three architectural ideas in a CNN:
@@ -70,7 +71,7 @@ However, the progress within the context of machine vision stagnated due to a la
 \par
 In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
 \subsection{Generative Models}
-Some of the latest progress within deep learning can be contributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models work by taking some input, and then generating realistic output. The input could be anything from random noise to a real sample.
+Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models work by taking some input, and then generating realistic output. The input could be anything from random noise to a real sample.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gan.png}
@@ -362,6 +363,5 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
 \end{figure}
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that HTM by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features.
 
-\subsection{Deep Learning HTM Encoder}
-A potential solution to most of the aforementioned issues could be to combine the deep learning approaches with an HTM network. This way it could be possible to leverage the self-supervision and noise resilience property of HTM, together with the powerful feature extraction and representation of deep learning approaches. Effectively combining the best of both approaches while eliminating the disadvantages that have been previously mentioned.
+
 \section{Summary}
