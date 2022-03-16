@@ -21,7 +21,9 @@ The task of the \gls*{tm} will then be to learn the common patterns that the car
 Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.\par
 \section{Improvements}
 \subsection{Invariance}
-One issue that becomes evident is the lack of invariance. Because the \gls*{tm} is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot. This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
+One issue that becomes evident is the lack of invariance. Because the \gls*{tm} is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot.
+\par
+This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/methodology/car_segmentation_grid.png}
@@ -33,14 +35,16 @@ Selecting the correct aggregation function is important because it affects the f
 
 To solve the aforementioned problem and if the data has little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
-    X         & :\{x : x > 0\} \\
+    X         & :\{x \in \mathbb{R} : x > 0\} \\
+    \\
     anomScore & =
     \begin{cases}
-        \frac{\sum_{x \in X}x}{|X|} & \text{if } |X| > 0 \\
-        0                           & \text{else}
+        \dfrac{\sum\limits_{x \in X}x}{|X|} & \text{if } |X| > 0 \\
+        \\
+        \hfil 0                             & \text{otherwise}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score will be contributing to the overall anomaly score, which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
+Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}

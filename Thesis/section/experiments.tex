@@ -188,6 +188,7 @@ For the sake of simplicity, this experiment will focus only on the segmentation 
 \par
 While on the topic of segmentation, it is important to mention that the segmentation model is not perfect and that there are cases where objects are misclassified as well as cases where cars repeatedly go above and below the confidence threshold.
 \subsection{Parameters}
+TODO
 \subsection{Results}
 \begin{figure}[H]
     \centering
@@ -195,8 +196,8 @@ While on the topic of segmentation, it is important to mention that the segmenta
     \caption{Anomaly Scores.}
     \label{fig:surveillance_results}
 \end{figure}
-We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. \par
-With that in mind, it is safe to conclude that with the aggregation functions presented in this thesis, looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
+We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores between each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. \par
+With that in mind, with the aggregation functions presented in this thesis, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_anomaly_1.png}
@@ -204,7 +205,7 @@ With that in mind, it is safe to conclude that with the aggregation functions pr
     \label{fig:surveillance_segment}
 \end{figure}
 \subsubsection{Road}
-In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
+In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_road_1.png}

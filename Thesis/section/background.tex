@@ -16,8 +16,8 @@ As shown by \textcite{perceptron3}, the perceptron was able to solve linearly se
 Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/mlp.png}
-    \caption{Example of an MLP. Source: \cite{mlp_image}}
+    \includegraphics[width=\linewidth]{resources/related_works/mlp.gv.png}
+    \caption{Example of a \gls*{g_mlp}.}
     \label{fig:mlp}
 \end{figure}
 \par
@@ -32,8 +32,8 @@ The result is that no longer did researchers have to manually engineer features,
 Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the name "deep" learning.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/nn.png}
-    \caption{Example of a neural network. Source: \cite{nn_image}}
+    \includegraphics[width=\linewidth]{resources/related_works/nn.gv.png}
+    \caption{Example of a neural network.}
     \label{fig:nn}
 \end{figure}
 \subsubsection{Learning}
@@ -189,28 +189,36 @@ There are principles that should be followed in order to create a good encoder:
     \item The output must have the same dimensionality (total number of bits) for all inputs
     \item The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling
 \end{itemize}
-As of now, there exists encoders for numbers, categories, geospatial locations, and dates.
+As of now, there exists encoders for numbers, categories, geospatial locations, and dates. \autoref{fig:cyclical_encoder} shows the cyclical date encoder.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\linewidth]{resources/related_works/cyclical_encoder.png}
     \caption{Visualization of a cyclical date encoder, which is currently encoding Friday. Note that also Thursday and Saturday are included in the encoding of Friday in order to emphasize that Thursday and Saturday are both equally distanced from Friday. Source: \cite{BAMI}}
     \label{fig:cyclical_encoder}
 \end{figure}
-Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values one by one and then concatenate them into a single SDR before passing it to the HTM.
+Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into SDRs one by one and then concatenate them into a single SDR before passing it to the HTM.
+\subsubsection{Encoding Visual Data}
+Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.55\linewidth]{resources/related_works/binary_threshold_example.png}
+    \caption{Example thresholding on the Fashion MNIST dataset TODO.}
+    \label{fig:binary_threshold_example}
+\end{figure}
 \par
-Several approaches for encoding visual data have been proposed, such as \cite{eyeencoder} which uses a neuroscientifical approach by replicating how the eye works, and \cite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. There are also deep learning approaches such as \cite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder, specifically they use the top $n$-features in a feature map as ones and set the rest to zeros in order to construct their SDRs.
+There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an SDR by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
-The reason for why a direct binary encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary encodings also lead to loss of information, and is hard to perform for complex objects.
+The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
+\par
+An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/resnet18_layer_10.png}
-    \caption{Select few feature map activations in the 10th layer of ResNet18\cite{resnet} trained on ImageNet\cite{imagenet}.}
+    \caption{Select few feature maps in the 10th layer of ResNet18\cite{resnet} trained on ImageNet\cite{imagenet}.}
     \label{fig:cnn_features}
 \end{figure}
 \par
-An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
-\par
-Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively, one could follow \textcite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations.
+Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively, one could follow \textcite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations in the feature maps.
 \subsection{Learning}
 Similar to biological beings, HTM is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
 The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up the HTM neuron.\par

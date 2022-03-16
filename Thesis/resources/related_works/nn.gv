@@ -1,0 +1,104 @@
+ digraph G {
+
+        rankdir=LR
+	splines=line
+        
+        node [fixedsize=true, label=""];
+
+        subgraph cluster_0 {
+		color=white;
+		node [style=solid,color=blue4, shape=circle];
+		x1 x2 x3;
+		label = "Input Layer";
+	}
+
+	subgraph cluster_1 {
+		color=white;
+		node [style=solid,color=red2, shape=circle];
+		a11 a12 a13 a14;
+		label = "Hidden Layer";
+	}
+    subgraph cluster_2 {
+		color=white;
+		node [style=solid,color=red2, shape=circle];
+		a21 a22 a23 a24;
+		label = "Hidden Layer";
+	}
+    subgraph cluster_3 {
+		color=white;
+		node [style=solid,color=red2, shape=circle];
+		a31 a32 a33 a34;
+		label = "Hidden Layer";
+	}
+	subgraph cluster_4 {
+		color=white;
+		node [style=solid,color=seagreen2, shape=circle];
+		O;
+		label="Output Layer";
+	}
+        
+        x1 -> a11;
+        x1 -> a12;
+        x1 -> a13;
+        x1 -> a14;
+        
+        x2 -> a11;
+        x2 -> a12;
+        x2 -> a13;
+        x2 -> a14;
+        
+        x3 -> a11;
+        x3 -> a12;
+        x3 -> a13;
+        x3 -> a14;
+        
+        
+
+        a11 -> a21
+        a11 -> a22
+        a11 -> a23
+        a11 -> a24
+        
+        a12 -> a21
+        a12 -> a22
+        a12 -> a23
+        a12 -> a24
+        
+        a13 -> a21
+        a13 -> a22
+        a13 -> a23
+        a13 -> a24
+        
+        a14 -> a21
+        a14 -> a22
+        a14 -> a23
+        a14 -> a24
+        
+        
+        
+        a21 -> a31
+        a21 -> a32
+        a21 -> a33
+        a21 -> a34
+        
+        a22 -> a31
+        a22 -> a32
+        a22 -> a33
+        a22 -> a34
+        
+        a23 -> a31
+        a23 -> a32
+        a23 -> a33
+        a23 -> a34
+        
+        a24 -> a31
+        a24 -> a32
+        a24 -> a33
+        a24 -> a34
+        
+        a31 -> O
+        a32 -> O
+        a33 -> O
+        a34 -> O
+
+}
