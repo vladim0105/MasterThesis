@@ -37,7 +37,7 @@ if __name__ == "__main__":
     ax.tick_params(axis='y', labelcolor='blue')
     ax.set_ylabel("Anomaly Score")
     ax.set_xlabel("Frames")
-
+    print(f"Frame Freeze IDX: "+str(int(frame_freeze)))
     frame_freeze_plot = plt.axvline(frame_freeze, c="green", alpha=0.3)
 
 
