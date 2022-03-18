@@ -92,14 +92,14 @@ if __name__ == '__main__':
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter('surveillance_results/output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
+    out = cv2.VideoWriter('surveillance_results/output2.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
                           (new_height, new_width*2), True)
     anoms = []
     raw_anoms = []
     x_vals = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
     #total = total//10
-    frame_repeats = 500
+    frame_repeats = 0
     frame_repeat_start_idx = total//1.1
     frame_skip = 6
     with progressbar.ProgressBar(max_value=total+frame_repeats, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
@@ -146,4 +146,4 @@ if __name__ == '__main__':
 
     dump_data = {"anom_scores": anoms, "raw_anoms": raw_anoms, "anom_markers": [31900, 35850, 102000, 117700, 135850, 148900], "x_vals": x_vals, "frame_freeze": frame_repeat_start_idx}
     pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'surveillance_results/latest.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'surveillance_results/latest2.pkl', 'wb'))
