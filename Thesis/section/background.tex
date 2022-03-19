@@ -1,7 +1,7 @@
 \chapter{Background}
-The following is relevant background information on HTM theory, Deep Learning, and Video Anomaly Detection.
+The following is relevant background information on Deep Learning, Video Anomaly Detection, and HTM theory.
 \section{Deep Learning}
-As mentioned in the introduction, deep learning has seen increased popularity for the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
+As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
 The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
 \begin{figure}[H]
@@ -13,13 +13,13 @@ It also requires a label $y$ corresponding to the input $\mathbf{x}$. The percep
 \par
 As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp} which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}.
 \par
-Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/mlp.gv.png}
     \caption{Example of a \gls*{g_mlp}.}
     \label{fig:mlp}
 \end{figure}
+Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \par
 It was not until the late 1980s\cite{perceptron_misconceptions} that the \gls*{g_mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave birth to modern neural networks.
 \subsection{Backpropagation}
@@ -29,7 +29,7 @@ Backpropagation\cite{backprop}, which is shorthand for "backward propagation of 
 \end{align*}
 The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that no longer did researcher have to use line detection algorithms, instead the \gls*{g_mlp} could learn to represent a collection of pixels as a line automatically.
 \subsection{Neural Networks}
-Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the name "deep" learning.
+Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the term \textit{deep} learning.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/nn.gv.png}
@@ -37,7 +37,7 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
     \label{fig:nn}
 \end{figure}
 \subsubsection{Learning}
-The gradients are calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
+Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent.png}
@@ -47,12 +47,12 @@ The gradients are calculated using backpropagation which are then used to update
 \par
 Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)\cite{svm}, which stole the highlight.
 \par
-The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit, and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
+The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
 \par
 In order to improve upon regularization, techniques such as Dropout\cite{dropout}, \gls*{g_bn}\cite{batchnorm}, and Data Augmentation\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
-As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru}, and later, attention\cite{attention}-based models such as Transformer\cite{transformer} models were introduced.\par
-The vanishing and the exploding gradient problem was alleviated by implementing residual connections\cite{resnet} between layers, among other techniques.
+As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru} were invented. Later, attention\cite{attention}-based models, such as the Transformer\cite{transformer} model, were introduced.\par
+The vanishing and the exploding gradient problem was alleviated by implementing, among other techniques, residual connections\cite{resnet} between layers.
 \subsection{Convolutional Neural Networks}
 In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance \cite{cnn}. These properties stem from the three architectural ideas in a CNN:
 \begin{itemize}
@@ -81,7 +81,7 @@ The idea is that the models learn a distribution which describes the data domain
 \subsection{Disadvantages}
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
 \par
-Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on volume of training data\cite{deeplearning_dataset}.
+Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data\cite{deeplearning_dataset}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/deeplearning_datasize.png}

@@ -165,9 +165,9 @@ The SP and TM parameters were selected so that they were as close as possible to
 \clearpage
 \section{Surveillance example}
 As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
-The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera (\autoref{fig:selected_frame}).
+The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera which can be seen in \autoref{fig:selected_frame}.
 \par
-The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of freezing the video for a couple of seconds, in order to test whether Grid HTM is able to understand how objects should be moving in time.
+The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of a frame repeat lasting a couple of seconds, essentially "freezing" time, in order to test whether Grid HTM is able to understand how objects should be moving in time.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/methodology/original.png}
@@ -211,71 +211,54 @@ In the original video, there is a road on which cars regularly drive. By observi
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_road_1.png}
     \caption{Road example}
 \end{figure}
-\subsubsection{Freeze}
-To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is frozen in time and see if the system marks the cars standing still on the road as anomalies.
+\subsubsection{Frame Repeat}
+To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the system marks the cars standing still on the road as anomalies.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_1.png}
-    \caption{Anomaly output when the video is frozen in time, the start of the freeze is marked with red text.}
+    \caption{Anomaly output when the video is repeating a frame, the start of the frame repeat is marked with red text.}
 \end{figure}
 It can be observed that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross.
 \par
-On the other hand, when looking at the anomaly marked with a red circle, the car on the road in the parking lot is marked as an anomaly that increases in severity as the video stays frozen. The reason why that car causes an anomaly is because, unlike the cars on the main road, a car is rarely observed as standing still at that position.
+On the other hand, when looking at the anomaly marked with a red circle, the car on the road in the parking lot is marked as an anomaly that increases in severity as the time goes on during the frame repeat. The reason why that car causes an anomaly is because, unlike the cars on the main road, a car is rarely observed as standing still at that position.
+\par
+To prove that the anomaly was actually directly caused by the repeating frame, and not just due to repeating the anomaly in time, it should be compared to the anomaly output if there was no repeating frame.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_3.png}
+    \caption{Anomaly output when the video is not frozen in time, when the freeze should have occured is marked with red text.}
+\end{figure}
+We can see that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
+\par
+Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_3}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_2.png}
+    \caption{Anomaly output when the video is not frozen in time, when the freeze should have occured is marked with red text.}
+    \label{fig:surveillance_freeze_3}
+\end{figure}
+Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected.
 \subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{example-image-a}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_result_poi.png}
     \caption{Points of interests.}
     \label{fig:surveillance_poi}
 \end{figure}
-FIRST POI:
+The first point of interest, which can be seen in TODO, showcases the weakness of the aggregation function.
+single high anomaly
+Due to the nature of moving average, since this anomaly lasts for a long time, it
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_1.png}
     \caption{First}
 \end{figure}
 SECOND POI:
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
     \caption{Second}
-\end{figure}
-THIRD POI:
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-a}
-        \caption*{$t$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{example-image-b}
-        \caption*{$t+1$}
-    \end{subfigure}
-    \caption{Third}
 \end{figure}
 \clearpage
 \section{Sperm example}

@@ -136,6 +136,7 @@ Another issue with the grid based approach is when a car first comes into a cell
     \label{fig:empty_to_notempty_fixed}
 \end{figure}
 A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
+\label{sec:multistep_temporal_patterns}
 \subsection{Multistep Temporal Patterns}
 Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still.
 \begin{figure}[H]
@@ -162,6 +163,8 @@ A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM
     \caption{Example of concatenation with $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
 \end{figure}
 This will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$. One could feed the past $n$ encoder outputs into the \gls*{sp} instead, but this will lead to a much higher computational requirement, as well as make both the \gls*{sp} and \gls*{tm} parameters to be dependent on $n$.
+\par
+A potential side effect of introducing temporal patterns, is that because the TM is now exposed to multiple frames at once, it will be more tolerant to temporal noise.
 \par
 Adding support for multistep temporal patterns to the method used by \textcite{MotionAnomalyDetection}, which is mentioned in \autoref{sec:htm_perf}, could improve their results.
 \section{Use Cases}

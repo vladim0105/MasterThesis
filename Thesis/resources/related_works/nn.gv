@@ -16,19 +16,19 @@
 		color=white;
 		node [style=solid,color=red2, shape=circle];
 		a11 a12 a13 a14;
-		label = "Hidden Layer";
+		label = "Hidden Layer 1";
 	}
     subgraph cluster_2 {
 		color=white;
 		node [style=solid,color=red2, shape=circle];
 		a21 a22 a23 a24;
-		label = "Hidden Layer";
+		label = "Hidden Layer K";
 	}
     subgraph cluster_3 {
 		color=white;
 		node [style=solid,color=red2, shape=circle];
 		a31 a32 a33 a34;
-		label = "Hidden Layer";
+		label = "Hidden Layer L";
 	}
 	subgraph cluster_4 {
 		color=white;
