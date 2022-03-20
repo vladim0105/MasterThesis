@@ -1,3 +1,4 @@
+import argparse
 import pickle
 from datetime import time, datetime
 
@@ -48,7 +49,10 @@ def keypoints_to_bits(shape, kps):
 
 
 if __name__ == '__main__':
-    pass
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("name", type=str, required=True)
+    args = argparser.parse_args()
+
 
     video_scale = 0.3
     sdr_vis_scale = 1
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter('surveillance_results/output2.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
+    out = cv2.VideoWriter(f'surveillance_results/{args.name}', cv2.VideoWriter_fourcc(*'mp4v'), 10,
                           (new_height, new_width*2), True)
     anoms = []
     raw_anoms = []
@@ -146,4 +150,4 @@ if __name__ == '__main__':
 
     dump_data = {"anom_scores": anoms, "raw_anoms": raw_anoms, "anom_markers": [31900, 35850, 102000, 117700, 135850, 148900], "x_vals": x_vals, "frame_freeze": frame_repeat_start_idx}
     pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
-    pickle.dump(dump_data, open(f'surveillance_results/latest2.pkl', 'wb'))
+    pickle.dump(dump_data, open(f'surveillance_results/{args.name}.pkl', 'wb'))

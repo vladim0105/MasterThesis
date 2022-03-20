@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     data = pickle.load(open(args.file,"rb"))
     offset = 200
-    moving_avg = 100
+    moving_avg = 1
 
     anoms = np.array(data["raw_anoms"])
     anoms = np.mean(anoms, axis=(1,2))[offset:]
