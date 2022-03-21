@@ -15,8 +15,9 @@ plt.rcParams["figure.figsize"] = (4.8 * 1.2, 4.8)
 def get_frames(path, pos, amount, frame_frame_skip, anomaly_file=None):
     frames = []
     vid = cv2.VideoCapture(path)
+
     for i in range(0, amount * frame_frame_skip, frame_frame_skip):
-        vid.set(1, pos + i)
+        vid.set(1, pos+i)
         ret, still = vid.read()
         still = cv2.cvtColor(still, cv2.COLOR_BGR2RGB)
         frames.append({"img": still, "anom": anomaly_file['anom_scores'][pos + i]})
@@ -37,7 +38,7 @@ def show_images(images, rows=1, cols=1, frame_frame_skip=1, anomaly_idx=-1):
             text = "t"
         if idx == anomaly_idx:
             color = "#FF0000"
-        text += f"\nA:{anom:.3f}"
+        text += f"\n{anom:.3f}"
         ax.ravel()[idx].text(0.5, -0.15, f"{text}", size=10, ha="center",
                              transform=ax.ravel()[idx].transAxes, font=fpath, color=color)
     # plt.tight_layout()

@@ -167,6 +167,7 @@ class GridHTM:
             0], "TM grid size and SP/TM column dimensions must match!"
         assert sp_grid_size % tm_grid_size == 0, "SP Grid size must be divisible by TM Grid side!"
         assert temporal_size > 0, "Temporal size must be larger than 0!"
+        np.random.seed(sp_args.seed) # Sets the seed to be used by numpy, mainly used for empty pattern generation
         self.input_shape = frame_shape
         self.prev_input = np.ones(shape=self.input_shape)
         self.sp_grid_size = sp_grid_size
