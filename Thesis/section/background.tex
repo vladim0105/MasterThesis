@@ -71,13 +71,16 @@ However, the progress within the context of machine vision stagnated due to a la
 \par
 In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
 \subsection{Generative Models}
-Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models work by taking some input, and then generating realistic output. The input could be anything from random noise to a real sample.
+Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models take some input, and then generating realistic output. The input could be anything from random noise to a real sample.
+\par
+For instance, a \gls*{g_gan} consists of a generator and a discriminator. The generator takes some inputs (usually some random noise) and generates some samples. The batch of generated samples are then combined with a batch of real samples and mixed up. The discriminator then has to decide for every sample whether it is real or generated. This is essentially a two-player game in which the generator attempts to fool the discriminator. A typical \gls*{g_gan} is shown in \autoref{fig:gan} below.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gan.png}
     \caption{Example of a \gls*{g_gan}.}
+    \label{fig:gan}
 \end{figure}
-The idea is that the models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
+The idea is that generative models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
 \subsection{Disadvantages}
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
 \par

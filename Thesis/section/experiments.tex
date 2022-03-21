@@ -196,8 +196,9 @@ TODO
     \caption{Anomaly Scores.}
     \label{fig:surveillance_results}
 \end{figure}
-We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores between each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. \par
-With that in mind, with the aggregation functions presented in this thesis, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
+We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores between each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. It should also be noted that a moving average was applied to smooth out the anomaly score output, otherwise the graph would be too noisy.
+\par
+With the aggregation functions presented in this thesis in mind, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_anomaly_1.png}
@@ -225,7 +226,7 @@ On the other hand, when looking at the anomaly marked with a red circle, the car
 To prove that the anomaly was actually directly caused by the repeating frame, and not just due to repeating the anomaly in time, it should be compared to the anomaly output if there was no repeating frame.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_3.png}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_freeze.png}
     \caption{Anomaly output when the video is not frozen in time, when the freeze should have occured is marked with red text.}
 \end{figure}
 We can see that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
@@ -233,7 +234,7 @@ We can see that the anomaly output is minor compared to when there was a repeati
 Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_3}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_2.png}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_mtp.png}
     \caption{Anomaly output when the video is not frozen in time, when the freeze should have occured is marked with red text.}
     \label{fig:surveillance_freeze_3}
 \end{figure}
@@ -246,15 +247,16 @@ Finally, it is interesting to look the various anomaly score spikes and observe 
     \caption{Points of interests.}
     \label{fig:surveillance_poi}
 \end{figure}
-The first point of interest, which can be seen in TODO, showcases the weakness of the aggregation function.
-single high anomaly
-Due to the nature of moving average, since this anomaly lasts for a long time, it
+The first point of interest, which can be seen in \autoref{fig:surveillance_poi_1}, showcases the weakness of the aggregation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_1.png}
-    \caption{First}
+    \caption{First point of interest.}
+    \label{fig:surveillance_poi_1}
 \end{figure}
-SECOND POI:
+It can be seen that the anomaly score output can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
+\par
+The second point of interest, which can be seen in TODO...
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
