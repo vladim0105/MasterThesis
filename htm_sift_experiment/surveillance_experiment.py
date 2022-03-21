@@ -1,4 +1,5 @@
 import argparse
+import json
 import pickle
 from datetime import time, datetime
 
@@ -50,10 +51,11 @@ def keypoints_to_bits(shape, kps):
 
 if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
-    argparser.add_argument("name", type=str, required=True)
+    argparser.add_argument("name", type=str)
     args = argparser.parse_args()
 
-
+    settings = json.load(open("surveillance_results/"+args.name+".settings", "rb"))
+    print(settings)
     video_scale = 0.3
     sdr_vis_scale = 1
     vidcap = cv2.VideoCapture('../data/output_seg_2.mp4')
@@ -91,19 +93,20 @@ if __name__ == '__main__':
     tm_args.cellsPerColumn = 32
     tm_args.seed = sp_args.seed
 
-    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args, min_sparsity=10, sparsity=15, aggr_func=np.mean, temporal_size=15)
+    grid_htm = model.GridHTM((new_width, new_height), sp_grid_size, tm_grid_size, sp_args, tm_args,
+                             min_sparsity=10, sparsity=15, aggr_func=np.mean, temporal_size=settings["temporal_size"])
 
     scaled_sdr_shape = (
         int(new_width * sdr_vis_scale), int(new_height * sdr_vis_scale))
 
-    out = cv2.VideoWriter(f'surveillance_results/{args.name}', cv2.VideoWriter_fourcc(*'mp4v'), 10,
+    out = cv2.VideoWriter(f'surveillance_results/{args.name}.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10,
                           (new_height, new_width*2), True)
     anoms = []
     raw_anoms = []
     x_vals = []
     total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
     #total = total//10
-    frame_repeats = 0
+    frame_repeats = settings["frame_repeats"]
     frame_repeat_start_idx = total//1.1
     frame_skip = 6
     with progressbar.ProgressBar(max_value=total+frame_repeats, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
@@ -149,5 +152,5 @@ if __name__ == '__main__':
                 break
 
     dump_data = {"anom_scores": anoms, "raw_anoms": raw_anoms, "anom_markers": [31900, 35850, 102000, 117700, 135850, 148900], "x_vals": x_vals, "frame_freeze": frame_repeat_start_idx}
-    pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
+    #pickle.dump(dump_data, open(f'surveillance_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))
     pickle.dump(dump_data, open(f'surveillance_results/{args.name}.pkl', 'wb'))
