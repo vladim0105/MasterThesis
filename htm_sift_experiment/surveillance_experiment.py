@@ -140,7 +140,7 @@ if __name__ == '__main__':
             # Get next frame -------------------------------------------------------------
             # Do not get next frame if it is currently set to be repeating the same frame
             for i in range(frame_skip):
-                if bar.value < frame_repeat_start_idx or bar.value > frame_repeat_start_idx+frame_repeats:
+                if bar.value < frame_repeat_start_idx or bar.value >= frame_repeat_start_idx+frame_repeats:
 
                     success, orig_frame = vidcap.read()
                     orig_frame = concat_seg(orig_frame, success)
