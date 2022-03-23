@@ -78,7 +78,11 @@ Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be 
 \end{figure}
 \autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is rendered useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clearly defined range between 0 and 1.
 \subsection{Explainability}
-Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred. Combined with the ability to estimate the number of predictions at any given time for any cell, makes this an attractive approach.
+Having the encoder output divided into a grid has the added benefit of introducing explainability into the model. By using Grid \gls*{htm} it is now possible to find out where in the input an anomaly has occurred by simply observing which cell has a high anomaly score.
+\par
+It is also possible to estimate the number of predictions for each cell which can be used as a measure of certainty, where fewer predictions means higher certainty. Making it possible to measure certainty per cell creates a new source of information which can be used for explainability or robustness purposes.
+\par
+These two properties show that GridHTM offers vastly more explainability than current state-of-the-art deep learning models for anomaly detection, which could make it an attractive approach.
 \subsection{Flexibility and Performance}
 In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
@@ -136,8 +140,8 @@ Another issue with the grid based approach is when a car first comes into a cell
     \label{fig:empty_to_notempty_fixed}
 \end{figure}
 A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
-\label{sec:multistep_temporal_patterns}
 \subsection{Multistep Temporal Patterns}
+\label{sec:multistep_temporal_patterns}
 Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still.
 \begin{figure}[H]
     \centering

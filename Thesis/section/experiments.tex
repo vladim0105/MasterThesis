@@ -17,7 +17,7 @@ The video consists of a ball bouncing up and down until an anomaly occurs in the
 The model used is a standard HTM model, which covers the entire input. This is equivalent to a single cell in a Grid HTM.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
+    \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
     \caption{The 100-point moving average of the anomaly score in the bouncing ball experiment.}
 \end{figure}
 From the figure it can be observed that the HTM correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to $(1)$ and the anomaly spikes towards the end close to $(2)$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
@@ -25,7 +25,7 @@ From the figure it can be observed that the HTM correctly detects anomalies and 
 The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting, as explained in \autoref{sec:spatial_pooler}. This also helped with the spikes towards the end, as can be seen in \autoref{fig:bb_boosting}.\par
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_boosting.png}
+    \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_anoms_boosting.png}
     \caption{Bouncing ball with boosting enabled.}
     \label{fig:bb_boosting}
 \end{figure}
@@ -35,7 +35,7 @@ The reason for the anomaly spikes towards the end is because the spatial pooler 
 The solution is to set the value by which permanence is decreased by to zero, effectively disabling the ability of the spatial pooler to "forget", as can be seen in \autoref{fig:bb_forget}. That being said, the ability to decrement permanence is important in HTM systems, therefore disabling it is not always feasible.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting.png}
+    \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting.png}
     \caption{Bouncing ball without the ability of the SP to "forget".}
     \label{fig:bb_forget}
 \end{figure}
@@ -43,7 +43,7 @@ The solution is to set the value by which permanence is decreased by to zero, ef
 Finally, for the sake of interest, the bouncing ball test was performed with both boosting enabled and with zero permanence decrement. Results can be seen in \autoref{fig:bb_boosting_forget}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
+    \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
     \caption{Bouncing ball without the ability of the SP to "forget" and with boosting enabled.}
     \label{fig:bb_boosting_forget}
 \end{figure}
@@ -100,7 +100,7 @@ This is a very simple problem which does not require invariances, making it unsu
 \subsubsection{Results}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
+    \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_grid.png}
     \caption{Grid HTM}
 \end{figure}
 It can be observed that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
@@ -196,7 +196,7 @@ TODO
     \caption{Anomaly Scores.}
     \label{fig:surveillance_results}
 \end{figure}
-We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores between each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. It should also be noted that a moving average was applied to smooth out the anomaly score output, otherwise the graph would be too noisy.
+We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores compared to each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. It should also be noted that a moving average was applied to smooth out the anomaly score output, otherwise the graph would be too noisy.
 \par
 With the aggregation functions presented in this thesis in mind, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This does not mean that Grid HTM is completely useless in that regard, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
 \begin{figure}[H]
@@ -231,14 +231,14 @@ To prove that the anomaly was actually directly caused by the repeating frame, a
 \end{figure}
 We can see that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
 \par
-Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_3}.
+Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_no_mtp}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_mtp.png}
     \caption{Anomaly output when the video is not frozen in time, when the freeze should have occured is marked with red text.}
-    \label{fig:surveillance_freeze_3}
+    \label{fig:surveillance_freeze_no_mtp}
 \end{figure}
-Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected.
+Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples.
 \subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
@@ -256,12 +256,14 @@ The first point of interest, which can be seen in \autoref{fig:surveillance_poi_
 \end{figure}
 It can be seen that the anomaly score output can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
 \par
-The second point of interest, which can be seen in TODO...
+The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing HTM to all possible behaviours that are considered not anomalous.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
     \caption{Second}
+    \label{fig:surveillance_poi_2}
 \end{figure}
+It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient amount of previous observations of that behavior.
 \clearpage
 \section{Sperm example}
 As seen in the surveillance example, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.

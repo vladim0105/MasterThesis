@@ -71,16 +71,22 @@ However, the progress within the context of machine vision stagnated due to a la
 \par
 In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
 \subsection{Generative Models}
-Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models take some input, and then generating realistic output. The input could be anything from random noise to a real sample.
+Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models take some input, and then generate realistic output. The input could be anything from random noise to a real sample.
 \par
-For instance, a \gls*{g_gan} consists of a generator and a discriminator. The generator takes some inputs (usually some random noise) and generates some samples. The batch of generated samples are then combined with a batch of real samples and mixed up. The discriminator then has to decide for every sample whether it is real or generated. This is essentially a two-player game in which the generator attempts to fool the discriminator. A typical \gls*{g_gan} is shown in \autoref{fig:gan} below.
+The idea is that generative models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
+\par
+Generative models come in all shapes and sizes, but a standard \gls*{g_gan} usually consists of just a generator and a discriminator. The generator takes some inputs (usually some random noise) and generates some samples. The batch of generated samples are then combined with a batch of real samples and mixed up. The discriminator then has to decide for every sample whether it is real or generated. This is essentially a two-player game in which the generator attempts to fool the discriminator. A typical \gls*{g_gan} pipeline is shown in \autoref{fig:gan} below.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gan.png}
     \caption{Example of a \gls*{g_gan}.}
     \label{fig:gan}
 \end{figure}
-The idea is that generative models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
+In order to train the weights in such a configuration, the generator and discriminator are trained in alteration. To train the discriminator, the parameters of the generator are fixed and backpropagation is performed using the error based on whether the discriminator made the right prediction. To train the generator, the weights of the discriminator are fixed and backpropagation is performed using the error based on whether the discriminator was fooled or not.
+\par
+While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as Wasserstein GAN\cite{wgan} and Unrolled GAN\cite{unrolled_gan}.
+\par
+There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is cGAN\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a cGAN can generate faces of a specific age.
 \subsection{Disadvantages}
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
 \par
@@ -98,7 +104,7 @@ As stated by \textcite{XAI}, as "black-box" approaches such as deep learning sur
     \includegraphics[width=\linewidth]{resources/related_works/gradcam.jpg}
     \caption{Grad-CAM visualization for cat and dog.}
 \end{figure}
-Approaches such as Grad-CAM \cite{GradCAM} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}.
+Approaches such as Grad-CAM \cite{GradCam} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}.
 \section{Anomaly detection}
 \label{sec:anomaly_detection}
 As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some complexities are as follows:
@@ -125,9 +131,9 @@ As previously stated, generative models suffer from a lack of explainability, an
 \par
 There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
 \subsection{Smart Surveillance}
-Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. The results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
+Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo, smart_surveillance_2} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. More specifically, memory augmented autoencoders\cite{memae} and future frame prediction GANs\cite{future_frame_prediction} are some of the most promising approaches. In general, the results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
 \par
-The paper also discusses problems with using deep learning approaches for anomaly detection, and further emphasizes the complexities mentioned in \autoref{sec:anomaly_detection}. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
+\textcite{anomalyvideo} also discusses problems with using deep learning approaches for anomaly detection, and further emphasizes the complexities mentioned in \autoref{sec:anomaly_detection}. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
 
 \section{Hierarchical Temporal Memory}
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
