@@ -1,4 +1,5 @@
 \chapter{Background}
+\label{sec:background}
 The following is relevant background information on Deep Learning, Video Anomaly Detection, and HTM theory.
 \section{Deep Learning}
 As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
@@ -84,7 +85,7 @@ Generative models come in all shapes and sizes, but a standard \gls*{g_gan} usua
 \end{figure}
 In order to train the weights in such a configuration, the generator and discriminator are trained in alteration. To train the discriminator, the parameters of the generator are fixed and backpropagation is performed using the error based on whether the discriminator made the right prediction. To train the generator, the weights of the discriminator are fixed and backpropagation is performed using the error based on whether the discriminator was fooled or not.
 \par
-While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as Wasserstein GAN\cite{wgan} and Unrolled GAN\cite{unrolled_gan}.
+While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as the Wasserstein GAN\cite{wgan} and the Unrolled GAN\cite{unrolled_gan}.
 \par
 There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is cGAN\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a cGAN can generate faces of a specific age.
 \subsection{Disadvantages}
