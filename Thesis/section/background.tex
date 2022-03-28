@@ -310,9 +310,10 @@ The second phase is to form a prediction by putting cells into a predictive stat
 \end{itemize}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt.png}
-    \caption{Visualization of the \gls*{tm} and the three states. Active in black, predictive in gray, and inactive in white. Source: \cite{BAMI}}
+    \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt}
+    \caption{Visualization of the \gls*{tm} and the three states. Active in green, predictive in blue, and inactive in white.}
 \end{figure}
+
 One can configure how much the system can learn by setting the number of cells and the values by which permanence should be increased or decreased. If it is desired that the \gls*{tm} does not "forget" at all, then the permanence value by which synapses are decremented can be set to 0. If it is desired that the \gls*{tm} can only express patterns in the current context and the context of the previous time step, then the number of cells can be set to 2.
 \par
 Finally, the \gls*{tm} compares the predictions $P_{t-1}$ it made in the previous time step with the actual pattern $A_t$ in the current time step and calculates an anomaly score:
@@ -383,3 +384,8 @@ One thing to note is that direct binary representations of the video frames were
 
 
 \section{Summary}
+Deep learning can be traced back to the Perceptron which was a machine learning model capable of solving linearly separable problems. Over time, people theorized that stacking Perceptrons would give it the ability to solve more complex problems. This was not possible before back propagation was introduced. After that, deep learning evolved and new architectures were invented. One of the main contribution is the introduction of the CNN, which allowed deep learning approaches to achieve state-of-the-art results for complex problems such as image classification. The ability to train deep learning on GPU and the introduction of frameworks caused deep learning to explode in popularity. One of the latest advancements is the introduction of generative models, which can be used for various purposes including generating realistic data. Deep learning has several issues, such as lack of explainability, the need for a lot of data, and poor out-of-distribution performance.
+\par
+Anomaly detection is often defined as detecting data points that deviate from the general distribution. Unlike most other problems in deep learning, anomaly detection deals with unpredictable and rare events which makes it hard to apply traditional deep learning for anomaly detection. Popular approaches therefore often employ generative models, that calculate an anomaly measure using generated or reconstructed data. A subset of anomaly detection is smart surveillance, which is the use of video analysis specifically in surveillance. Recent developments show that generative models have a high degree of accuracy and are consistently improving.
+\par
+HTM theory introduces a machine learning algorithm which works on the same principles as the brain and therefore solves some of the issues that deep learning has. HTM is considered noise resistant and can perform on-line learning, meaning that it learns as it observes more data. HTM replicates the structure of the neocortex which is made up of cortical regions, which in turn are made of up of mini-columns and then neurons. HTM neurons are more complex than neurons in deep learning, and perform learning with Hebbian-like learning. The data in an HTM is represented using an SDR, which is a sparse bit array. An encoder converts real world values into SDRs. One of the difficulties with HTM is making it work on visual data, where creating a good encoder for visual data is still being researched. The learning mechanism consists of two parts, the spatial pooler and the temporal memory. The spatial pooler learns to extract semantically important information into output SDRs. The temporal memory learns sequences of patterns of SDRs and forms a prediction in the form of a predictive SDR. Research has shown that HTM is very capable of performing anomaly detection on low-dimensional data and is able to outperforms other anomaly detection methods. However, related works show that HTM struggles with higher dimensional data.
