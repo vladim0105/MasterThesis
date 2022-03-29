@@ -1,5 +1,6 @@
 settings.render = 8;
 import three;
+import fontsize;
 srand(1);
 int r=7;
 real spacing = 1.5;
@@ -82,7 +83,7 @@ m = m--cycle;
 
 //Labels
 draw(shift(0, -r, 0)*surface(m),lightgray+opacity(opacity=0.3, blend="Overlay"), black+dashed+linewidth(2));
-pen label_pen = black+fontsize(48);
+pen label_pen = black+fontsize(24)+TimesRoman();
 label("SP Columns", (50, 180, -90),E, label_pen);
 label("Input SDR", (50, 0, -90),E, label_pen);
 label("Potential Pool", (165, -200, -90), label_pen);
@@ -90,17 +91,17 @@ triple bit_label_pos;
 
 bit_label_pos = (-75, 100, -90);
 draw(surface(circle(bit_label_pos, r)), chartreuse, black+linewidth(2));
-label("Active Column", bit_label_pos, E, label_pen);
+label("Active Column", shift(-5, 0, 0)*bit_label_pos, E, label_pen);
 bit_label_pos = (-75, 68, -90);
 draw(surface(circle(bit_label_pos, r)), white, black+linewidth(2));
-label("Inactive Column", bit_label_pos, E, label_pen);
+label("Inactive Column", shift(-5, 0, 0)*bit_label_pos, E, label_pen);
 
 bit_label_pos = (-75, -100, -90);
 draw(surface(circle(bit_label_pos, r)), white, black+linewidth(2));
-label("Active Bit", bit_label_pos, E, label_pen);
+label("Active Bit", shift(-5, 0, 0)*bit_label_pos, E, label_pen);
 bit_label_pos = (-75, -132, -90);
 draw(surface(circle(bit_label_pos, r)), gray, black+linewidth(2));
-label("Inactive Bit", bit_label_pos, E, label_pen);
+label("Inactive Bit", shift(-5, 0, 0)*bit_label_pos, E, label_pen);
 
 //draw(O -- 200X, L=Label("$x$",position=EndPoint));
 //draw(O -- 200Y, L=Label("$y$", position=EndPoint));
