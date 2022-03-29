@@ -258,8 +258,8 @@ This gives HTM systems the property of on-line learning, meaning they learn as t
 The spatial pooler consists of columns (mini-columns), where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input space within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius.\par
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/sp_vis_alt.png}
-    \caption{Visualization of the \gls*{sp} and the potential pool of one of its columns. Source: \cite{htm_sp_presentation}}
+    \includegraphics[width=\linewidth]{resources/related_works/sp_vis_alt}
+    \caption{Visualization of the \gls*{sp} and the potential pool of one of its columns.}
 \end{figure}
 Each connection is described using a \textbf{permanence}-value which can be considered the "strength" of the connection, and it ranges between 0 and 1. During learning, the permanence value of the connections is increased or decreased depending on whether the corresponding bit in the input is active or inactive. When the permanence-value crosses above a \textbf{stimulus threshold}, the connection will be considered "active".
 
@@ -286,7 +286,7 @@ The temporal memory consists of the columns that a spatial pooler outputs, but t
 Essentially, it takes the "node" based representation of the \gls*{sp} output, and turns it into a new representation which includes state, or context, from previous time steps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the \gls*{sp} output has 100 active columns and only one cell per column is active, then the \gls*{tm} has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt2.png}
+    \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt2}
     \caption{Visualization of the TM, with number of cells equal 4. Some columns are bursting. Source: \cite{BAMI}}
 \end{figure}
 \par
