@@ -41,8 +41,8 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
 Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent.png}
-    \caption{Comparison between \gls*{g_sgd} and gradient descent \cite{gradient_descent}}
+    \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
+    \caption{Comparison between \gls*{g_sgd} and gradient descent}
     \label{fig:gd_sgd}
 \end{figure}
 \par
@@ -94,7 +94,7 @@ A disadvantage for deep-learning models in general is that they are susceptible 
 Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data\cite{deeplearning_dataset}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{resources/related_works/deeplearning_datasize.png}
+    \includegraphics[width=0.8\linewidth]{resources/related_works/training_volume}
     \caption{Accuracy increase in relation to size of dataset \cite{deeplearning_dataset}.}
 \end{figure}
 They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain\cite{deeplearning_ood}.

@@ -86,7 +86,7 @@ draw(shift(0, -r, 0)*surface(m),lightgray+opacity(opacity=0.3, blend="Overlay"),
 pen label_pen = black+fontsize(24)+TimesRoman();
 label("SP Columns", (50, 180, -90),E, label_pen);
 label("Input SDR", (50, 0, -90),E, label_pen);
-label("Potential Pool", (165, -200, -90), label_pen);
+label("Receptive Field", (165, -200, -90), label_pen);
 triple bit_label_pos;
 
 bit_label_pos = (-75, 100, -90);

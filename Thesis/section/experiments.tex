@@ -203,6 +203,7 @@ With the aggregation functions presented in this thesis in mind, it is safe to c
     \caption{The first segment anomaly, which is marked with red text,  and the corresponding changes detected by Grid HTM}
     \label{fig:surveillance_segment}
 \end{figure}
+Here it is observed that Grid HTM correctly marks the sudden change of cars when the current segment ends and a new segment begins.
 \subsubsection{Road}
 In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
 \begin{figure}[H]
@@ -263,7 +264,62 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
 \end{figure}
 It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient amount of previous observations of that behavior.
 \subsection{Parameters}
-TODO
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}               \\
+        \midrule
+        sp\_grid\_size     & 32, 32         & Size of each grid            \\
+        tm\_grid\_size     & 16, 16         & Size of each SP grid output. \\
+        min\_sparsity      & 10             &                              \\
+        sparsity           & 15             & Expected average sparsity    \\
+        temporal\_size     & 15             &                              \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Grid HTM specific parameters}
+    \label{tab:surveillance_grid_htm}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                    \\
+        \midrule
+        inputDimensions    & sp\_grid\_size &                                   \\
+        columnDimensions   & tm\_grid\_size &                                   \\
+        potentialPct       & 0.2            &                                   \\
+        potentialRadius    & 5              &                                   \\
+        localAreaDensity   & 0.05           &                                   \\
+        globalInhibition   & True           & Set to False to enable topology   \\
+        wrapAround         & False          &                                   \\
+        synPermActiveInc   & 0.01           &                                   \\
+        synPermInactiveDec & 0.00001                                            \\
+        stimulusThreshold  & 3              &                                   \\
+        boostStrength      & 0              & Causes instability in empty cells \\
+        \bottomrule
+    \end{tabularx}
+    \caption{SP Parameters}
+    \label{tab:surveillance_sp}
+\end{table}
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \midrule
+        columnDimensions          & tm\_grid\_size & Same as the SP \\
+        predictedSegmentDecrement & 0.001          &                \\
+        permanenceIncrement       & 0.01           &                \\
+        permanenceDecrement       & 0.001          &                \\
+        minThreshold              & 10             &                \\
+        activationThreshold       & 10             &                \\
+        cellsPerColumn            & 32             &                \\
+        \bottomrule
+    \end{tabularx}
+    \caption{TM Parameters}
+    \label{tab:surveillance_tm}
+\end{table}
 \clearpage
 \section{Sperm example}
 As seen in the surveillance example, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
@@ -360,3 +416,10 @@ For both results the following parameters were used:
 \end{table}
 For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise. Because the data is noisy, the mean was used as the aggregation function.
 \section{Summary}
+In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of HTM and Grid HTM on videos.
+\par
+The first experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to 0. First the experiment is performed with a normal HTM system. The results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid HTM is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid HTM is designed for more complex videos, such as if there were multiple bouncing balls at once.
+\par
+The second experiment showcases the performance of Grid HTM on non-controlled data, specifically a surveillance video of a parking lot. The video contains technical anomalies in the form of segments, and also a synthetic anomaly which is a period of repeating frames. Semantic segmentation was performed in order to extract the cars in the frame into an SDR. The results show that Grid HTM reacts when segments begin and end, as well as the repeating frame. It also shows that the anomaly output, with the currently introduced aggregation functions, cannot be used to reliably threshold anomalies. Instead, one can look at the visual output of the Grid HTM. The visual output shows that Grid HTM is to detect the change in objects when a segment change occurs. Results also show that Grid HTM learns common patterns such as cars driving on the main road, and does not report that behavior as anomalous. It is also shown that Grid HTM can correctly detect the repeating frames, and marks anomalous cars during the repeating frames with increasing severity. Finally, a couple of points of interests are shown that highlight the weakness of the aggregation function and the importance of exposing HTM to all possible behaviors not considered anomalous.
+\par
+The third and final experiment explores the ability of Grid HTM to detect segments in greater detail. The videos used are videos of swimming sperm cells, and are segmented using a rough binary thresholding. The data is noisy and short, and it is therefore not expected for Grid HTM to learn any meaningful patterns. As a benchmark, the L1 error is employed. The results show that Grid HTM outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
