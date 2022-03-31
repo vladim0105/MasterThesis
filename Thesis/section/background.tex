@@ -8,7 +8,7 @@ The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm th
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{resources/related_works/perceptron.png}
-    \caption{Perceptron}
+    \caption{The original perceptron.}
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
@@ -42,7 +42,7 @@ Neural networks use gradients to learn. The gradients are first calculated using
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
-    \caption{Comparison between \gls*{g_sgd} and gradient descent}
+    \caption{Comparison between \gls*{g_sgd} and gradient descent.}
     \label{fig:gd_sgd}
 \end{figure}
 \par
@@ -123,7 +123,7 @@ The current state-of-the-art algorithms for anomaly detection are numerous, but 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/ganomaly.png}
-    \caption{GANomaly \cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection}
+    \caption{GANomaly \cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
     \label{fig:ganomaly}
 \end{figure}
 Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space \cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
@@ -140,11 +140,11 @@ Smart surveillance, which is the use of automatic video analysis specifically in
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
 The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain \cite{spiking_neural_networks}.
 \subsection{Structure}
-HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons. \autoref{fig:cortical_region} visualizes the structure of the neocortex according to HTM theory.
+HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons. \autoref{fig:cortical_region} visualizes the structure of a cortical region according to HTM theory.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/related_works/cortical_region}
-    \caption{Visualization of the cortical region structure in the neocortex according to HTM theory.}
+    \caption{Visualization of a cortical region structure in the neocortex according to HTM theory.}
     \label{fig:cortical_region}
 \end{figure}
 There is still uncertainty regarding the purpose of each layer, but the following has been concluded\cite{htm_l2_l3,cortical_region}:
@@ -179,7 +179,7 @@ HTM theory introduces Sparse Distributed Representation (SDR) as a way of repres
 \begin{figure}[H]
     \centering
     \includegraphics{resources/related_works/sdr-semantics.png}
-    \caption{Semantic similarities between the two SDRs A and B}
+    \caption{Semantic similarities between the two SDRs A and B.}
     \label{fig:sdr_semantics}
 \end{figure}
 Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise.
@@ -289,7 +289,7 @@ Essentially, it takes the "node" based representation of the \gls*{sp} output, a
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt2}
-    \caption{Visualization of the TM, with number of cells equal 4. Some columns are bursting. Source: \cite{BAMI}}
+    \caption{Visualization of the TM, with number of cells equal 4. Some columns are bursting.}
 \end{figure}
 \par
 The temporal memory algorithm consists of two phases. The first phase is to evaluate the \gls*{sp} output against predictions and choose a set of active cells. It does so by looking at the active columns and the cells they contain. If an active column contains predictive cells, then those cells are marked as active. If an active column has no predictive cells, usually caused by observing a new pattern for the first time, then the column "bursts" by activating all the cells that the column contains (see \autoref{fig:tm_vis1}). Otherwise, a cell is inactive.
@@ -354,13 +354,13 @@ To summarize, the object is learned by the brain using multiple models that may 
         \caption{Hierarchy as in the Thousand Brains Theory}
         \label{}
     \end{subfigure}
-    \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory}
+    \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.}
 \end{figure}
 This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet\cite{inceptionnet} and Feature Pyramid Networks\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
-    \caption{How the Inception \cite{inceptionnet} architecture combines multiple filters}
+    \caption{How the Inception \cite{inceptionnet} architecture combines multiple filters.}
     \label{fig:inception_module}
 \end{figure}
 
