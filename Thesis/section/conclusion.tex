@@ -13,5 +13,9 @@ The experiments show that with proper data and further refinements, Grid HTM and
 \section{Contributions?}
 \section{Future Work}
 As mentioned in \autoref{sec:introduction}, one of the main limitations is the lack of video datasets suited for anomaly detection by HTM. Therefore, the most important future work would be to create such a dataset. The videos would optimally be several days long and contain anomalies such as car accidents, jaywalking, and other similar anomalous behaviors.
-\subsection{Deep Learning HTM Encoder}
-A potential solution to most of the aforementioned issues could be to combine the deep learning approaches with an HTM network. This way it could be possible to leverage the self-supervision and noise resilience property of HTM, together with the powerful feature extraction and representation of deep learning approaches. Effectively combining the best of both approaches while eliminating the disadvantages that have been previously mentioned.
+\par
+For Grid HTM, more time should be spent exploring other aggregation functions so that the aggregated anomaly score can be used more efficiently.  Additionally, it would be a big benefit to create an algorithm which can decide the parameters for each cell during the calibration phase. Finally, experiments should be performed to validate the possibility of having the TM in each cell grow synapses to neighboring cells in order to solve the issue with unstable anomaly output, which was mentioned in \autoref{sec:stabilizing_anomaly_output}.
+\par
+Another important field to research is a tighter integration between HTM and deep learning. This way it could be possible to leverage the self-supervision and noise resilience property of HTM, together with the powerful feature extraction and representation of deep learning approaches. Effectively combining the best of both approaches while eliminating the disadvantages that have been mentioned in \autoref{sec:background}.
+\par
+HTM theory is in constant development, especially as the understanding of the brain grows. Future work would therefore include keeping up to date on the latest developments within HTM theory, and update the model and add new systems accordingly.

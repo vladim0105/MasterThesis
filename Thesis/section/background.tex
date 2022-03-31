@@ -95,7 +95,7 @@ Due to the nature of training deep learning models, they are also in most cases 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/training_volume}
-    \caption{Accuracy increase in relation to size of dataset \cite{deeplearning_dataset}.}
+    \caption{Accuracy increase in relation to size of dataset.}
 \end{figure}
 They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain\cite{deeplearning_ood}.
 \subsubsection{Explainability}
@@ -140,22 +140,24 @@ Smart surveillance, which is the use of automatic video analysis specifically in
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
 The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain \cite{spiking_neural_networks}.
 \subsection{Structure}
-HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons.
+HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons. \autoref{fig:cortical_region} visualizes the structure of the neocortex according to HTM theory.
 \begin{figure}[H]
     \centering
-    \begin{subfigure}{0.6\textwidth}
-        \includegraphics[width=\textwidth]{resources/related_works/cortical_region.png}
-        \caption{Cortical Region.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.35\textwidth}
-        \includegraphics[width=\textwidth]{resources/related_works/cortical_column.png}
-        \caption{Cortical Column.}
-    \end{subfigure}
-
-    \caption{Visualization of the cortical region structure in the neocortex according to HTM theory. Note that current HTM implementations only model L2/L3, but can be extended to model L4 as well \cite{htm_l2_l3}. Source: \cite{cortical_region}}
+    \includegraphics[width=\textwidth]{resources/related_works/cortical_region}
+    \caption{Visualization of the cortical region structure in the neocortex according to HTM theory.}
     \label{fig:cortical_region}
 \end{figure}
+There is still uncertainty regarding the purpose of each layer, but the following has been concluded\cite{htm_l2_l3,cortical_region}:
+\begin{itemize}
+    \item[\textbf{L6}] Takes input from the spatial pooler.
+    \item[\textbf{L5}] Motor outputs to body.
+    \item[\textbf{L4}] Sensory Motor inference.
+    \item[\textbf{L3}] Temporal Memory.
+    \item[\textbf{L2}] Connects to other cortical columns and performs voting.
+    \item[\textbf{L1}] Connections to cortical regions further up.
+\end{itemize}
+Current HTM implementations only model L2/L3, but can be extended to model L4 as well \cite{htm_l2_l3}.
+\par
 Neurons in HTM theory are different from neurons in traditional machine learning. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian like learning.
 \begin{figure}[H]
     \centering
@@ -202,8 +204,8 @@ There are principles that should be followed in order to create a good encoder:
 As of now, there exists encoders for numbers, categories, geospatial locations, and dates. \autoref{fig:cyclical_encoder} shows the cyclical date encoder.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\linewidth]{resources/related_works/cyclical_encoder.png}
-    \caption{Visualization of a cyclical date encoder, which is currently encoding Friday. Note that also Thursday and Saturday are included in the encoding of Friday in order to emphasize that Thursday and Saturday are both equally distanced from Friday. Source: \cite{BAMI}}
+    \includegraphics[width=0.9\linewidth]{resources/related_works/cyclical_encoder}
+    \caption{Visualization of a cyclical date encoder, which is currently encoding Thursday. Note that also Wednesday and Friday are included in the encoding of Thursday in order to emphasize that Wednesday and Friday are both equally distanced from Thursday.}
     \label{fig:cyclical_encoder}
 \end{figure}
 Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into SDRs one by one and then concatenate them into a single SDR before passing it to the HTM.
@@ -368,11 +370,7 @@ While the Thousand Brains Theory is not yet technically implemented in any way i
 \label{sec:htm_perf}
 Knowing that deep learning approaches have a high degree of accuracy but suffer from problems related to generalizability, adaptability, and noise it stands to reason that HTM is a viable alternative for anomaly detection.\par
 \textcite{AHMAD2017134} explores the use of HTM for anomaly detection on low dimensional data such as temperature data from an industrial machine. The authors also discuss benchmarks for anomaly detection and compare different methods. The results show that HTM is very capable of performing anomaly detection, especially in a changing environment. HTM is able to outperform other anomaly detection methods and has the advantage of not requiring any per-problem parameter tuning.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{resources/related_works/htm_anomaly_paper_example.jpg}
-    \caption{Temperature anomaly detection from \textcite{AHMAD2017134}.}
-\end{figure}
+\par
 For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a HTM system to find anomalous frames in videos of motions (\autoref{fig:motion_frame}). The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results show that the HTM system was able to correctly detect some anomalies, but not an impressive amount.
 \begin{figure}[H]
     \centering
