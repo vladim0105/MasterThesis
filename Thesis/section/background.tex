@@ -7,12 +7,12 @@ As mentioned in the introduction, deep learning has seen increased popularity in
 The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{resources/related_works/perceptron.png}
+    \includegraphics[width=\linewidth]{resources/related_works/perceptron.png}
     \caption{The original perceptron.}
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
-As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp} which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function\cite{perceptron_misconceptions}.
+As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp} which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function~\cite{perceptron_misconceptions}.
 \par
 \begin{figure}[H]
     \centering
@@ -20,17 +20,17 @@ As shown by \textcite{perceptron3}, the perceptron was able to solve linearly se
     \caption{Example of a \gls*{g_mlp}.}
     \label{fig:mlp}
 \end{figure}
-Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
+Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned~\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
 \par
-It was not until the late 1980s\cite{perceptron_misconceptions} that the \gls*{g_mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave birth to modern neural networks.
+It was not until the late 1980s~\cite{perceptron_misconceptions} that the \gls*{g_mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave birth to modern neural networks.
 \subsection{Backpropagation}
-Backpropagation\cite{backprop}, which is shorthand for "backward propagation of errors",  is a method for efficiently calculating the gradient of the error function, so that it is possible to adjust each individual weight with the purpose of lowering the error. The error function is a function that quantifies the difference between a prediction and the corresponding label, and is differentiable. An example of such an error function, is the \gls*{g_mse}:
+Backpropagation~\cite{backprop}, which is shorthand for "backward propagation of errors",  is a method for efficiently calculating the gradient of the error function, so that it is possible to adjust each individual weight with the purpose of lowering the error. The error function is a function that quantifies the difference between a prediction and the corresponding label, and is differentiable. An example of such an error function, is the \gls*{g_mse}:
 \begin{align*}
     MSE=\frac{1}{n}\sum_{i=1}^n (y_i-\hat{y}_i)^2
 \end{align*}
 The result is that no longer did researchers have to manually engineer features, but could instead apply backpropagation to have the neural network automatically learn internal representations that expressed nontrivial features. An example is that no longer did researcher have to use line detection algorithms, instead the \gls*{g_mlp} could learn to represent a collection of pixels as a line automatically.
 \subsection{Neural Networks}
-Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the term \textit{deep} learning.
+Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}~\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the term \textit{deep} learning.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/nn.gv.png}
@@ -38,7 +38,7 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
     \label{fig:nn}
 \end{figure}
 \subsubsection{Learning}
-Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
+Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}~\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
@@ -46,16 +46,16 @@ Neural networks use gradients to learn. The gradients are first calculated using
     \label{fig:gd_sgd}
 \end{figure}
 \par
-Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)\cite{svm}, which stole the highlight.
+Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)~\cite{svm}, which stole the highlight.
 \par
 The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
 \par
-In order to improve upon regularization, techniques such as Dropout\cite{dropout}, \gls*{g_bn}\cite{batchnorm}, and Data Augmentation\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
+In order to improve upon regularization, techniques such as Dropout~\cite{dropout}, \gls*{g_bn}~\cite{batchnorm}, and Data Augmentation~\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder~\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
-As for representing features across time, architectures such as \glspl*{g_rnn}\cite{lstm,gru} were invented. Later, attention\cite{attention}-based models, such as the Transformer\cite{transformer} model, were introduced.\par
-The vanishing and the exploding gradient problem was alleviated by implementing, among other techniques, residual connections\cite{resnet} between layers.
+As for representing features across time, architectures such as \glspl*{g_rnn}~\cite{lstm,gru} were invented. Later, attention~\cite{attention}-based models, such as the Transformer~\cite{transformer} model, were introduced.\par
+The vanishing and the exploding gradient problem was alleviated by implementing, among other techniques, residual connections~\cite{resnet} between layers.
 \subsection{Convolutional Neural Networks}
-In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance \cite{cnn}. These properties stem from the three architectural ideas in a CNN:
+In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{g_cnn} were introduced by \textcite{cnn} in 1998. A \gls*{g_cnn} offers several properties that are useful, such as translational invariance~\cite{cnn}. These properties stem from the three architectural ideas in a CNN:
 \begin{itemize}
     \item Local receptive fields
     \item Shared weights
@@ -65,14 +65,14 @@ Through the use of data augmentation, it is also possible to not only improve th
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/lenet.jpeg}
-    \caption{LeNet\cite{cnn}, an example of a \gls*{g_cnn}.}
+    \caption{LeNet~\cite{cnn}, an example of a \gls*{g_cnn}.}
 \end{figure}
 \par
 However, the progress within the context of machine vision stagnated due to a lack of computing power when training large models as well as a lack of sufficiently large datasets. This stagnation lasted until 2012 when AlexNet was introduced by \textcite{alexnet}, which marked a major turning point in the history of deep learning, as their record-breaking results proved that deep learning was they way forward for solving complex machine learning problems.
 \par
-In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch\cite{pytorch} and Tensorflow\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
+In addition to creating a unique \gls*{g_cnn} architecture, they also made it run on a GPU and made the code publicly available. This was not the first case of running deep learning on a GPU~\cite{deeplearning_gpu}, but it can be argued that it was this paper that popularized it.  Using GPUs meant that a vast amount of computational power, for the purpose of training deep learning models, became unlocked. This also paved the way for frameworks such as PyTorch~\cite{pytorch} and Tensorflow~\cite{tensorflow}, which have democratized deep learning and made it into what it is today.
 \subsection{Generative Models}
-Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}\cite{gan} and \glspl*{g_vae}\cite{vae}. Generative models take some input, and then generate realistic output. The input could be anything from random noise to a real sample.
+Some of the latest progress within deep learning can be attributed to generative models, such as \glspl*{g_gan}~\cite{gan} and \glspl*{g_vae}~\cite{vae}. Generative models take some input, and then generate realistic output. The input could be anything from random noise to a real sample.
 \par
 The idea is that generative models learn a distribution which describes the data domain represented by the training data, and can then generate synthetic data from that distribution by simply sampling it.
 \par
@@ -85,27 +85,37 @@ Generative models come in all shapes and sizes, but a standard \gls*{g_gan} usua
 \end{figure}
 In order to train the weights in such a configuration, the generator and discriminator are trained in alteration. To train the discriminator, the parameters of the generator are fixed and backpropagation is performed using the error based on whether the discriminator made the right prediction. To train the generator, the weights of the discriminator are fixed and backpropagation is performed using the error based on whether the discriminator was fooled or not.
 \par
-While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as the Wasserstein GAN\cite{wgan} and the Unrolled GAN\cite{unrolled_gan}.
+While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability~\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as the Wasserstein GAN~\cite{wgan} and the Unrolled GAN~\cite{unrolled_gan}.
 \par
-There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is cGAN\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a cGAN can generate faces of a specific age.
+There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is cGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a cGAN can generate faces of a specific age.
 \subsection{Disadvantages}
-A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset \cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
+A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset~\cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
 \par
-Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data\cite{deeplearning_dataset}.
+Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data~\cite{deeplearning_dataset}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/training_volume}
     \caption{Accuracy increase in relation to size of dataset.}
 \end{figure}
-They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain\cite{deeplearning_ood}.
+They also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}.
 \subsubsection{Explainability}
 As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they make those predictions. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/gradcam.jpg}
-    \caption{Grad-CAM visualization for cat and dog.}
+    \begin{subfigure}{0.3\linewidth}
+        \includegraphics[width=\linewidth, height=\linewidth]{resources/related_works/gradcam_original.jpg}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.3\linewidth}
+        \includegraphics[width=\linewidth]{resources/related_works/gradcam_dog.jpg}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.3\linewidth}
+        \includegraphics[width=\linewidth]{resources/related_works/gradcam_cat.jpg}
+    \end{subfigure}
+    \caption{Grad-CAM visualization for dog and cat. (Source:~\cite{GradCamExample}.)}
 \end{figure}
-Approaches such as Grad-CAM \cite{GradCam} and Guided Backpropagation \cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models \cite{XAI}.
+Approaches such as Grad-CAM~\cite{GradCam} and Guided Backpropagation~\cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models~\cite{XAI}.
 \section{Anomaly detection}
 \label{sec:anomaly_detection}
 As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some complexities are as follows:
@@ -117,28 +127,28 @@ As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined 
 These complexities make it hard to apply traditional deep learning methods for anomaly detection, because they are designed to be trained with pairs of $\{input, target\}$ in mind.
 \subsection{Deep Learning and Anomaly Detection}
 \label{sec:dl_anom_detection}
-The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning \cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs \cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
+The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning~\cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs~\cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs.
 \par The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that it tries to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
 \par
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/ganomaly.png}
-    \caption{GANomaly \cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
+    \caption{GANomaly~\cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
     \label{fig:ganomaly}
 \end{figure}
-Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space \cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
+Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space~\cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
 \par
 As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it becomes safe to say that there is a lack of explainability in the field of anomaly detection in videos.
 \par
 There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
 \subsection{Smart Surveillance}
-Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo, smart_surveillance_2} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. More specifically, memory augmented autoencoders\cite{memae} and future frame prediction GANs\cite{future_frame_prediction} are some of the most promising approaches. In general, the results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
+Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo, smart_surveillance_2} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. More specifically, memory augmented autoencoders~\cite{memae} and future frame prediction GANs~\cite{future_frame_prediction} are some of the most promising approaches. In general, the results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
 \par
 \textcite{anomalyvideo} also discusses problems with using deep learning approaches for anomaly detection, and further emphasizes the complexities mentioned in \autoref{sec:anomaly_detection}. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
 
 \section{Hierarchical Temporal Memory}
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
-The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain \cite{spiking_neural_networks}.
+The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain~\cite{spiking_neural_networks}.
 \subsection{Structure}
 HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons. \autoref{fig:cortical_region} visualizes the structure of a cortical region according to HTM theory.
 \begin{figure}[H]
@@ -147,25 +157,25 @@ HTM aims to replicate the structure of the neocortex which is made up of cortica
     \caption{Visualization of a cortical region structure in the neocortex according to HTM theory.}
     \label{fig:cortical_region}
 \end{figure}
-There is still uncertainty regarding the purpose of each layer, but the following has been concluded\cite{htm_l2_l3,cortical_region}:
+There is still uncertainty regarding the purpose of each layer, but the following has been concluded~\cite{htm_l2_l3,cortical_region}:
 \begin{itemize}
-    \item[\textbf{L6}] Takes input from the spatial pooler.
+    \item[\textbf{L6}] Deals with input information.
     \item[\textbf{L5}] Motor outputs to body.
-    \item[\textbf{L4}] Sensory Motor inference.
+    \item[\textbf{L4}] Sensorimotor inference.
     \item[\textbf{L3}] Temporal Memory.
     \item[\textbf{L2}] Connects to other cortical columns and performs voting.
     \item[\textbf{L1}] Connections to cortical regions further up.
 \end{itemize}
-Current HTM implementations only model L2/L3, but can be extended to model L4 as well \cite{htm_l2_l3}.
+Current HTM implementations only model L2/L3, but can be extended to model L4 as well~\cite{htm_l2_l3}.
 \par
-Neurons in HTM theory are different from neurons in traditional machine learning. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian like learning.
+Neurons in HTM theory are different from neurons in traditional machine learning. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian like learning. The difference is shown in \autoref{fig:neuron_comparison}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/neuron_comparison.jpg}
-    \caption{Comparison of neurons \protect\cite{htm_neurons}: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source: \cite{BAMI}}
+    \caption{Comparison of neurons~\cite{htm_neurons}: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
     \label{fig:neuron_comparison}
 \end{figure}
-The HTM neuron has three inputs \cite{htm_neurons}:
+The HTM neuron has three inputs~\cite{htm_neurons}:
 \begin{itemize}
     \item Feedforward, which is the input data
     \item Context, which is data from neighboring neurons and acts as a prediction mechanism for the next feedforward input
@@ -210,11 +220,11 @@ As of now, there exists encoders for numbers, categories, geospatial locations, 
 \end{figure}
 Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into SDRs one by one and then concatenate them into a single SDR before passing it to the HTM.
 \subsubsection{Encoding Visual Data}
-Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
+Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works~\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\linewidth]{resources/related_works/binary_threshold_example.png}
-    \caption{Example thresholding on the Fashion MNIST dataset TODO.}
+    \caption{Example thresholding on the Fashion MNIST dataset~\cite{mnist_fashion}.}
     \label{fig:binary_threshold_example}
 \end{figure}
 \par
@@ -225,8 +235,8 @@ The reason for why a direct binary threshold encoding might not perform well is 
 An encoder which transforms convolutional feature maps into SDRs could help solve this, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/resnet18_layer_10.png}
-    \caption{Select few feature maps in the 10th layer of ResNet18\cite{resnet} trained on ImageNet\cite{imagenet}.}
+    \includegraphics[width=0.6\linewidth]{resources/related_works/resnet18_layer_10.png}
+    \caption{Select few feature maps in the 10th layer of ResNet18~\cite{resnet} trained on ImageNet~\cite{imagenet}.}
     \label{fig:cnn_features}
 \end{figure}
 \par
@@ -302,7 +312,7 @@ The temporal memory algorithm consists of two phases. The first phase is to eval
 \end{figure}
 At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.
 \par
-Since the \gls*{tm} can only grow synapses to cells that were previously active, the \gls*{tm} struggles to express sequences of patterns over multiple timesteps, as has been discussed on HTM forums \cite{tm_sequence_problem}. The solution has been to also encode some temporal information, such as the time of day \cite{AHMAD2017134,tm_sequence_problem}, so that it can use timestamps as anchor points for its contexts.
+Since the \gls*{tm} can only grow synapses to cells that were previously active, the \gls*{tm} struggles to express sequences of patterns over multiple timesteps, as has been discussed on HTM forums~\cite{tm_sequence_problem}. The solution has been to also encode some temporal information, such as the time of day~\cite{AHMAD2017134,tm_sequence_problem}, so that it can use timestamps as anchor points for its contexts.
 \par
 The second phase is to form a prediction by putting cells into a predictive state. For every segment on every cell, the number of synapses connected to active cells are counted. If the number exceeds an \textbf{activation threshold}, then the segment is marked as active and all the cells connected to the segment enter the predictive state. To summarize, a cell has three possible states:
 \begin{itemize}
@@ -323,19 +333,19 @@ Finally, the \gls*{tm} compares the predictions $P_{t-1}$ it made in the previou
     anomalyScore=\frac{|A_t-(P_{t-1}\cap A_t)|}{|A_t|}
 \end{align*}
 Which is a normalized value from 0 to 1. If the anomaly score is 1, then it means that none of the predicted columns matched the current active columns of the spatial pooler. If it is 0, then it means that all predicted columns matched the current active columns of the SP.\par
-It is also possible to estimate the number of predictions being made by the \gls*{tm} at any time \cite{htm_predictions_count}. This is done by counting the number of predictive cells, and dividing them by the number of active bits required to express a pattern. As an example, if sparsity is set so that patterns have 60 active bits and the number of predictive cells is 120, then the estimated number of predictions is given as
+It is also possible to estimate the number of predictions being made by the \gls*{tm} at any time~\cite{htm_predictions_count}. This is done by counting the number of predictive cells, and dividing them by the number of active bits required to express a pattern. As an example, if sparsity is set so that patterns have 60 active bits and the number of predictive cells is 120, then the estimated number of predictions is given as
 \begin{align*}
     numPredictions=\frac{predictiveCells}{activeBits}=\frac{120}{60}=2
 \end{align*}
 This is only an estimation, in reality the two patterns may have overlapping bits in their representations, and the number of active bits for each representation may have minor deviations.
 \subsection{Use Cases}
-The general use case for HTM is to perform anomaly detection. More specifically, Numenta has made example applications showcasing how HTM can be used in practice \cite{numenta_example_apps}:
+The general use case for HTM is to perform anomaly detection. More specifically, Numenta has made example applications showcasing how HTM can be used in practice~\cite{numenta_example_apps}:
 \begin{itemize}
-    \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network \cite{htm_rogue}.
-    \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material, using speed and location data \cite{htm_geospatial}.
-    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter volume \cite{htm_finance}.
+    \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network~\cite{htm_rogue}.
+    \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material, using speed and location data~\cite{htm_geospatial}.
+    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter volume~\cite{htm_finance}.
 \end{itemize}
-There are also applications that are used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon HTM in order to perform language analysis. They made this possible by introducing Semantic Folding and Semantic Fingerprinting \cite{semantic_folding}.
+There are also applications that are used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon HTM in order to perform language analysis. This is made this possible by introducing Semantic Folding and Semantic Fingerprinting~\cite{semantic_folding}.
 \subsection{The Thousand Brains Theory}
 One of the newest advancements in HTM Theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
 To summarize, the object is learned by the brain using multiple models that may rely on different inputs, the models then vote to reach a consensus on what they are sensing. This is coincidentally similar to ensemble learning such as \textcite{divergentNets}. Each model can be thought of as a mini-brain, hence the name "The Thousand Brains Theory".
@@ -356,11 +366,11 @@ To summarize, the object is learned by the brain using multiple models that may 
     \end{subfigure}
     \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.}
 \end{figure}
-This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet\cite{inceptionnet} and Feature Pyramid Networks\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
+This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet~\cite{inceptionnet} and Feature Pyramid Networks~\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
-    \caption{How the Inception \cite{inceptionnet} architecture combines multiple filters.}
+    \caption{How the Inception~\cite{inceptionnet} architecture combines multiple filters.}
     \label{fig:inception_module}
 \end{figure}
 
@@ -375,7 +385,7 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/motion_frame.png}
-    \caption{Example motion frame\cite{MotionAnomalyDetection}.}
+    \caption{Example motion frame~\cite{MotionAnomalyDetection}.}
     \label{fig:motion_frame}
 \end{figure}
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that HTM by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features.

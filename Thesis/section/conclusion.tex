@@ -8,9 +8,20 @@ Unlike deep learning, HTM works by using SDR to represent data and learns throug
 With that in mind, this thesis attempts to make it possible to conduct anomaly detection in videos with the introduction of Grid HTM. Instead of having a single HTM model run anomaly detection on videos, Grid HTM divides the frames into a grid where each individual cell has its own HTM model. This makes the entire system more invariant, gives it increased flexibility, and increases explainability. The videos themselves can be converted into SDRs using techniques such as deep learning segmentation and binary thresholding.
 \par
 This thesis then introduces three experiments, each aiming to prove different aspects of HTM and Grid HTM. The first experiment is a simple video of a bouncing ball, which has the aim of proving that a single HTM model can perform anomaly detection on a simple and controlled video, it then does the same but with Grid HTM instead to prove that it still works. The second experiment aims to showcase the capabilities of Grid HTM on a complex surveillance video. It shows that, given the limited and noisy data, Grid HTM is able to learn the norm and backs it up with concrete examples. It also showed that Grid HTM was able to detect video segments. The third experiment explores the capability of Grid HTM for detecting segments using a very noisy sperm video dataset.
+\section{Contributions}
+As introduced in \autoref{sec:introduction}, this thesis achieved three objectives that would help answer the thesis question. The objectives and how they were achieved are as follows:
 \par
-The experiments show that with proper data and further refinements, Grid HTM and other HTM based systems could be powerful anomaly detection systems.
-\section{Contributions?}
+\paragraph*{Objective 1} \emph{Introduce HTM and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being friendly to readers with a machine learning background.}
+\par
+This objective was achieved in \autoref{sec:background}, where HTM was explained. It was explained in a straight-forward manner with references to detailed figures. It also covered common misconceptions and included information that is hard to come by. The chapter also highlighted the importance of the HTM community by including information directly from community discussions.
+\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound pipeline so that HTM can be applied for anomaly detection in complex videos.}
+\par
+This objective was achieved in \autoref{sec:grid_htm}, where Grid HTM was introduced. It was introduced with the purpose of performing anomaly detection in videos. The chapter made sure that Grid HTM followed the rules that an HTM system should follow. It also introduced challenges and issues, and followed up with remedies.
+\paragraph*{Objective 3} \emph{Perform experiments, discuss the results, and lay out potential future work. The experiments will vary in difficulty, complexity, and will focus on different use cases.}
+\par
+This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that HTM and Grid HTM can indeed perform on simple and clean videos. The second experiment showcased the performance of Grid HTM on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid HTM to detect segments in a video, for increased challenge noisy videos of sperm were used.
+\par
+Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is HTM viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid HTM and other HTM based systems could be powerful anomaly detection systems for videos.
 \section{Future Work}
 As mentioned in \autoref{sec:introduction}, one of the main limitations is the lack of video datasets suited for anomaly detection by HTM. Therefore, the most important future work would be to create such a dataset. The videos would optimally be several days long and contain anomalies such as car accidents, jaywalking, and other similar anomalous behaviors.
 \par

@@ -4,7 +4,7 @@ pair getPoint(real r, real ang){
 
 real r = 50;
 real num_bits = 7*3;
-string[] days = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+string[] days = {"Monday", "Tuesday", "Wednesday", "\textbf{Thursday}", "Friday", "Saturday", "Sunday"};
 draw(circle((0,0), r));
 int _counter = 0;
 for(real i = 0; i < 360; i+=360/num_bits){
@@ -28,9 +28,6 @@ for(real i = 0; i < 360; i+=360/num_bits){
 int counter = 0;
 for(real i = 0; i < 360; i+=360/7){
   	pen p = black;
-  	if(i > 150 && i< 170){
-    	p = blue;
-    }
   	if(cos(i) < 0 && sin(i) < 0){
       label(days[counter], getPoint(r*1.1, i), W, p);
     }
