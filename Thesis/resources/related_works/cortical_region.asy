@@ -36,17 +36,24 @@ string[] layer_names = {"L6", "L5", "L4", "L3", "L2", "L1"};
 for(int i = 0; i < layer_names.length; ++i){
   label(layer_names[i], (-4, i*layer_size*spacing+0.5, 1), E, fontsize(24));
 }
+
+draw(
+  shift(5.5, -6, 3*spacing)*unitcube,
+  emissive(lightcyan), black+linewidth(0.55)
+);
 // Mini column
 draw(
   shift(-0.3/2, 0, (dim-1)*spacing)*
-  scale(1.3, (height*spacing+(1-spacing))+0.1, 1.1)*unitcube, 
+  scale(1.3, (height*spacing+(1-spacing))+0.1, 1.1)*
+  unitcube, 
   opacity(0), red+linewidth(1.3)+dashed
 );
 
 // Cortical column
 draw(
   shift(-7.5, -0.5, dim+1)*
-  scale(dim*spacing+10.5, height*spacing+(1-spacing)+3.2, 1)*unitplane,
+  scale(dim*spacing+10.5, height*spacing+(1-spacing)+3.2, 1)*
+  unitplane,
   opacity(0), purple+linewidth(1.3)+dashed
 );
 
@@ -58,7 +65,7 @@ draw(
   opacity(0), black+linewidth(1.3)+dashed
 );
 
-
+label("Cell (Neuron)", (6+1.25, -5.25, 3*spacing+1), E, black+fontsize(16));
 label("Mini-column", (0.6, height*spacing+1, dim+1), W, red+fontsize(24));
 label("Cortical Column", ((dim*spacing+4)/2-4, -0.5, dim+1), S, purple+fontsize(24));
 label("Cortical Region", ((dim*spacing*3+8)/2, -2, dim+1), S, fontsize(24));
