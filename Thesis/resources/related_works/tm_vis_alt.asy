@@ -3,6 +3,8 @@ import three;
 srand(1);
 int r=20;
 real spacing = 1.1;
+pen activeColor = chartreuse;
+pen predictiveColor = royalblue;
 currentprojection=orthographic(camera=(0, 30, -100));
 currentlight=light(0, -30, 100);
 for(int x = 0; x < 14; ++x){
@@ -12,20 +14,20 @@ for(int x = 0; x < 14; ++x){
           pen p=black+linewidth(3);
           pen c = white;
       	  if(rand()%10 == 1){
-          	c = royalblue;
+          	c = activeColor;
           } else {
           	if(rand()%10==1){
-            	c=green;
+            	c=predictiveColor;
             }
           }
       	  if(x == 6 && z == 0){
-          	c = royalblue;
+          	c = activeColor;
           }
           if(x == 3 && z == 2){
-          	c = royalblue;
+          	c = activeColor;
           }
           if(x == 11 && z == 1){
-          	c = royalblue;
+          	c = activeColor;
           }
           draw(surface(u),c,p);
     }

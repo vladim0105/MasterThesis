@@ -15,3 +15,4 @@ timesteps
 framerate
 backpropagation
 logarithmically
+HTM-based
