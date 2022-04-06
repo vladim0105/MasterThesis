@@ -17,3 +17,4 @@ backpropagation
 logarithmically
 HTM-based
 Hebbian-like
+voxelized

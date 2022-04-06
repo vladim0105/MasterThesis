@@ -168,12 +168,12 @@ There is still uncertainty regarding the purpose, and even the existence, of eac
     \item[\textbf{L2}] Connects to other cortical columns and performs voting.
     \item[\textbf{L1}] Connections to cortical regions further up.
 \end{itemize}
-Current HTM implementations only model L2/L3, but can be extended to model L4 as well~\cite{htm_l2_l3}.
+Current HTM implementations only model cortical columns, and layer-wise only L2/L3 but can be extended to model L4 as well~\cite{htm_l2_l3}.
 \par
 Neurons in HTM theory are different from neurons in traditional machine learning~\cite{htm_neurons}. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian-like learning. The difference is shown in \autoref{fig:neuron_comparison}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/neuron_comparison.jpg}
+    \includegraphics[width=\linewidth]{resources/related_works/neuron_biological}
     \caption{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
     \label{fig:neuron_comparison}
 \end{figure}
@@ -248,7 +248,7 @@ Additionally, minor variations in the feature map would cause major variations i
 Seeing as there is currently no encoder that can produce sensible SDRs from high dimensional data such as videos, a natural conclusion to make is that HTM should be applied differently, and that a new type of architecture using HTM should be explored for this purpose.
 \subsection{Learning}
 Similar to mammalian intelligence, HTM is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
-The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up the HTM neuron.\par
+The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up multiple HTM neurons.\par
 The spatial pooler takes SDRs produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output SDRs usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce SDRs that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
 The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the SDRs formed by the spatial pooler and does two things:
 \begin{itemize}

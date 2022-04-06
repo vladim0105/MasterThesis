@@ -2,3 +2,5 @@ Research methods?
 When to mention tools for thesis?
 My github url?
 How to cite external figures?
+List of tables/figures?
+Should Grid HTM related future work be mentioned in Grid HTM section?

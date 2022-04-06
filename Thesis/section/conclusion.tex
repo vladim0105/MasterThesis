@@ -23,10 +23,20 @@ This objective was achieved in \autoref{sec:experiments}, where three different 
 \par
 Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is HTM viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid HTM and other HTM based architectures could be used for anomaly detection systems for videos.
 \section{Future Work}
+Seeing as this thesis presents a novel approach, there is naturally a lot of future work that can be done.
+\subsection*{Dataset}
 As mentioned in \autoref{sec:introduction}, one of the main limitations is the lack of video datasets suited for anomaly detection by HTM. Therefore, the most important future work would be to create such a dataset. The videos would optimally be several days long and contain anomalies such as car accidents, jaywalking, and other similar anomalous behaviors.
 \par
-For Grid HTM, more time should be spent exploring other aggregation functions so that the aggregated anomaly score can be used more efficiently.  Additionally, it would be a big benefit to create an algorithm which can decide the parameters for each cell during the calibration phase. Finally, experiments should be performed to validate the possibility of having the TM in each cell grow synapses to neighboring cells in order to solve the issue with unstable anomaly output, which was mentioned in \autoref{sec:stabilizing_anomaly_output}.
+\subsection*{Grid HTM}
+For Grid HTM, more time should be spent exploring other aggregation functions so that the aggregated anomaly score can be used more efficiently. One could use deep learning for this purpose or perhaps use another layer of HTM, the possibilities are endless.
 \par
+Additionally, it would be a big benefit to create an algorithm which can decide the parameters for each cell during the calibration phase. It is also possible to improve explainability and robustness by implementing a measure of certainty for each cell.
+\par
+Depth vision or 3D vision should be experimented with, as the depth information could be valuable for anomaly detection in surveillance. With voxels, this could be used similarly to 2D segmentation, where there could be an extra SDR for each layer of depth in the voxelized 3D image.
+\par
+Finally, experiments should be performed to validate the possibility of having the TM in each cell grow synapses to neighboring cells in order to solve the issue with unstable anomaly output, which was mentioned in \autoref{sec:stabilizing_anomaly_output}.
+\subsection*{HTM and Deep Learning}
 Another important field to research is a tighter integration between HTM and deep learning. This way it could be possible to leverage the self-supervision and noise resilience property of HTM, together with the powerful feature extraction and representation of deep learning approaches. Effectively combining the best of both approaches while eliminating the disadvantages that have been mentioned in \autoref{sec:background}.
 \par
-HTM theory is in constant development, especially as the understanding of the brain grows. Future work would therefore include keeping up to date on the latest developments within HTM theory, and update the model and add new systems accordingly.
+\subsection*{Research Updates}
+HTM theory is in constant development, especially as the understanding of the brain grows. Future work would therefore include keeping up to date on the latest developments within HTM theory and neuroscientifical research, and update the model and add new systems accordingly.
