@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{sec:introduction}
 \section{Background and Motivation}
-As the global demand for security and automation increases, many seek to use video anomaly detection systems. In the US alone, the surveillance market is expected to reach $\$23.60$ Billion by 2027~\cite{us_video_stats}. Leveraging modern computer vision, modern anomaly detection systems play an important role in increasing monitoring efficiency and reducing the need for expensive live monitoring. Their use cases can vary from detecting faulty products on an assembly line or detecting car accidents on a highway, and everything in between.
+As the global demand for security and automation increases, many seek to use video anomaly detection systems. In the US alone, the surveillance market is expected to reach $\$23.60$ Billion by 2027~\cite{us_video_stats}. Leveraging modern computer vision, modern anomaly detection systems play an important role in increasing monitoring efficiency and reducing the need for expensive live monitoring. Their use cases can vary from detecting faulty products on an assembly line to detecting car accidents on a highway, and everything in between.
 \par
 The most important component in video anomaly detection systems is the intelligence behind it. The intelligence ranges from simple on-board algorithms to advanced deep learning models, where the latter has experienced increased popularity in the past few years.\par
 \begin{figure}[H]
@@ -21,7 +21,7 @@ Based on the background and motivation, the problem statement can be boiled down
 This thesis will introduce three different objectives that will help answer the question and also showcase the performance of HTM. This thesis will also cover all required knowledge. The objectives are as follows:
 \begin{enumerate}
     \item Introduce  \gls*{htm} and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being friendly to readers with a machine learning background.
-    \item Develop and outline a theoretically sound pipeline so that  \gls*{htm} can be applied for anomaly detection in complex videos.
+    \item Develop and outline a theoretically sound architecture so that  \gls*{htm} can be applied for anomaly detection in complex videos.
     \item Perform experiments, discuss the results, and lay out potential future work. The experiments will vary in difficulty, complexity, and will focus on different use cases.
 \end{enumerate}
 
@@ -39,22 +39,22 @@ This thesis explores the use of HTM for anomaly detection in videos, and introdu
 \paragraph*{Objective 1} \emph{Introduce HTM and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being friendly to readers with a machine learning background.}
 \par
 This objective is achieved in \autoref{sec:background}, where HTM is explained. This chapter also acts as an organization of  \gls*{htm} related research, supported with visualizations and a simpler language, making it easier for people with a machine learning background to understand. It is also important to mention that not only does this chapter include the main HTM research published, but it also contains little tidbits of community research and ideas which are otherwise hard to come by.
-\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound pipeline so that HTM can be applied for anomaly detection in complex videos.}
+\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound architecture so that HTM can be applied for anomaly detection in complex videos.}
 \par
 This objective is achieved in \autoref{sec:grid_htm}, where Grid HTM was introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis.
 \paragraph*{Objective 3} \emph{Perform experiments, discuss the results, and lay out potential future work. The experiments will vary in difficulty, complexity, and will focus on different use cases.}
 \par
 This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that HTM and Grid HTM can indeed perform on simple and clean videos. The second experiment showcased the performance of Grid HTM on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid HTM to detect segments in a video, where noisy videos of sperm were used for increased challenge.
 \par
-Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is HTM viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid HTM and other HTM based systems can indeed be used as anomaly detection systems for videos.
+Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is HTM viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid HTM and other HTM based architectures can indeed be used as anomaly detection systems for videos.
 \par
-Finally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to HTM from a machine learning perspective, which is something that is sorely needed due to the low popularity of the HTM field.
+Finally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to HTM from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the HTM field.
 
 \section{Thesis Outline}
 This thesis consists of five chapters, where \autoref{sec:introduction} and \autoref{sec:background} are introductory and contain relevant background information for the understanding of the proceeding chapters. \autoref{sec:grid_htm} and \autoref{sec:experiments} present the work done during this thesis. \autoref{sec:conclusion} neatly summarizes this thesis and presents areas in which there can be performed further work. More details for each of the chapters, except this one, is presented below.
 \par
 \subsection*{Chapter 2: Background}
-\autoref{sec:background} covers the required knowledge for the proceeding chapters. It is split up into three parts. The first part covers the history of deep learning, and has an increased focus on the parts of deep learning that are especially relevant for this thesis, such as generative models.
+\autoref{sec:background} covers the required knowledge for the proceeding chapters. It is split up into three parts. The first part covers deep learning and its history, and has an increased focus on the parts of deep learning that are especially relevant for this thesis, such as generative models.
 \par
 The second part covers anomaly detection. More specifically, it covers the definition, challenges, and recent work within anomaly detection. It also discusses smart surveillance, which is a subset of anomaly detection specifically meant for surveillance purposes.
 \par

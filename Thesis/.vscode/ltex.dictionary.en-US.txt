@@ -16,3 +16,4 @@ framerate
 backpropagation
 logarithmically
 HTM-based
+Hebbian-like

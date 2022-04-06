@@ -16,12 +16,14 @@ The idea is that the \gls*{sp} will learn to find an optimal general representat
     \caption{The SDR and its corresponding \gls*{sp} representation. Note that the \gls*{sp} is untrained.}
 \end{figure}
 \par
-The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the system to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
+The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the model to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
 \par
-Ideally, the system will have a calibration period spanning several days or weeks, during which the system is not performing any anomaly detection, but is just learning the patterns.
+It is possible to split different segmentation classes into their respective SDRs. This will give the SP and the TM the ability to learn different things for each of the classes. For instance, if there are two classes "person" and "car", then the TM will learn that it is normal for objects belonging to "person" to be on the sidewalk, while objects belonging to "car" will be marked as anomalous when on the sidewalk.
+\par
+Ideally, the architecture will have a calibration period spanning several days or weeks, during which the architecture is not performing any anomaly detection, but is just learning the patterns.
 \section{Improvements}
 \subsection{Invariance}
-One issue that becomes evident is the lack of invariance. The \gls*{tm} is learning the global patterns, in our example it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot.
+One issue that becomes evident is the lack of invariance, due to the \gls*{tm} learning the global patterns. Using the example, it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot.
 \par
 This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
@@ -44,7 +46,7 @@ To solve the aforementioned problem and if the data has little noise, a potentia
         \hfil 0                             & \text{otherwise}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the system is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
+Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the architecture is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -84,9 +86,9 @@ It is also possible to estimate the number of predictions for each cell which ca
 \par
 These two properties show that GridHTM offers vastly more explainability than current state-of-the-art deep learning models for anomaly detection, which could make it an attractive approach.
 \subsection{Flexibility and Performance}
-In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the system increased flexibility. It is also possible to use a non-uniform grid, meaning that some cells can have different sizes. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
+In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the architecture increased flexibility. It is also possible to use a non-uniform grid, meaning that some cells can have different sizes. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
-That being said, a potential problem with this approach is that the rules for creating a good encoder, mentioned in \autoref{sec:encoders}, may not be respected and therefore should be reviewed:
+That being said, a potential problem with the grid approach is that the rules for creating a good encoder, mentioned in \autoref{sec:encoders}, may not be respected and therefore should be reviewed:
 \begin{itemize}
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
     \item \textbf{The same input should always produce the same SDR}. The segmentation model produces a deterministic output given the same input.
@@ -101,12 +103,12 @@ The solution for the last rule is two-fold, and  consists of imposing a soft upp
 There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. If it does affect the distribution, which can be the case with noisy data, then an improvement would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the distributions seen in \autoref{fig:num_active_pixels_dist}:
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.5\textwidth}
+    \begin{subfigure}[t]{\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist.png}
+        \includegraphics[width=0.8\textwidth]{resources/methodology/active_pixels_dist.png}
         \caption{Without empty pattern.}
-    \end{subfigure}%
-    \begin{subfigure}[t]{0.5\textwidth}
+    \end{subfigure}\hfill
+    \begin{subfigure}[t]{0.8\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist2.png}
         \caption{With empty pattern.}
@@ -181,14 +183,14 @@ One example is making it possible to have an entire city be monitored by a few p
 \par
 Grid HTM could also be used to help automate labeling of anomaly datasets for deep learning. This would be similar to how older deep learning networks are used to help automate creating new labeled image datasets, where the model proposes a label for an image, which is then further refined by a human if needed.
 \section{Summary}
-This chapter proposes to use segmentation techniques as an encoder for visual data. The resulting SDRs can then be parsed by Grid HTM, which is essentially a collection of HTM systems divided into a grid. The idea is that the SP will find an optimal general representation of the objects represented in the input SDRs. The task of the TM will be to learn the patterns that these objects exhibit over time, such as position, speed, and shape. Ideally, the system will have a calibration period where it will not do any anomaly detection but will only learn the patterns.
+This chapter proposes to use segmentation techniques as an encoder for visual data. The resulting SDRs can then be parsed by Grid HTM, which is essentially a collection of HTM models divided into a grid. The idea is that the SP will find an optimal general representation of the objects represented in the input SDRs. The task of the TM will be to learn the patterns that these objects exhibit over time, such as position, speed, and shape. Ideally, the architecture will have a calibration period where it will not do any anomaly detection but will only learn the patterns.
 \par
-The main reason for applying a grid, and using separate HTM systems in each cell, is to introduce a form of invariance within the frame. Another benefit is that this introduces explainability into the system, meaning that it is easy to know where in the frame the anomaly is. Finally, having a grid means increased flexibility since the HTM systems in each grid can be configured independently as well as the possibility to run each grid in parallel for increased performance. This chapter proposes to use an aggregation function to combine all the anomaly outputs of each cell in the grid into a single output for the entire system.
+The main reason for applying a grid, and using separate HTM models in each cell, is to introduce a form of invariance within the frame. Another benefit is that this introduces explainability into the architecture, meaning that it is easy to know where in the frame the anomaly is. Finally, having a grid means increased flexibility since the HTM models in each grid can be configured independently as well as the possibility to run each grid in parallel for increased performance. This chapter proposes to use an aggregation function to combine all the anomaly outputs of each cell in the grid into a single output for the entire architecture.
 \par
 With all the new changes made, it is important to review the rules for creating a good encoder, and it becomes evident that the rule regarding having a stable sparsity value is not followed. To address this, a pattern representing emptiness is introduced in order to impose a lower bound for sparsity, while the cell size itself acts as a soft upper bound for the number of active pixels. Due to the possibility of a lot of cells  seeing the same empty pattern for long periods of time, it is recommended to disable boosting.
 \par
 One of the issues with the introduction of a grid, is that the HTM models in each cell can not see outside their own cell. This means that the HTM models have no way of predicting that something is about to enter the cell, which causes a spike in the anomaly score for the frame when something enters the cell. A band-aid solution is to ignore the anomaly output during the frame in which this happens.
 \par
-An issue that occurs specifically for high framerate videos is that HTM struggles to learn temporal patterns. It is suspected that this occurs due to a contextual loop, in which predictions that predict themselves become true. A solution is to concatenate the past SP outputs into a single SDR which is then used as input into the TM. This will force the TM input, for when an object is in motion and when an object is still, to be unique. A potential side effect is that the system becomes more tolerant to temporal noise.
+An issue that occurs specifically for high framerate videos is that HTM struggles to learn temporal patterns. It is suspected that this occurs due to a contextual loop, in which predictions that predict themselves become true. A solution is to concatenate the past SP outputs into a single SDR which is then used as input into the TM. This will force the TM input, for when an object is in motion and when an object is still, to be unique. A potential side effect is that the architecture becomes more tolerant to temporal noise.
 \par
 Grid HTM has several potential use cases, such as semi-active surveillance in which an entire city can be monitored by a few persons. It can also be used to help label anomaly datasets for use in training deep learning anomaly detection models.

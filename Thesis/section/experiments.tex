@@ -1,14 +1,14 @@
 \chapter{Experiments and Results}
 \label{sec:experiments}
-\section{Bouncing Ball Test}
-To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple test case to test the capabilities of HTM and confirm that they apply on a video is introduced.
+\section{Bouncing Ball Example}
+To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple example to test the capabilities of HTM and confirm that they apply on a video is introduced.
 \subsection{Data}
 \begin{figure}[H]
     \centering
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updown1.png}\hfill
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updownside.png}\hfill
     \includegraphics[width=.3\textwidth]{resources/experiments/bouncing_ball/bb_updown2.png}
-    \caption{The bouncing ball test, and its three stages.}
+    \caption{The bouncing ball example, and its three stages.}
     \label{fig:bb}
 \end{figure}
 The video consists of a ball bouncing up and down until an anomaly occurs in the form of a sudden introduction of a horizontal velocity. After a while this horizontal velocity is set back to 0 and the ball is once again bouncing up and down in-place. This is visualized in \autoref{fig:bb}.
@@ -41,7 +41,7 @@ The solution is to set the value by which permanence is decreased by to zero, ef
     \label{fig:bb_forget}
 \end{figure}
 \subsubsection{Boosting and Zero Permanence Decrement}
-Finally, for the sake of interest, the bouncing ball test was performed with both boosting enabled and with zero permanence decrement. Results can be seen in \autoref{fig:bb_boosting_forget}.
+Finally, for the sake of interest, the bouncing ball example was performed with both boosting enabled and with zero permanence decrement. Results can be seen in \autoref{fig:bb_boosting_forget}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
@@ -49,7 +49,7 @@ Finally, for the sake of interest, the bouncing ball test was performed with bot
     \label{fig:bb_boosting_forget}
 \end{figure}
 \subsubsection{Parameters}
-Final list of parameters for reproducibility:
+Final list of parameters for reproducibility. For the plots, a moving average of $n=100$ was used to smooth the output.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
@@ -107,7 +107,7 @@ This is a very simple problem which does not require invariances, making it unsu
 \end{figure}
 It can be observed in \autoref{fig:bb_gridhtm} that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
 \subsubsection{Parameters}
-The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function, because there is no noisy due to the controlled environment.
+The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function, because there is no noise due to the controlled environment. Again, a moving average of $n=100$ was used to smooth the anomaly score output in the plots.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -214,7 +214,7 @@ In the original video, there is a road on which cars regularly drive. By observi
     \caption{Visual output during when a car is driving along the main road.}
 \end{figure}
 \subsubsection{Frame Repeat}
-To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the system marks the cars standing still on the road as anomalies.
+To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the architecture marks the cars standing still on the road as anomalies.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_1.png}
@@ -239,7 +239,7 @@ Finally, it is interesting to look at how the Grid HTM handles the repeating fra
     \caption{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. This time without multistep temporal patterns.}
     \label{fig:surveillance_freeze_no_mtp}
 \end{figure}
-Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive HTM is regarding parameters.
+Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive HTM can be regarding parameters.
 \subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
@@ -255,9 +255,9 @@ The first point of interest, which can be seen in \autoref{fig:surveillance_poi_
     \caption{Visual output of the first point of interest.}
     \label{fig:surveillance_poi_1}
 \end{figure}
-It can be seen that the anomaly score output can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
+It can be seen that the anomaly score output, which is shown at the very bottom of each image, can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
 \par
-The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing HTM to all possible behaviours that are considered not anomalous.
+The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing HTM to all possible behaviours that are considered not anomalous, which is one of the complexities mentioned in \autoref{sec:anomaly_detection}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
@@ -357,7 +357,7 @@ That being said, the parameters for the Grid HTM were selected carefully to achi
     \caption{Results on a sperm video with drift.}
     \label{fig:sperm_results2}
 \end{figure}
-Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value.
+Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value. That being said, Grid HTM still outperforms the L1 score due to the more prominent spikes in the anomaly score.
 \subsection{Parameters}
 For both results the following parameters were used:
 \begin{table}[H]

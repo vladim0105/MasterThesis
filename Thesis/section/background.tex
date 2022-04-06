@@ -12,7 +12,7 @@ The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm th
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
-As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp} which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function~\cite{perceptron_misconceptions}.
+As shown by \textcite{perceptron3}, the perceptron was able to solve linearly separable problems such as the OR function, but was unable to solve the XOR function. For the latter, it was theorized by others that stacking perceptrons in multiple layers, known as a \gls*{g_mlp}, which is shown in \autoref{fig:mlp}, would be able to solve more complex problems such as the aforementioned XOR function~\cite{perceptron_misconceptions}.
 \par
 \begin{figure}[H]
     \centering
@@ -38,7 +38,7 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
     \label{fig:nn}
 \end{figure}
 \subsubsection{Learning}
-Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}~\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods can be observed in \autoref{fig:gd_sgd}:
+Neural networks use gradients to learn. The gradients are first calculated using backpropagation which are then used to update the weights with the goal of reducing the error. This can be achieved using gradient descent, where one would calculate the gradient and descend towards the optimum using the entire dataset, but this is computationally expensive. An alternative is to use an optimizer such as \gls*{g_sgd}~\cite{sgd}, which calculates the gradient and descends using a random subset of the dataset. A visual comparison between the two methods is visualized in \autoref{fig:gd_sgd}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
@@ -48,7 +48,7 @@ Neural networks use gradients to learn. The gradients are first calculated using
 \par
 Yet with all the advancements within the field of neural networks, it still did not have the popularity that can be observed today. There are several reasons for this, one of them arguably being the introduction of the modern Support Vector Machine (SVM)~\cite{svm}, which overshadowed neural networks\cite{kuncheva2019pattern}.
 \par
-The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series analysis. There was also a lack of regularization methods, which caused the models to overfit and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
+The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series modelling. There was also a lack of regularization methods, which caused the models to overfit and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients.
 \par
 In order to improve upon regularization, techniques such as Dropout~\cite{dropout}, \gls*{g_bn}~\cite{batchnorm}, and Data Augmentation~\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder~\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
@@ -114,7 +114,7 @@ As stated by \textcite{XAI}, as "black-box" approaches such as deep learning sur
     \begin{subfigure}{0.3\linewidth}
         \includegraphics[width=\linewidth]{resources/related_works/gradcam_cat.jpg}
     \end{subfigure}
-    \caption{Grad-CAM visualization for dog and cat. (Source:~\cite{GradCamExample})}
+    \caption{Grad-CAM visualization for the labels "dog" and "cat". (Source:~\cite{GradCamExample})}
 \end{figure}
 Approaches such as Grad-CAM~\cite{GradCam} and Guided Backpropagation~\cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models~\cite{XAI}.
 \section{Anomaly detection}
@@ -135,12 +135,12 @@ The current state-of-the-art algorithms for anomaly detection are numerous, but 
     \caption{GANomaly~\cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
     \label{fig:ganomaly}
 \end{figure}
-The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that it tries to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
+The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that they try to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
 \par
 
 Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space~\cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
 \par
-As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it is safe to say that there is a lack of explainability in the field of anomaly detection in videos.
+As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it is safe to say that there is a lack of explainability in the field of anomaly detection.
 \par
 There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
 \subsection{Smart Surveillance}
@@ -150,7 +150,7 @@ The work by \textcite{anomalyvideo} also discusses problems with using deep lear
 
 \section{Hierarchical Temporal Memory}
 Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces HTM theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
-The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to simulate the neocortex which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to estimate the activity in the brain, unlike Spiking Neural Networks and others which aim to accurately simulate the activity of the brain~\cite{spiking_neural_networks}.
+The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. HTM theory specifically aims to roughly simulate the neocortex, which is the outer layer of the brain tasked with advanced logic. It is important to note that HTM only attempts to \emph{estimate} the activity in the neocortex, unlike Spiking Neural Networks and others which aim to \emph{accurately simulate} the activity of the neocortex~\cite{spiking_neural_networks}.
 \subsection{Structure}
 HTM aims to replicate the structure of the neocortex which is made up of cortical regions. Cortical regions consist of cortical columns, where each column is divided into layers height-wise. These cortical columns are made up of mini-columns, which in turn are made up of neurons. \autoref{fig:cortical_region} visualizes the structure of a cortical region according to HTM theory.
 \begin{figure}[H]
@@ -159,7 +159,7 @@ HTM aims to replicate the structure of the neocortex which is made up of cortica
     \caption{Visualization of a cortical region structure in the neocortex according to HTM theory.}
     \label{fig:cortical_region}
 \end{figure}
-There is still uncertainty regarding the purpose of each layer, but the following has been concluded~\cite{htm_l2_l3,cortical_region}:
+There is still uncertainty regarding the purpose, and even the existence, of each layer, but the following has been concluded~\cite{htm_l2_l3,cortical_region}:
 \begin{itemize}
     \item[\textbf{L6}] Deals with input information.
     \item[\textbf{L5}] Motor outputs to body.
@@ -170,11 +170,11 @@ There is still uncertainty regarding the purpose of each layer, but the followin
 \end{itemize}
 Current HTM implementations only model L2/L3, but can be extended to model L4 as well~\cite{htm_l2_l3}.
 \par
-Neurons in HTM theory are different from neurons in traditional machine learning. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian like learning. The difference is shown in \autoref{fig:neuron_comparison}.
+Neurons in HTM theory are different from neurons in traditional machine learning~\cite{htm_neurons}. The term neuron in traditional machine learning is very misleading and since it is mathematically derived, has actually very little in common with a biological neuron. A biological neuron does not perform back propagation but learns by strengthening and weakening inter-neural connections (synapses), which is something that the HTM neuron attempts to model through Hebbian-like learning. The difference is shown in \autoref{fig:neuron_comparison}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/neuron_comparison.jpg}
-    \caption{Comparison of neurons~\cite{htm_neurons}: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
+    \caption{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
     \label{fig:neuron_comparison}
 \end{figure}
 The HTM neuron has three inputs~\cite{htm_neurons}:
@@ -183,7 +183,7 @@ The HTM neuron has three inputs~\cite{htm_neurons}:
     \item Context, which is data from neighboring neurons and acts as a prediction mechanism for the next feedforward input
     \item Feedback, which is feedback from other neurons in the hierarchy and acts as a prediction mechanism for a sequence of feedforward inputs
 \end{itemize}
-How this type of neuron operates will be covered in greater detail later in this section.
+How this type of neuron operates in HTM implementations will be covered in greater detail later in this section.
 \subsection{Common Algorithm}
 HTM theory states that there is a common algorithm for the intelligence. That the signals from hearing, vision, and touch are at the core processed by the same common algorithm. By extension, this means that HTM networks should be able to solve all kinds of logical tasks.
 \subsection{Sparse Distributed Representation}
@@ -194,7 +194,7 @@ HTM theory introduces Sparse Distributed Representation (SDR) as a way of repres
     \caption{Semantic similarities between the two SDRs A and B.}
     \label{fig:sdr_semantics}
 \end{figure}
-Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise.
+Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise. That being said, sparsity can be configured to be any value.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.25\textwidth]{resources/related_works/SDR.png}
@@ -249,7 +249,7 @@ Seeing as there is currently no encoder that can produce sensible SDRs from high
 \subsection{Learning}
 Similar to mammalian intelligence, HTM is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
 The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up the HTM neuron.\par
-The spatial pooler takes SDRs produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output SDRs usually have a fixed sparsity of about 2\% due to the fact the spatial pooler aims to produce SDRs that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
+The spatial pooler takes SDRs produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output SDRs usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce SDRs that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
 The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the SDRs formed by the spatial pooler and does two things:
 \begin{itemize}
     \item Learns sequences of SDRs formed by the spatial pooler
