@@ -341,7 +341,7 @@ To ensure that the HTM does not just react to the sudden change in pixels but do
 \end{align*}
 Where $F_t$ denotes a segmented frame at time step $t$. The L2 error could also have been used, but it would not matter since this experiment will be comparing relative values.
 \subsection{Results}
-As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent spikes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid HTM able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
+As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent changes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid HTM able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result1.png}
@@ -357,7 +357,9 @@ That being said, the parameters for the Grid HTM were selected carefully to achi
     \caption{Results on a sperm video with drift.}
     \label{fig:sperm_results2}
 \end{figure}
-Just like in the stationary video, the spikes in the anomaly score are more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value. That being said, Grid HTM still outperforms the L1 score due to the more prominent spikes in the anomaly score.
+Just like in the stationary video, the change in the anomaly score is more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value. That being said, Grid HTM still outperforms the L1 score due to the more prominent changes in the anomaly score.
+\subsection{Use Cases}
+The use case is to be able to use Grid HTM to detect segments and then use a separate tool to extract each segment. This could be useful in data processing, or even in streaming media services to automatically know when cuts happen and could aid scene boundary detection systems~\cite{scene_boundary_detection}.
 \subsection{Parameters}
 For both results the following parameters were used:
 \begin{table}[H]
