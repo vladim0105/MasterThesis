@@ -176,8 +176,10 @@ A potential side effect of introducing temporal patterns, is that because the TM
 Adding support for multistep temporal patterns to the method used by \textcite{MotionAnomalyDetection}, which is mentioned in \autoref{sec:htm_perf}, could improve their results.
 \section{Implementation}
 Grid HTM was implemented in Python using the community fork of Numenta's HTM codebase~\cite{htm_community_fork}. The reason for using the community fork is that Numenta has stopped developing the original codebase, and that the community codebase is more optimized and has more features. There are other HTM implementations available~\cite{htm_community_cuda,htm_community_brainblocks}, but these were not considered due to their low popularity meaning that they have a higher chance of lacking features and containing bugs.
-\section{Biological Ties}
-From a biological perspective and remembering that a single HTM model models a cortical column, each cell can be seen as an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, where the main structure that is lacking are the connections between the cortical columns.
+\section{Biological Plausibility}
+One of the key principles of HTM theory is that it must be biologically plausible. Every development within HTM theory follows this theory, and it should therefore be expected that Grid HTM does so as well.
+\par
+Remembering that a single HTM model models a cortical column, as stated in \autoref{sec:htm_structure}, means that each cell in the grid can be considered an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, as visualized in \autoref{fig:cortical_region}.
 \section{Use Cases}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par
