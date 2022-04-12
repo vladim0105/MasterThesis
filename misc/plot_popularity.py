@@ -26,4 +26,5 @@ ax2.set_ylabel("Deep Learning Surveillance Publications")
 plots = [dl_plot, dls_plot]
 labs = [l.get_label() for l in plots]
 ax.legend(plots, labs, loc=0)
+plt.savefig("publications_graph.eps")
 plt.show()
