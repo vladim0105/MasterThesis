@@ -6,7 +6,7 @@ As the global demand for security and automation increases, many seek to use vid
 The most important component in video anomaly detection systems is the intelligence behind it. The intelligence ranges from simple on-board algorithms to advanced deep learning models, where the latter has experienced increased popularity in the past few years.\par
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/introduction/publications_graph.png}
+    \includegraphics[width=\linewidth]{resources/introduction/publications_graph}
     \caption{The increase in publications mentioning the terms "deep learning" and "deep learning surveillance"~\cite{deep_learning_surveillance_stats}.}
 \end{figure}
 Yet despite the major progress within the field of deep learning, there are still many tasks where humans outperform models, especially in anomaly detection where the anomalies are often undefined. Deep learning approaches also perform poorly when dealing with noise and concept drift.
@@ -50,7 +50,11 @@ Now that the three objectives have been achieved, it is possible to answer the t
 \par
 Finally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to HTM from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the HTM field.
 \section{Research Methods}
-Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis question, an explorative research method was employed. For the surveillance experiment, a qualitative research method was used to determine the effectiveness of Grid HTM.
+Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis, an exploratory research method was used with the context of answering the thesis question, this was used due to the novelty of this thesis and the lack of related works. The result of this exploratory method is Grid HTM, which began from a simple starting point and was shaped through exploring improvements and solutions to problems that arose.
+\par
+For the surveillance experiment, a qualitative research method was used to determine the effectiveness of Grid HTM. This is due to the lack of labeled data which made it hard to quantify, and that real life surveillance examples are complex by nature. The result is that the effectiveness was determined not through numbers, but through whether the results were qualitatively reasonable.
+\par
+As for the other experiments, a more quantitative research method was used. This was made possible in the bouncing ball experiment due to the controlled nature of the experiment. In the sperm experiment, this was made possible due to the use of a benchmark, which allowed for direct comparisons.
 \section{Thesis Outline}
 This thesis consists of five chapters, where \autoref{sec:introduction} and \autoref{sec:background} are introductory and contain relevant background information for the understanding of the proceeding chapters. \autoref{sec:grid_htm} and \autoref{sec:experiments} present the work done during this thesis. \autoref{sec:conclusion} neatly summarizes this thesis and presents areas in which there can be performed further work. More details for each of the chapters, except this one, is presented below.
 \par

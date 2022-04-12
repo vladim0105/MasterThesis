@@ -1,6 +1,8 @@
 \chapter{Grid HTM}
 \label{sec:grid_htm}
+This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github\cite{master_thesis_github}.
 \section{Introduction}
+\par
 When it comes to applying \gls*{htm} on videos, this thesis proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset.
 \begin{figure}[H]
     \centering
@@ -177,10 +179,26 @@ Adding support for multistep temporal patterns to the method used by \textcite{M
 \section{Implementation}
 Grid HTM was implemented in Python using the community fork of Numenta's HTM codebase~\cite{htm_community_fork}. The reason for using the community fork is that Numenta has stopped developing the original codebase, and that the community codebase is more optimized and has more features. There are other HTM implementations available~\cite{htm_community_cuda,htm_community_brainblocks}, but these were not considered due to their low popularity meaning that they have a higher chance of lacking features and containing bugs.
 \section{Biological Plausibility}
-One of the key principles of HTM theory is that it must be biologically plausible. Every development within HTM theory follows this theory, and it should therefore be expected that Grid HTM does so as well.
+One of the key principles of HTM theory is that it must be biologically plausible~\cite{BAMI}. Every development within HTM theory follows this theory, and it should therefore be expected that Grid HTM does so as well.
 \par
 Remembering that a single HTM model models a cortical column, as stated in \autoref{sec:htm_structure}, means that each cell in the grid can be considered an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, as visualized in \autoref{fig:cortical_region}.
 \section{Use Cases}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{resources/methodology/surveillance_example1.png}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{resources/methodology/surveillance_example2.png}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{resources/methodology/surveillance_example3.png}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{resources/methodology/surveillance_example4.png}
+    \end{subfigure}
+    \caption{Examples of environments that Grid HTM could help monitor. Image taken from the VIRAT\cite{VIRAT} dataset.}
+\end{figure}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par
 One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
