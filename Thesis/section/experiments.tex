@@ -196,7 +196,7 @@ While on the topic of segmentation, it is important to mention that the segmenta
 \subsection{Results}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_result.png}
+    \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_result}
     \caption{Anomaly score output from Grid HTM.}
     \label{fig:surveillance_results}
 \end{figure}
@@ -435,9 +435,11 @@ This experiment explored the ability of Grid HTM to detect segments in greater d
 The results show that Grid HTM outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
 \clearpage
 \section{Summary}
-In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of HTM and Grid HTM on videos.
+In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of HTM and Grid HTM on videos. The experiments show that it is possible to apply Grid HTM for anomaly detection in videos. For instance, results show that Grid HTM is able to learn the norm in a complex surveillance video, and is therefore able to detect anomalous events and where they occur in the frame. It was also shown that for complex data, the anomaly score output is not a good measure to use due to the noise and the influence of the size of the anomalies.
 \par
+The first experiment is a controlled experiment where a computer-generated ball is bouncing with anomalies inserted. The aim of this experiment is to test whether the capabilities of HTM apply for videos, as well as the performance of Grid HTM on the same task. The results confirm this, and show that the performance of Grid HTM is slightly worse than that of normal HTM. This is to be expected since the data is very clean and simple, whereas Grid HTM was designed with more complex data in mind.
+\par
+The second experiment showcases the performance of Grid HTM on a surveillance video with technical anomalies. Additionally, several key points of interests and the respective outputs of Grid HTM are shown in order to get a better understanding of its capabilities. Again, the results show that Grid HTM can adapt to the norm in the complex video and can correctly identify anomalies. An interesting discovery is the ability of Grid HTM to detect segment changes. The results also show that the anomaly score output cannot be relied upon for thresholding purposes, and that further work is required in that area.
+\par
+The third experiment further explores the ability of the Grid HTM to detect segments in videos, which was discovered in the previous experiment. The videos that are used in this experiment are videos of sperm that contain several segments. The results show that it outperforms the L1 benchmark due to a more prominent change in anomaly score during segment changes.
 
-\par
-
-\par

@@ -16,7 +16,7 @@ As shown by \textcite{perceptron3}, the perceptron was able to solve linearly se
 \par
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/mlp.gv.png}
+    \includegraphics[width=\linewidth]{resources/related_works/mlp.gv.eps}
     \caption{Example of a \gls*{g_mlp}.}
     \label{fig:mlp}
 \end{figure}
@@ -33,7 +33,7 @@ The result is that no longer did researchers have to manually engineer features,
 Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are similar to the \gls*{g_mlp} networks made in the 80s. The main difference is that each neuron in a \gls*{g_mlp} can have an arbitrary activation function, such as the sigmoid function and the \gls*{g_relu}~\cite{relu} function, which adds nonlinearity into the neural network and allows it to solve complex problems. They also contain more hidden layers, as seen in \autoref{fig:nn}, hence the term \emph{deep} learning.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/nn.gv.png}
+    \includegraphics[width=\linewidth]{resources/related_works/nn.gv.eps}
     \caption{Example of a neural network.}
     \label{fig:nn}
 \end{figure}
@@ -115,7 +115,7 @@ As stated by \textcite{XAI}, as "black-box" approaches such as deep learning sur
     \begin{subfigure}{0.3\linewidth}
         \includegraphics[width=\linewidth]{resources/related_works/gradcam_cat.jpg}
     \end{subfigure}
-    \caption{Grad-CAM visualization for the labels "dog" and "cat". Taken from~\textcite{GradCamExample}.}
+    \caption[Grad-Cam Visualization]{Grad-CAM visualization for the labels "dog" and "cat". Taken from~\textcite{GradCamExample}.}
 \end{figure}
 Approaches such as Grad-CAM~\cite{GradCam} and Guided Backpropagation~\cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models~\cite{XAI}.
 \section{Anomaly detection}
@@ -425,8 +425,10 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
     \label{fig:motion_frame}
 \end{figure}
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that HTM by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features.
-
-
+\section{Ethics}
+This thesis introduces an architecture for performing surveillance on potentially a massive scale, and could even be tied to some sort of social credit system. This raises ethical questions regarding mass surveillance that highlight how the work done in this thesis can be misused. Therefore, even if the work done in this thesis is nowhere near perfect and far from ready to be used in production, one should still keep the ethical aspects in mind when pursuing this type of research.
+\par
+It should also be reiterated that HTM is the result of research from a private company, which is why one should be extra critical of their work. Another aspect is that unlike deep learning, which is democratized, HTM is still very centralized. This means that Numenta has a lot of influence within the development of HTM, which could be misused for the purpose of promoting the goals of the company.
 \section{Summary}
 Deep learning can be traced back to the Perceptron which was a machine learning model capable of solving linearly separable problems. Over time, people theorized that stacking Perceptrons would give it the ability to solve more complex problems. This was not possible before back propagation was introduced. After that, deep learning evolved and new architectures were invented. One of the main contribution is the introduction of the CNN, which allowed deep learning approaches to achieve state-of-the-art results for complex problems such as image classification. The ability to train deep learning on the GPU and the introduction of frameworks caused deep learning to explode in popularity. One of the latest advancements is the introduction of generative models, which can be used for various purposes including generating realistic data. Deep learning has several issues, such as lack of explainability, the need for a lot of data, and poor out-of-distribution performance.
 \par
