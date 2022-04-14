@@ -8,14 +8,14 @@ When it comes to applying \gls*{htm} on videos, this thesis proposes to use segm
     \centering
     \includegraphics[width=.45\textwidth]{resources/methodology/original.png}
     \includegraphics[width=.45\textwidth]{resources/methodology/car_segmentation.png}
-    \caption{Segmentation result of cars, which is suited to be used as an SDR. Original frame taken from VIRAT~\cite{VIRAT}.}
+    \caption[Segmentation Result of Cars]{Segmentation result of cars, which is suited to be used as an SDR. Original frame taken from VIRAT~\cite{VIRAT}.}
 \end{figure}
 The idea is that the \gls*{sp} will learn to find an optimal general representation of cars. How general this representation is can be configured using the various parameters, but ideally they should be set so that different cars will be represented similarly while trucks and motorcycles will be represented differently.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation.png}
     \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation_sp.png}
-    \caption{The SDR and its corresponding \gls*{sp} representation. Note that the \gls*{sp} is untrained.}
+    \caption[SDR and SP Representation]{The SDR and its corresponding \gls*{sp} representation. Note that the \gls*{sp} is untrained.}
 \end{figure}
 \par
 The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the model to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
@@ -31,7 +31,7 @@ This thesis proposes a solution based on dividing the encoder output into a grid
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/methodology/car_segmentation_grid.png}
-    \caption{The encoder output divided into a grid.}
+    \caption[Encoder Output Grid]{The encoder output divided into a grid.}
     \label{fig:grid}
 \end{figure}
 \subsubsection{Aggregation Function}
@@ -61,7 +61,7 @@ Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be 
         \includegraphics[width=\textwidth]{resources/methodology/aggr_noisy_nzmean.png}
         \caption{Non-zero mean.}
     \end{subfigure}
-    \caption{How the two aggregation functions perform on the same noisy data.}
+    \caption[Aggregation Functions on Noise Data]{How the two aggregation functions perform on the same noisy data.}
     \label{fig:aggr_noisy}
 \end{figure}
 \begin{figure}[H]
@@ -77,7 +77,7 @@ Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be 
         \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_nzmean.png}
         \caption{Non-zero mean.}
     \end{subfigure}
-    \caption{How the two aggregation functions perform on the same clean data.}
+    \caption[Aggregation Functions on Clean Data]{How the two aggregation functions perform on the same clean data.}
     \label{fig:aggr_clean}
 \end{figure}
 \autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is rendered useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clearly defined range between 0 and 1.
@@ -115,7 +115,7 @@ There could be situations where a few pixels are active within a cell, which cou
         \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist2.png}
         \caption{With empty pattern.}
     \end{subfigure}
-    \caption{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement of $\sim 5$.}
+    \caption[Distribution of Active Pixels]{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement of $\sim 5$.}
     \label{fig:num_active_pixels_dist}
 \end{figure}
 
@@ -125,7 +125,7 @@ The visual output resulting from these changes, which is an equally important ou
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
-    \caption{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
+    \caption[Example Grid HTM Output]{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
     \label{fig:gridhtm_output}
 \end{figure}
 Since there are now cells that are observing an empty pattern for a lot of the time in sparse data, boosting is recommended to be turned off, otherwise the \gls*{sp} output for the empty cells would change back and forth in order to adjust the active duty cycle.
@@ -134,14 +134,14 @@ Since there are now cells that are observing an empty pattern for a lot of the t
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty.png}
-    \caption{High anomaly score when an empty cell (represented with an empty pattern with a sparsity value of 5) changes to being not empty, as something enters the cell.}
+    \caption[Stabilizing Anomaly Output Visualization 1]{High anomaly score when an empty cell (represented with an empty pattern with a sparsity value of 5) changes to being not empty, as something enters the cell.}
     \label{fig:empty_to_notempty}
 \end{figure}
 Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This is illustrated in \autoref{fig:empty_to_notempty} where it can be observed that this effect causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty, which is illustrated in \autoref{fig:empty_to_notempty_fixed}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty_fixed.png}
-    \caption{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
+    \caption[Stabilizing Anomaly Output Visualization 2]{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
     \label{fig:empty_to_notempty_fixed}
 \end{figure}
 A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
@@ -153,13 +153,13 @@ Since the \gls*{tm} can only grow segments to cells that were active in the prev
     \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_moving.png}
     \unskip\ \vrule\
     \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_still.png}
-    \caption{Comparison of a moving object (left) and a still object (right)in a high framerate video. They are very similar and could actually end up being represented identically by the SP.}
+    \caption[Comparison of a Moving Object in a High Framerate Video]{Comparison of a moving object (left) and a still object (right)in a high framerate video. They are very similar and could actually end up being represented identically by the SP.}
 \end{figure}
 This could cause situations where an object that is supposed to be moving, suddenly stands still, yet the \gls*{tm} will not mark it as an anomaly due to it being stuck in a contextual loop. A contextual loop is when one of the predictions at $t$ becomes true at $t+1$, and then one of the predictions at $t+1$ is almost identical to the state at $t$, which becomes true if the object is not moving, causing the \gls*{tm} to enter the same state that it was in at $t$.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/contextual_loop.png}
-    \caption{Example of a contextual loop.}
+    \caption[Contextual Loop Example]{Example of a contextual loop.}
 \end{figure}
 A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that are suitable to be used as contextual anchors, so as a replacement, the past observations are encoded instead. Parallels can be drawn to the Transformer model, where a positional encoding is required for it to learn order of sequences~\cite{transformer}.
 \par
@@ -168,7 +168,7 @@ A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation.png}
     \unskip\ \vrule\
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation_still.png}
-    \caption{Example of concatenation with $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
+    \caption[Multistep Temporal Pattern Example]{Example of concatenation with $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
 \end{figure}
 Concatenating past observations together will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$. One could feed the past $n$ encoder outputs into the \gls*{sp} instead, but this will lead to a much higher computational requirement, as well as make both the \gls*{sp} and \gls*{tm} parameters to be dependent on $n$.
 
@@ -197,7 +197,7 @@ Remembering that a single HTM model models a cortical column, as stated in \auto
     \begin{subfigure}{0.49\linewidth}
         \includegraphics[width=\linewidth]{resources/methodology/surveillance_example4.png}
     \end{subfigure}
-    \caption{Examples of environments that Grid HTM could help monitor. Image taken from the VIRAT\cite{VIRAT} dataset.}
+    \caption[Grid HTM Environments]{Examples of environments that Grid HTM could help monitor. Image taken from the VIRAT\cite{VIRAT} dataset.}
 \end{figure}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par

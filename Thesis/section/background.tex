@@ -8,7 +8,7 @@ The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm th
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/perceptron}
-    \caption{The original perceptron.}
+    \caption[The Original Perceptron]{The original perceptron.}
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
@@ -17,7 +17,7 @@ As shown by \textcite{perceptron3}, the perceptron was able to solve linearly se
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/mlp.gv.eps}
-    \caption{Example of a \gls*{g_mlp}.}
+    \caption[MLP Example]{Example of a \gls*{g_mlp}.}
     \label{fig:mlp}
 \end{figure}
 Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{g_mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned~\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{g_mlp}, lead to a decline in the research of neuron-inspired approaches.
@@ -34,7 +34,7 @@ Modern \gls*{g_mlp} networks, often referred to as just "neural networks", are s
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/nn.gv.eps}
-    \caption{Example of a neural network.}
+    \caption[Neural Network Example]{Example of a neural network.}
     \label{fig:nn}
 \end{figure}
 \subsubsection{Learning}
@@ -42,7 +42,7 @@ Neural networks use gradients to learn. The gradients are first calculated using
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
-    \caption{Comparison between \gls*{g_sgd} and gradient descent.}
+    \caption[Gradient Descent Comparison]{Comparison between \gls*{g_sgd} and gradient descent.}
     \label{fig:gd_sgd}
 \end{figure}
 \par
@@ -65,7 +65,7 @@ Through the use of data augmentation, it is also possible to not only improve th
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/cnn}
-    \caption{ A typical CNN architecture. }
+    \caption[Typical CNN Architecture]{ A typical CNN architecture. }
     \label{fig:cnn_example}
 \end{figure}
 \par
@@ -81,7 +81,7 @@ Generative models come in all shapes and sizes, but a standard \gls*{g_gan} usua
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gan.png}
-    \caption{Example of a \gls*{g_gan}.}
+    \caption[Gan Example]{Example of a \gls*{g_gan}.}
     \label{fig:gan}
 \end{figure}
 In order to train the weights in such a configuration, the generator and discriminator are trained in alteration. To train the discriminator, the weights of the generator are fixed and backpropagation is performed using the error based on whether the discriminator made the right prediction. To train the generator, the weights of the discriminator are fixed and backpropagation is performed using the error based on whether the discriminator was fooled or not.
@@ -96,7 +96,7 @@ Due to the nature of training deep learning models, they are also in most cases 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/training_volume}
-    \caption{Accuracy increase in relation to size of dataset.}
+    \caption[Dataset Volume Accuracy]{Accuracy increase in relation to size of dataset.}
     \label{fig:data_size_accuracy}
 \end{figure}
 Deep learning models also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}.
@@ -133,7 +133,7 @@ The current state-of-the-art algorithms for anomaly detection are numerous, but 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/ganomaly}
-    \caption{GANomaly~\cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
+    \caption[GANomaly Visualization]{GANomaly~\cite{ganomaly}, a variation of \gls*{g_gan} for Anomaly detection.}
     \label{fig:ganomaly}
 \end{figure}
 The advantage is that GANs are generally good at generating realistic data, especially when it comes to images. The disadvantage is that GANs are very hard to train and may give suboptimal results given that they try to generate good synthetic data rather than directly detect anomalies. The training data also needs to contain all possible non-anomalous classes of events, which may not be a realistic expectation.
@@ -158,7 +158,7 @@ HTM aims to replicate the structure of the neocortex which is made up of cortica
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/related_works/cortical_region}
-    \caption{Visualization of a cortical region structure in the neocortex according to HTM theory.}
+    \caption[HTM Structure]{Visualization of a cortical region structure in the neocortex according to HTM theory.}
     \label{fig:cortical_region}
 \end{figure}
 There is still uncertainty regarding the purpose, and even the existence, of each layer, but the following has been concluded~\cite{htm_l2_l3,cortical_region}:
@@ -189,9 +189,9 @@ Neurons in HTM theory are different from neurons in traditional machine learning
     \begin{subfigure}[b]{0.55\linewidth}
         \centering
         \includegraphics[width=\linewidth]{resources/related_works/neuron_htm}
-        \caption{HTM neuron}
+        \caption[Comparison of neurons]{HTM neuron}
     \end{subfigure}
-    \caption{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
+    \caption[Comparison of Neurons]{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), HTM Neuron (C). Source:~\cite{BAMI}}
     \label{fig:neuron_comparison}
 \end{figure}
 The HTM neuron has three inputs~\cite{htm_neurons}:
@@ -208,14 +208,14 @@ HTM theory introduces Sparse Distributed Representation (SDR) as a way of repres
 \begin{figure}[H]
     \centering
     \includegraphics{resources/related_works/sdr-semantics.png}
-    \caption{Semantic similarities between the two SDRs A and B.}
+    \caption[SDR Semantic Comparison]{Semantic similarities between the two SDRs A and B.}
     \label{fig:sdr_semantics}
 \end{figure}
 Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise. That being said, sparsity can be configured to be any value.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.25\textwidth]{resources/related_works/SDR.png}
-    \caption{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
+    \caption[Example SDR]{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
 \end{figure}
 \subsection{Encoders}
 \label{sec:encoders}
@@ -229,11 +229,11 @@ There are principles that should be followed in order to create a good encoder:
     \item The output must have the same dimensionality (total number of bits) for all inputs
     \item The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling
 \end{itemize}
-As of now, there exists encoders for numbers, categories, geospatial locations, and dates. \autoref{fig:cyclical_encoder} shows the cyclical date encoder.
+As of now, there exists encoders for numbers, categories, geospatial locations, and dates. \autoref{fig:cyclical_encoder} shows a cyclical date encoding.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{resources/related_works/cyclical_encoder}
-    \caption{Visualization of a cyclical date encoder, which is currently encoding Thursday. Note that also Wednesday and Friday are included in the encoding of Thursday in order to emphasize that Wednesday and Friday are both equally distanced from Thursday.}
+    \caption[Cyclical Date Encoding]{Visualization of a cyclical date encoding, which is currently encoding Thursday. Note that also Wednesday and Friday are included in the encoding of Thursday in order to emphasize that Wednesday and Friday are both equally distanced from Thursday.}
     \label{fig:cyclical_encoder}
 \end{figure}
 Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into SDRs one by one and then concatenate them into a single SDR before passing it to the HTM.
@@ -242,7 +242,7 @@ Several approaches for encoding visual data have been proposed. An example is a 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/binary_threshold_example.png}
-    \caption{Example thresholding on the Fashion MNIST dataset~\cite{mnist_fashion}.}
+    \caption[Thresholding Example]{Example thresholding on the Fashion MNIST dataset~\cite{mnist_fashion}.}
     \label{fig:binary_threshold_example}
 \end{figure}
 \par
@@ -256,7 +256,7 @@ An encoder which transforms convolutional feature maps into SDRs could be the an
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/resnet18_layer_10.png}
-    \caption{Select few feature maps in the 10th layer of ResNet18~\cite{resnet} trained on ImageNet~\cite{imagenet}.}
+    \caption[Feature Maps]{Select few feature maps in the 10th layer of ResNet18~\cite{resnet} trained on ImageNet~\cite{imagenet}.}
     \label{fig:cnn_features}
 \end{figure}
 \par
@@ -275,7 +275,7 @@ The temporal memory algorithm, on the other hand, simulates the learning algorit
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/htm_pipeline.png}
-    \caption{The HTM Pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
+    \caption[The HTM Pipeline]{The HTM Pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
     \label{fig:htm_pipeline}
 \end{figure}
 
@@ -294,7 +294,7 @@ This gives HTM systems the property of on-line learning, meaning they learn as t
         \includegraphics[width=\linewidth]{resources/related_works/neuron_htm}
         \caption{HTM neuron}
     \end{subfigure}
-    \caption{Biological neuron and HTM neuron.}
+    \caption[SP and TM Responsibilities]{Biological neuron and HTM neuron, the colors show which part the SP and the TM covers.}
     \label{fig:sp_tm_responsibility}
 \end{figure}
 \autoref{fig:sp_tm_responsibility} shows that a spatial pooler combined with a temporal memory forms the HTM neuron, where the color green indicates the responsibility of the Spatial Pooler and blue indicates the responsibility of the Temporal Memory.
@@ -304,7 +304,7 @@ The spatial pooler consists of columns (mini-columns), where each column has a r
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/sp_vis_alt}
-    \caption{Visualization of the \gls*{sp} and the potential pool of one of its columns.}
+    \caption[Spatial Pooler Visualization]{Visualization of the \gls*{sp} and the potential pool of one of its columns.}
     \label{fig:sp_vis_alt}
 \end{figure}
 Each connection is described using a \textbf{permanence}-value which can be considered the "strength" of the connection, and it ranges between 0 and 1. During learning, the permanence value of the connections is increased or decreased depending on whether the corresponding bit in the input is active or inactive. When the permanence-value crosses above a \textbf{stimulus threshold}, the connection will be considered "active".
@@ -314,7 +314,7 @@ The amount of active connections for a given column is referred to as \textbf{ov
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{resources/related_works/sp_vis.png}
-    \caption{ This figure illustrates how a spatial pooler works. All connections are above the stimulus threshold. The receptive field is 3 bits wide for each column. Overlap score threshold is $1$, and $n=1$. Red means inactive, green means active, and blue means active and selected.}
+    \caption[Spatial Pooler Workings]{ This figure illustrates how a spatial pooler works. All connections are above the stimulus threshold. The receptive field is 3 bits wide for each column. Overlap score threshold is $1$, and $n=1$. Red means inactive, green means active, and blue means active and selected.}
     \label{fig:sp_vis}
 \end{figure}
 Because only the active columns are allowed to learn, only a select few columns who got lucky during the random initialization will dominate the spatial pooler output and have a very high \textbf{active duty cycle}. Active duty cycle measures how often a column is active and ranges from 0 (never) to 1 (always). \par
@@ -333,7 +333,7 @@ Essentially, it takes the "node" based representation of the \gls*{sp} output, a
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt2}
-    \caption{Visualization of the TM, with number of cells equal 4. Some columns are bursting.}
+    \caption[Temporal Memory Visualization]{Visualization of the TM, with number of cells equal 4. Some columns are bursting.}
 \end{figure}
 \par
 The temporal memory algorithm consists of two phases. The first phase is to evaluate the \gls*{sp} output against predictions and choose a set of active cells. It does so by looking at the active columns and the cells they contain. If an active column contains predictive cells, then those cells are marked as active. If an active column has no predictive cells, usually caused by observing a new pattern for the first time, then the column "bursts" by activating all the cells that the column contains (see \autoref{fig:tm_vis1}). Otherwise, a cell is inactive.
@@ -341,7 +341,7 @@ The temporal memory algorithm consists of two phases. The first phase is to eval
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{resources/related_works/tm_vis1.png}
-    \caption{Expanded \gls*{sp} example with \gls*{tm} component where the number of cells is set to 3. The leftmost column is bursting (all 3 cells activated in green) due to the active \gls*{sp} output and due to containing no predictive cells.}
+    \caption[Temporal Memory Workings]{Expanded \gls*{sp} example with \gls*{tm} component where the number of cells is set to 3. The leftmost column is bursting (all 3 cells activated in green) due to the active \gls*{sp} output and due to containing no predictive cells.}
     \label{fig:tm_vis1}
 \end{figure}
 At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.
@@ -357,7 +357,7 @@ The second phase is to form a prediction by putting cells into a predictive stat
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt}
-    \caption{Visualization of the \gls*{tm} and the three states. Active in green, predictive in blue, and inactive in white.}
+    \caption[Visualization of Cell States]{Visualization of the \gls*{tm} and the three states. Active in green, predictive in blue, and inactive in white.}
 \end{figure}
 
 One can configure how much the system can learn by setting the number of cells and the values by which permanence should be increased or decreased. If it is desired that the \gls*{tm} does not "forget" at all, then the permanence value by which synapses are decremented can be set to 0. If it is desired that the \gls*{tm} can only express patterns in the current context and the context of the previous time step, then the number of cells can be set to 2.
@@ -400,13 +400,13 @@ To summarize, the object is learned by the brain using multiple models that may 
         \caption{Hierarchy as in the Thousand Brains Theory}
         \label{}
     \end{subfigure}
-    \caption{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.}
+    \caption[Thousand Brains Visualization]{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.}
 \end{figure}
 This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet~\cite{inceptionnet} and Feature Pyramid Networks~\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
-    \caption{How the Inception~\cite{inceptionnet} architecture combines multiple filters.}
+    \caption[Filter Concatenation]{How the Inception~\cite{inceptionnet} architecture combines multiple filters.}
     \label{fig:inception_module}
 \end{figure}
 
@@ -421,11 +421,11 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/motion_frame.png}
-    \caption{Example motion frame~\cite{MotionAnomalyDetection}.}
+    \caption[Example Motion Frame]{Example motion frame~\cite{MotionAnomalyDetection}.}
     \label{fig:motion_frame}
 \end{figure}
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that HTM by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features.
-\section{Ethics}
+\section{Ethical Considerations}
 This thesis introduces an architecture for performing surveillance on potentially a massive scale, and could even be tied to some sort of social credit system. This raises ethical questions regarding mass surveillance that highlight how the work done in this thesis can be misused. Therefore, even if the work done in this thesis is nowhere near perfect and far from ready to be used in production, one should still keep the ethical aspects in mind when pursuing this type of research.
 \par
 It should also be reiterated that HTM is the result of research from a private company, which is why one should be extra critical of their work. Another aspect is that unlike deep learning, which is democratized, HTM is still very centralized. This means that Numenta has a lot of influence within the development of HTM, which could be misused for the purpose of promoting the goals of the company.
