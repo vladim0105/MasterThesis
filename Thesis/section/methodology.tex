@@ -48,7 +48,7 @@ To solve the aforementioned problem and if the data has little noise, a potentia
         \hfil 0                             & \text{otherwise}
     \end{cases}
 \end{align*}
-Meaning that only the cells with a non-zero anomaly score, denoted $x$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the architecture is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
+Meaning that only the cells with a non-zero anomaly score, denoted $X$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the architecture is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
@@ -95,7 +95,7 @@ That being said, a potential problem with the grid approach is that the rules fo
     \item \textbf{Semantically similar data should result in SDRs with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
     \item \textbf{The same input should always produce the same SDR}. The segmentation model produces a deterministic output given the same input.
     \item \textbf{The output must have the same dimensionality (total number of bits) for all inputs}. The segmentation model output has a fixed dimensionality.
-    \item \textbf{The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling}. The segmentation model does not respect this. An example is that there can be no cars (zero active bits), one car ($n$ active bits), or two cars ($2n$ active bits).
+    \item \textbf{The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling}. The segmentation model does not respect this. An example is that there can be no cars (zero active bits), one car ($n$ active bits), or two cars ($2n$ active bits), and that this will fluctuate over time.
 \end{itemize}
 The solution for the last rule is two-fold, and  consists of imposing a soft upper bound and a hard lower bound for the number of active pixels within a cell. The purpose is to lower the variation of number of active pixels, while also containing enough semantic information for the \gls*{htm} to work:
 \begin{itemize}
@@ -105,22 +105,22 @@ The solution for the last rule is two-fold, and  consists of imposing a soft upp
 There could be situations where a few pixels are active within a cell, which could happen when a car has just entered a cell, but this is fine as long as it does not affect the distribution too much. If it does affect the distribution, which can be the case with noisy data, then an improvement would be to add a minimum sparsity requirement before a cell is considered not empty, e.g. less than 5 active pixels means that the cell is empty.  In the following example, the number of active pixels within a cell centered in the video was used to build the distributions seen in \autoref{fig:num_active_pixels_dist}:
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{\textwidth}
+    \begin{subfigure}[t]{0.49\textwidth}
         \centering
-        \includegraphics[width=0.8\textwidth]{resources/methodology/active_pixels_dist.png}
+        \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist.eps}
         \caption{Without empty pattern.}
-    \end{subfigure}\hfill
-    \begin{subfigure}[t]{0.8\textwidth}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist2.png}
-        \caption{With empty pattern.}
+        \includegraphics[width=\textwidth]{resources/methodology/active_pixels_dist2.eps}
+        \caption{With empty pattern and minimum sparsity requirement of $5$.}
     \end{subfigure}
-    \caption[Distribution of Active Pixels]{Distribution of number of active pixels within a cell of size $12\times 12$, it can also be observed that it would benefit from having a minimum sparsity requirement of $\sim 5$.}
+    \caption[Distribution of Active Pixels]{Distribution of number of active pixels within a cell of size $12\times 12$.}
     \label{fig:num_active_pixels_dist}
 \end{figure}
 
 
-With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.88}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.\par
+With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.41}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.\par
 The visual output resulting from these changes, which is an equally important output as the aggregated anomaly score, can be seen in \autoref{fig:gridhtm_output}:
 \begin{figure}[H]
     \centering
@@ -179,7 +179,7 @@ Adding support for multistep temporal patterns to the method used by \textcite{M
 \section{Implementation}
 Grid HTM was implemented in Python using the community fork of Numenta's HTM codebase~\cite{htm_community_fork}. The reason for using the community fork is that Numenta has stopped developing the original codebase, and that the community codebase is more optimized and has more features. There are other HTM implementations available~\cite{htm_community_cuda,htm_community_brainblocks}, but these were not considered due to their low popularity meaning that they have a higher chance of lacking features and containing bugs.
 \section{Biological Plausibility}
-One of the key principles of HTM theory is that it must be biologically plausible~\cite{BAMI}. Every development within HTM theory follows this theory, and it should therefore be expected that Grid HTM does so as well.
+One of the key principles of HTM theory is that it should be biologically plausible~\cite{BAMI}. Every development within HTM theory follows this principle, and it should therefore be expected that Grid HTM does so as well.
 \par
 Remembering that a single HTM model models a cortical column, as stated in \autoref{sec:htm_structure}, means that each cell in the grid can be considered an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, as visualized in \autoref{fig:cortical_region}.
 \section{Use Cases}
@@ -197,7 +197,7 @@ Remembering that a single HTM model models a cortical column, as stated in \auto
     \begin{subfigure}{0.49\linewidth}
         \includegraphics[width=\linewidth]{resources/methodology/surveillance_example4.png}
     \end{subfigure}
-    \caption[Grid HTM Environments]{Examples of environments that Grid HTM could help monitor. Image taken from the VIRAT\cite{VIRAT} dataset.}
+    \caption[Grid HTM Environments]{Examples of environments that Grid HTM could help monitor. Images taken from the VIRAT~\cite{VIRAT} dataset.}
 \end{figure}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par

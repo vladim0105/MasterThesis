@@ -346,7 +346,7 @@ The temporal memory algorithm consists of two phases. The first phase is to eval
 \end{figure}
 At this point, the active cells represent the current input in the context of previous input. For each active column we look at the segments connected to the active cell(s). If the column is bursting we look at the segments that contain any active synapses, if there is no such segment we grow one on the cell with the fewest segments. On each of the segments that we are looking at, we \textbf{increase the permanence} on every active synapse, \textbf{decrease the permanence} on every inactive synapse, and grow new synapses to cells that were previously active. The algorithm also punishes segments that caused cells to enter predictive state, but which did not end up being active.
 \par
-Since the \gls*{tm} can only grow synapses to cells that were previously active, the \gls*{tm} struggles to express sequences of patterns over multiple timesteps, as has been discussed on HTM forums~\cite{tm_sequence_problem}. The solution has been to also encode some temporal information, such as the time of day~\cite{AHMAD2017134,tm_sequence_problem}, so that it can use timestamps as anchor points for its contexts.
+Since the \gls*{tm} can only grow synapses to cells that were active in the previous timestep, the \gls*{tm} struggles to express sequences of patterns over multiple timesteps, as has been discussed on HTM forums~\cite{tm_sequence_problem}. The solution has been to also encode some temporal information, such as the time of day~\cite{AHMAD2017134,tm_sequence_problem}, so that it can use timestamps as anchor points for its contexts.
 \par
 The second phase is to form a prediction by putting cells into a predictive state. For every segment on every cell, the number of synapses connected to active cells are counted. If the number exceeds an \textbf{activation threshold}, then the segment is marked as active and all the cells connected to the segment enter the predictive state. To summarize, a cell has three possible states:
 \begin{itemize}
@@ -406,7 +406,7 @@ This new type of hierarchy is also quite similar to some state-of-the-art image 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
-    \caption[Filter Concatenation]{How the Inception~\cite{inceptionnet} architecture combines multiple filters.}
+    \caption[Filter Concatenation]{How the Inception~\cite{inceptionnet} architecture uses multiple filters at once.}
     \label{fig:inception_module}
 \end{figure}
 

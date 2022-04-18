@@ -63,9 +63,13 @@ This thesis consists of five chapters, where \autoref{sec:introduction} and \aut
 \par
 The second part covers anomaly detection. More specifically, it covers the definition, challenges, and recent work within anomaly detection. It also discusses smart surveillance, which is a subset of anomaly detection specifically meant for surveillance purposes.
 \par
-The third and final part covers HTM theory. It starts off by introducing the biological ties to HTM and the pipeline of an HTM model. This is then proceeded by a detailed account of the inner mechanisms of an HTM model and how learning is performed. It then finishes by introducing use-cases, related work on the use of HTM for anomaly detection and how it performs, and introduces similarities between recent developments within HTM theory and recent developments within deep learning.
+The third and final part covers HTM theory. It starts off by introducing the biological ties to HTM and the pipeline of an HTM model. This is then proceeded by a detailed account of the inner mechanisms of an HTM model and how learning is performed. It then finishes by introducing use-cases, related work on the use of HTM for anomaly detection and how it performs, and introduces similarities between recent developments within HTM theory and recent developments within deep learning. There is also a brief section dedicated to ethical considerations when working within this field.
 \subsection*{Chapter 3: Grid HTM}
-This chapter introduces Grid HTM, a novel HTM architecture for the purpose of anomaly detection in videos. Grid HTM is presented gradually as problems occur and have to be solved. Potential use cases are also presented. The technicalities are explained with the help of figures and various analyses. This architecture is then used in \autoref{sec:experiments} when performing experiments.
+This chapter introduces Grid HTM, a novel HTM architecture for the purpose of anomaly detection in videos, which is the main contribution of this thesis.
+\par
+Grid HTM is presented gradually as problems occur and have to be solved. Some of these problems are invariance and unstable anomaly output. The technicalities are explained with the help of figures and various analyses. This architecture is then used in \autoref{sec:experiments} when performing experiments.
+\par
+Potential use cases are presented, such as reducing the need for expensive live monitoring as well as anomaly data labeling. The biological plausibility is also briefly discussed, and concludes that Grid HTM may loosely be considered a cortical region.
 \subsection*{Chapter 4: Experiments and Results}
 This chapter presents three experiments that aim to explore the capabilities and challenges of HTM and Grid HTM in the context of anomaly detection in videos. The first experiment is a controlled experiment where a computer-generated ball is bouncing with anomalies inserted. The aim of this experiment is to test whether the capabilities of HTM apply for videos, as well as the performance of Grid HTM on the same task.
 \par
@@ -73,4 +77,8 @@ The second experiment showcases the performance of Grid HTM on a surveillance vi
 \par
 The third experiment further explores the ability of the Grid HTM to detect segments in videos, which was discovered in the previous experiment. The videos that are used in this experiment are videos of sperm that contain several segments.
 \subsection*{Chapter 5: Conclusion and Further Work}
-In this chapter the thesis is summarized, and the thesis question presented in \autoref{sec:introduction} is answered along with potential further work.
+In this chapter the thesis is summarized, and the thesis question presented in \autoref{sec:introduction} is answered along with potential further work and the main contributions of this thesis.
+\par
+The contributions are presented as the description of how the various objectives were achieved, as well as answering the thesis question. This is a shorter version of the contributions mentioned in the introduction, and is presented conclusively.
+\par
+There is future work that needs to be done in several areas. The main future work is creating a suitable dataset, so that experiments can be performed more quantitatively. It is also important to explore new aggregation functions for Grid HTM, as well as implementing the calibration period which was mentioned in \autoref{sec:grid_htm}. Finally, one should look more into combining deep learning and HTM, as well as staying up to date on the latest developments within neuroscience and HTM.
