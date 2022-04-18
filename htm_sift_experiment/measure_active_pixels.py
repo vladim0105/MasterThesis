@@ -11,9 +11,10 @@ if __name__ == "__main__":
     success, frame = vidcap.read()
     frame = concat_seg(frame, success)
     scaled_frame_shape = (int(frame.shape[0] * video_scale), int(frame.shape[1] * video_scale))
-    total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))//10
+    total = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
     cell_sizes = [12]
     empty_pattern_pixels = 0
+    min_sparsity = 0
     num_active_pixels_list = {cell_size:[] for cell_size in cell_sizes}
     idx = 0
     with progressbar.ProgressBar(max_value=total, widgets=["Processing Frame #", progressbar.SimpleProgress(), " | ",
@@ -27,7 +28,7 @@ if __name__ == "__main__":
                        scaled_frame_shape[1] // 2 - cell_size // 2:scaled_frame_shape[1] // 2 + cell_size // 2
                        ]
                 num_active_pixels = (cell == 255)[:, :, 0].sum()
-                if num_active_pixels < 5:
+                if num_active_pixels <= min_sparsity:
                     num_active_pixels = empty_pattern_pixels
 
                 num_active_pixels_list[cell_size].append(num_active_pixels)
@@ -37,14 +38,17 @@ if __name__ == "__main__":
 
             if bar.value == total:
                 break
-    #num_active_pixels_list = np.array(num_active_pixels_list)
-    #print(np.std(num_active_pixels_list))
-
+    plt.rc('font', size=16)
+    plt.rc('axes', titlesize=20)
     for cell_size in cell_sizes:
-        #non_zero_avg = np.median(num_active_pixels_list[cell_size][np.nonzero(num_active_pixels_list[cell_size])])
+        array = np.array(num_active_pixels_list[cell_size])
+        plt.title(f"$\sigma={np.std(array):.2f}$")
+        non_zero_avg = np.mean(array[np.nonzero(array)])
         plt.hist(num_active_pixels_list[cell_size], bins="auto", log=True, alpha=1)
-        #plt.axvline(non_zero_avg, c="red", label="Non-zero Median")
-    plt.legend()
+        plt.axvline(non_zero_avg, c="red", label="Non-zero Mean")
+    plt.legend(loc='upper left')
     plt.ylabel("Frames")
     plt.xlabel("Number of Active Pixels")
+    plt.tight_layout()
+    plt.savefig("active_pixels_dist.eps")
     plt.show()

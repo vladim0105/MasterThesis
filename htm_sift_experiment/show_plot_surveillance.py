@@ -34,7 +34,6 @@ if __name__ == "__main__":
 
     # Plot linear sequence, and set tick labels to the same color
     anom_score_plot, = ax.plot(x_vals, utils.trailing_average(anoms, moving_avg), color='blue', label="Anomaly Score", alpha=0.75)
-    ax.tick_params(axis='y', labelcolor='blue')
     ax.set_ylabel("Anomaly Score")
     ax.set_xlabel("Frames")
     print(f"Frame Freeze IDX: "+str(int(frame_freeze)))
@@ -48,4 +47,5 @@ if __name__ == "__main__":
         anom_marker_plots.append(plot)
 
     plt.legend([anom_score_plot, tuple(anom_marker_plots), frame_freeze_plot], ["Grid HTM", "Segments", "Frame Freeze"])
+    plt.savefig("surveillance_results/figure.eps")
     plt.show()
