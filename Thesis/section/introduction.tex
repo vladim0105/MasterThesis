@@ -3,11 +3,12 @@
 \section{Background and Motivation}
 As the global demand for security and automation increases, many seek to use video anomaly detection systems. In the US alone, the surveillance market is expected to reach $\$23.60$ Billion by 2027~\cite{us_video_stats}. Leveraging modern computer vision, modern anomaly detection systems play an important role in increasing monitoring efficiency and reducing the need for expensive live monitoring. Their use cases can vary from detecting faulty products on an assembly line to detecting car accidents on a highway, and everything in between.
 \par
-The most important component in video anomaly detection systems is the intelligence behind it. The intelligence ranges from simple on-board algorithms to advanced deep learning models, where the latter has experienced increased popularity in the past few years.\par
+The most important component in video anomaly detection systems is the intelligence behind it. The intelligence ranges from simple on-board algorithms to advanced deep learning models, where the latter has experienced increased popularity in the past few years, as can be seen in \autoref{fig:dl_publications}.\par
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/introduction/publications_graph}
     \caption[Publications Increase Comparison]{The increase in publications mentioning the terms "deep learning" and "deep learning surveillance"~\cite{deep_learning_surveillance_stats}.}
+    \label{fig:dl_publications}
 \end{figure}
 Yet despite the major progress within the field of deep learning, there are still many tasks where humans outperform models, especially in anomaly detection where the anomalies are often undefined. Deep learning approaches also perform poorly when dealing with noise and concept drift.
 \par
@@ -21,8 +22,8 @@ Based on the background and motivation, the problem statement can be boiled down
 This thesis will introduce three different objectives that will help answer the question and also showcase the performance of HTM. It will also cover all required knowledge. The objectives are as follows:
 \begin{enumerate}
     \item Introduce  \gls*{htm} and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being easy to grasp to readers with a machine learning background.
-    \item Develop and outline a theoretically sound architecture so that  \gls*{htm} can be applied for anomaly detection in complex videos.
-    \item Perform experiments, discuss the results, and lay out potential future work. The experiments will vary in difficulty, complexity, and will focus on different use cases.
+    \item Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.
+    \item Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.
 \end{enumerate}
 
 \section{Limitations}
@@ -32,23 +33,25 @@ Additionally, \gls*{htm} for video anomaly detection~\cite{MotionAnomalyDetectio
 \par
 It should also be mentioned that the \gls*{htm} theory described in this thesis is not the first generation~\cite{htm_zeta1}, which was probabilistic in nature. The \gls*{htm} theory described in this thesis is actually the third generation~\cite{htm_gen3, thousandbrains}, which builds upon the second generation~\cite{htm_gen2_sp,htm_gen2_tm}. The second generation is often referred to as Cortical Learning Algorithms (CLA), which made the move from probabilistic modelling to Sparse Distributed Representation. The third generation builds upon the second generation by introducing concepts such as sensorimotor inference and The Thousand Brains Theory. The first generation had fundamentally different inner workings, but shared a lot of the terms with the current generation. This has made researching  \gls*{htm} challenging as there are many research papers published that refer to the first generation.
 \par
-Finally, it needs to be noted that Numenta, which is the company behind HTM, is a private for-profit company. This means that it is in their best interest to present HTM as a highly functional and powerful machine learning algorithm. This can lead to unhealthy optimism, which has caused complications during the work of this thesis. One should therefore be critical when reading research papers from Numenta, and always keep in mind that they might not only be research papers but may also be marketing materials.
+Finally, it needs to be noted that Numenta, which is the company behind HTM, is a private for-profit company. This means that it is in their best interest to present HTM as a highly functional and powerful machine learning algorithm. This can lead to unhealthy optimism, which has caused complications during the work of this thesis. One should therefore be critical when reading research papers from Numenta, and always keep in mind that they might not only be research papers but may also be marketing materials. It should also be mentioned that this thesis is relying on the community fork~\cite{htm_community_fork} of HTM because Numenta has stopped development on the original codebase.
 
 \section{Contributions}
 This thesis explores the use of HTM for anomaly detection in videos, and introduces a new type of HTM architecture called Grid HTM, which requires a vigorous understanding of HTM. The main contributions are therefore achieved through the objectives introduced in \autoref{sec:problem_statement}. How this thesis achieves those objectives is described below:
 \paragraph*{Objective 1} \emph{Introduce HTM and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being friendly to readers with a machine learning background.}
 \par
 This objective is achieved in \autoref{sec:background}, where HTM is explained. This chapter also acts as an organization of  \gls*{htm} related research, supported with visualizations and a simpler language, making it easier for people with a machine learning background to understand. It is also important to mention that not only does this chapter include the main HTM research published, but it also contains little tidbits of community research and ideas which are otherwise hard to come by.
-\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound architecture so that HTM can be applied for anomaly detection in complex videos.}
+\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.}
 \par
 This objective is achieved in \autoref{sec:grid_htm}, where Grid HTM was introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis.
-\paragraph*{Objective 3} \emph{Perform experiments, discuss the results, and lay out potential future work. The experiments will vary in difficulty, complexity, and will focus on different use cases.}
+\paragraph*{Objective 3} \emph{Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.}
 \par
-This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that HTM and Grid HTM can indeed perform on simple and clean videos. The second experiment showcased the performance of Grid HTM on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid HTM to detect segments in a video, where noisy videos of sperm were used for increased challenge.
+This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that HTM and Grid HTM can indeed perform anomaly detection on simple and clean videos. The second experiment showcased the performance of Grid HTM on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid HTM to detect segments in a video, where noisy videos of sperm were used for increased challenge.
 \par
 Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is HTM viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid HTM and other HTM based architectures can indeed be used as anomaly detection systems for videos.
 \par
-Finally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to HTM from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the HTM field.
+Additionally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to HTM from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the HTM field.
+\par
+Finally, all the work done in this thesis, including the Grid HTM source code and the various experiments, is publically available on Github~\cite{master_thesis_github}.
 \section{Research Methods}
 Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis, an exploratory research method was used with the context of answering the thesis question, this was used due to the novelty of this thesis and the lack of related works. The result of this exploratory method is Grid HTM, which began from a simple starting point and was shaped through exploring improvements and solutions to problems that arose.
 \par

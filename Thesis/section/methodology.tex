@@ -3,19 +3,21 @@
 This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github\cite{master_thesis_github}.
 \section{Introduction}
 \par
-When it comes to applying \gls*{htm} on videos, this thesis proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset.
+When it comes to applying \gls*{htm} on videos, this thesis proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.45\textwidth]{resources/methodology/original.png}
     \includegraphics[width=.45\textwidth]{resources/methodology/car_segmentation.png}
     \caption[Segmentation Result of Cars]{Segmentation result of cars, which is suited to be used as an SDR. Original frame taken from VIRAT~\cite{VIRAT}.}
+    \label{fig:example_segmentation}
 \end{figure}
-The idea is that the \gls*{sp} will learn to find an optimal general representation of cars. How general this representation is can be configured using the various parameters, but ideally they should be set so that different cars will be represented similarly while trucks and motorcycles will be represented differently.
+The idea is that the \gls*{sp} will learn to find an optimal general representation of cars. How general this representation is can be configured using the various parameters, but ideally they should be set so that different cars will be represented similarly while trucks and motorcycles will be represented differently. An example representation by the SP is shown in \autoref{fig:car_segmentation_sp}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation.png}
     \includegraphics[width=.48\textwidth]{resources/methodology/car_segmentation_sp.png}
-    \caption[SDR and SP Representation]{The SDR and its corresponding \gls*{sp} representation. Note that the \gls*{sp} is untrained.}
+    \caption[SDR and SP Representation]{The SDR (left) and its corresponding \gls*{sp} representation (right). Note that the \gls*{sp} is untrained.}
+    \label{fig:car_segmentation_sp}
 \end{figure}
 \par
 The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the model to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
@@ -24,10 +26,11 @@ It is possible to split different segmentation classes into their respective SDR
 \par
 Ideally, the architecture will have a calibration period spanning several days or weeks, during which the architecture is not performing any anomaly detection, but is just learning the patterns.
 \section{Improvements}
+As it currently stands, the current architecture is nearly identical to the one used by \textcite{MotionAnomalyDetection}, which was shown to not be particularly effective, therefore multiple improvements are introduced to increase effectiveness.
 \subsection{Invariance}
 One issue that becomes evident is the lack of invariance, due to the \gls*{tm} learning the global patterns. Using the example, it learns that it is normal for cars to drive along the road but only in the context of there being cars parked in the parking lot. It is instead desired that the \gls*{tm} learns that it is normal for cars to drive along the road, regardless of whether there are cars in the parking lot.
 \par
-This thesis proposes a solution based on dividing the encoder output into a grid, and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
+This thesis proposes a solution based on dividing the encoder output into a grid (see \autoref{fig:grid}), and have a separate \gls*{sp} and \gls*{tm} for each cell in the grid. The anomaly scores of all the cells are then aggregated into a single anomaly score using an aggregation function.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/methodology/car_segmentation_grid.png}
@@ -35,8 +38,14 @@ This thesis proposes a solution based on dividing the encoder output into a grid
     \label{fig:grid}
 \end{figure}
 \subsubsection{Aggregation Function}
-Selecting the correct aggregation function is important because it affects the final anomaly output. For instance, it might be tempting to use the mean of all the anomaly scores as the aggregation function, but this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore. Using the mean also means that anomalies that take up a lot of space will be weighted more than anomalies that take up a little space, which might not be desirable.
-
+Selecting the correct aggregation function is important because it affects the final anomaly output. For instance, it might be tempting to use the mean of all the anomaly scores as the aggregation function:
+\begin{align*}
+    X         & :\{x \in \mathbb{R} : x \geq 0\}     \\
+    \\
+    anomScore & =\dfrac{\sum\limits_{x \in X}x}{|X|}
+\end{align*}
+However, this leads to problems with normalization, meaning that an overall anomaly score of 1 is hard to achieve due to many cells having a zero anomaly score. In fact, it becomes unclear what a high anomaly score is anymore. Using the mean also means that anomalies that take up a lot of space will be weighted more than anomalies that take up a little space, which might not be desirable.
+\par
 To solve the aforementioned problem and if the data has little noise, a potential aggregation function could be the non-zero mean:
 \begin{align*}
     X         & :\{x \in \mathbb{R} : x > 0\} \\
@@ -51,6 +60,7 @@ To solve the aforementioned problem and if the data has little noise, a potentia
 Meaning that only the cells with a non-zero anomaly score, denoted $X$, will be contributing to the overall anomaly score which helps solve the aforementioned normalization and weighting problem. On the other hand, this will perform poorly when the architecture is exposed to noisy data which could lead to there always being one or more cells with a high anomaly score.
 \begin{figure}[H]
     \centering
+    Noisy data
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/aggr_noisy_mean.png}
@@ -66,6 +76,7 @@ Meaning that only the cells with a non-zero anomaly score, denoted $X$, will be 
 \end{figure}
 \begin{figure}[H]
     \centering
+    Clean data
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_mean.png}
@@ -147,21 +158,23 @@ Another issue with the grid based approach is when a car first comes into a cell
 A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
 \subsection{Multistep Temporal Patterns}
 \label{sec:multistep_temporal_patterns}
-Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still.
+Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still. \autoref{fig:high_fps} visualizes this phenomenon.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_moving.png}
     \unskip\ \vrule\
     \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_still.png}
     \caption[Comparison of a Moving Object in a High Framerate Video]{Comparison of a moving object (left) and a still object (right)in a high framerate video. They are very similar and could actually end up being represented identically by the SP.}
+    \label{fig:high_fps}
 \end{figure}
-This could cause situations where an object that is supposed to be moving, suddenly stands still, yet the \gls*{tm} will not mark it as an anomaly due to it being stuck in a contextual loop. A contextual loop is when one of the predictions at $t$ becomes true at $t+1$, and then one of the predictions at $t+1$ is almost identical to the state at $t$, which becomes true if the object is not moving, causing the \gls*{tm} to enter the same state that it was in at $t$.
+This could cause situations where an object that is supposed to be moving, suddenly stands still, yet the \gls*{tm} will not mark it as an anomaly due to it being stuck in a contextual loop (see \autoref{fig:contextual_loop}). A contextual loop is when one of the predictions at $t$ becomes true at $t+1$, and then one of the predictions at $t+1$ is almost identical to the state at $t$, which becomes true if the object is not moving, causing the \gls*{tm} to enter the same state that it was in at $t$.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/contextual_loop.png}
     \caption[Contextual Loop Example]{Example of a contextual loop.}
+    \label{fig:contextual_loop}
 \end{figure}
-A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted. This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that are suitable to be used as contextual anchors, so as a replacement, the past observations are encoded instead. Parallels can be drawn to the Transformer model, where a positional encoding is required for it to learn order of sequences~\cite{transformer}.
+A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM, which is made possible by keeping a buffer of past \gls*{sp} outputs and shifting its contents out as new \gls*{sp} outputs are inserted (see \autoref{fig:mtp}). This follows the core idea behind encoding time in addition to the data, which makes time act as a contextual anchor. However, in this case there are no timestamps that are suitable to be used as contextual anchors, so as a replacement, the past observations are encoded instead. Parallels can be drawn to the Transformer model, where a positional encoding is required for it to learn order of sequences~\cite{transformer}.
 \par
 \begin{figure}[H]
     \centering
@@ -169,6 +182,7 @@ A solution is to concatenate the past $n$ \gls*{sp} outputs as input into the TM
     \unskip\ \vrule\
     \includegraphics[width=0.45\textwidth]{resources/methodology/temporal_concatenation_still.png}
     \caption[Multistep Temporal Pattern Example]{Example of concatenation with $n=3$ when an object is moving from left to right, compared to when an object is not in motion. It can be observed that the SDRs are vastly different.}
+    \label{fig:mtp}
 \end{figure}
 Concatenating past observations together will force the \gls*{tm} input, for when an object is in motion and when an object is still, to be unique. High framerate videos can benefit the most from this, and the effect will be more pronounced for higher values of $n$. One could feed the past $n$ encoder outputs into the \gls*{sp} instead, but this will lead to a much higher computational requirement, as well as make both the \gls*{sp} and \gls*{tm} parameters to be dependent on $n$.
 
@@ -198,10 +212,11 @@ Remembering that a single HTM model models a cortical column, as stated in \auto
         \includegraphics[width=\linewidth]{resources/methodology/surveillance_example4.png}
     \end{subfigure}
     \caption[Grid HTM Environments]{Examples of environments that Grid HTM could help monitor. Images taken from the VIRAT~\cite{VIRAT} dataset.}
+    \label{fig:virat_examples}
 \end{figure}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par
-One example is making it possible to have an entire city be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
+One example is making it possible to have an entire city, with environments such as in \autoref{fig:virat_examples}, be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
 \par
 Grid HTM could also be used to help automate labeling of anomaly datasets for deep learning. This would be similar to how older deep learning networks are used to help automate creating new labeled image datasets, where the model proposes a label for an image, which is then further refined by a human if needed.
 \section{Summary}

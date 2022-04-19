@@ -1,5 +1,6 @@
 \chapter{Experiments and Results}
 \label{sec:experiments}
+In this section, various experiments are performed in order to gauge the effectiveness of Grid HTM. There are three experiments in total, and each experiment covers a different use case. For reproducibility purposes, each experiment has corresponding tables of the parameters used.
 \section{Bouncing Ball Experiment}
 To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple experiment to test the capabilities of HTM and confirm that they apply on a video is introduced.
 \subsection{Data}
@@ -171,7 +172,7 @@ The results show that it is capable of detecting the anomalies and quickly adapt
 \clearpage
 \section{Surveillance Experiment}
 As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
-The video to be used is part of the VIRAT\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera which can be seen in \autoref{fig:selected_frame}.
+The video to be used is part of the VIRAT~\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera, which is shown in \autoref{fig:selected_frame}.
 \par
 The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of a frame repeat lasting a couple of seconds, essentially "freezing" time, in order to test whether Grid HTM is able to understand how objects should be moving in time.
 \begin{figure}[H]
@@ -181,14 +182,15 @@ The downside is that the video does not contain any non-technical anomalies, but
     \caption[Example Frames]{Example frames from the selected video.}
     \label{fig:selected_frame}
 \end{figure}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons, that are then concatenated before being fed into the system.
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an SDR for cars and an SDR for persons (see \autoref{fig:seg_car_person}), that are then concatenated before being fed into the system.
 \par
-The segmentation model used is PointRend\cite{pointrend} with a ResNet101\cite{resnet} backbone, pretrained on ImageNet\cite{imagenet}, and implemented using PixelLib\cite{pixellib}.
+The segmentation model used is PointRend~\cite{pointrend} with a ResNet101~\cite{resnet} backbone, pretrained on ImageNet~\cite{imagenet}, and implemented using PixelLib~\cite{pixellib}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{resources/methodology/car_segmentation.png}
     \includegraphics[width=0.45\textwidth]{resources/methodology/person_segmentation.png}
     \caption[Example Segmentation of Cars and Persons]{Example segmentation of cars and persons.}
+    \label{fig:seg_car_person}
 \end{figure}
 For the sake of simplicity, this experiment will focus only on the segmentation of cars.
 \par
@@ -211,20 +213,22 @@ With the aggregation functions presented in this thesis in mind, it is safe to c
 \end{figure}
 Here it is observed that Grid HTM correctly marks the sudden change of cars when the current segment ends and a new segment begins.
 \subsubsection{Road}
-In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies.
+In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies. This is shown in \autoref{fig:surveillance_road_1}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_road_1.png}
     \caption[Car Driving Along Main Road]{Visual output during when a car is driving along the main road.}
+    \label{fig:surveillance_road_1}
 \end{figure}
 \subsubsection{Frame Repeat}
 To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the architecture marks the cars standing still on the road as anomalies.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_1.png}
-    \caption[Frame Repeat Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text.}
+    \caption[Frame Repeat Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. The blue circle highlights the object of interest.}
+    \label{fig:surveillance_freeze_1}
 \end{figure}
-It can be observed that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross.
+It can be observed in \autoref{fig:surveillance_freeze_1} that the cars along the main road are not marked as anomalies, but this could be attributed to the fact that there is a crossing there and that cars periodically have to stop at that point to let pedestrians cross.
 \par
 On the other hand, when looking at the anomaly marked with a blue circle, the car on the road in the parking lot is marked as an anomaly that increases in severity as the time goes on during the frame repeat. The reason why that car causes an anomaly is because, unlike the cars on the main road, a car is rarely observed as standing still at that position.
 \par
@@ -232,15 +236,16 @@ To prove that the anomaly was actually directly caused by the repeating frame, a
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_freeze.png}
-    \caption[No Frame Repeat Anomaly]{Anomaly output when there is no frame repeating, where it should have repeated is marked in red.}
+    \caption[No Frame Repeat Anomaly]{Anomaly output when there is no frame repeating, where it should have repeated is marked in red. The blue circle highlights the object of interest.}
+    \label{fig:surveillance_freeze_no_freeze}
 \end{figure}
-We can see that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
+It can be observed in \autoref{fig:surveillance_freeze_no_freeze} that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
 \par
 Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_no_mtp}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_mtp.png}
-    \caption[Frame Repeat No MTP Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. This time without multistep temporal patterns.}
+    \caption[Frame Repeat No MTP Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. The blue circle highlights the object of interest. This time without multistep temporal patterns.}
     \label{fig:surveillance_freeze_no_mtp}
 \end{figure}
 Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive HTM can be regarding parameters.
@@ -270,6 +275,7 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
 \end{figure}
 It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient amount of previous observations of that behavior.
 \subsection{Parameters}
+The following parameters were used in this experiment, and can be used for reproducibility:
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -336,12 +342,13 @@ Results also show that Grid HTM learns common patterns such as cars driving on t
 \section{Sperm Experiment}
 As seen in the surveillance experiment, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
 \subsection{Data}
-The dataset used is VISEM \cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding.
+The dataset used is VISEM~\cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding, as shown in \autoref{fig:sperm_segmentation}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_example.png}
     \includegraphics[width=.45\textwidth]{resources/experiments/sperm/sperm_seg_example.png}
-    \caption[Sperm Example Frame]{Example frame from a sperm video and its corresponding segmentation.}
+    \caption[Sperm Example Frame]{Example frame from a sperm video (left) and its corresponding segmentation (right).}
+    \label{fig:sperm_segmentation}
 \end{figure}
 It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
 \subsection{Benchmark}
@@ -371,7 +378,7 @@ Just like in the stationary video, the change in the anomaly score is more prono
 \subsection{Use Cases}
 The use case is to be able to use Grid HTM to detect segments and then use a separate tool to extract each segment. This could be useful in data processing, or even in streaming media services to automatically know when cuts happen and could aid scene boundary detection systems~\cite{scene_boundary_detection}.
 \subsection{Parameters}
-For both results the following parameters were used:
+The following parameters were used in this experiment. The main difference from the surveillance experiment to note is the temporal size, which has been disabled due to the nonexistent patterns in the data.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -428,7 +435,7 @@ For both results the following parameters were used:
     \caption{TM Parameters}
     \label{tab:sperm_tm_param}
 \end{table}
-For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise. Because the data is noisy, the mean was used as the aggregation function.
+For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise in the output graph. Because the data is noisy, the mean was used as the aggregation function.
 \subsection{Experiment Summary}
 This experiment explored the ability of Grid HTM to detect segments in greater detail. The videos used were videos of swimming sperm cells, and were segmented using a rough binary thresholding. The data is noisy and short, and it is therefore not expected for Grid HTM to learn any meaningful patterns. As a benchmark, the L1 error is employed.
 \par

@@ -4,11 +4,12 @@ The following is relevant background information on Deep Learning, Video Anomaly
 \section{Deep Learning}
 As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
-The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function.
+The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function, which is shown in \autoref{fig:perceptron}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/perceptron}
     \caption[The Original Perceptron]{The original perceptron.}
+    \label{fig:perceptron}
 \end{figure}
 It also requires a label $y$ corresponding to the input $\mathbf{x}$. The perceptron predicts the label of the input $\mathbf{x}$ to be $\hat{y}=sign(\mathbf{x}\cdot\mathbf{w})$. If $\hat{y}\neq y$ then it updates the weights $\mathbf{w}=\mathbf{w}+y\mathbf{x}$, otherwise it leaves $\mathbf{w}$ unchanged. This is performed until the perceptron reaches convergence, which would happen when all the inputs can be correctly classified. In other words, the perceptron requires that the inputs are linearly separable.
 \par
@@ -50,7 +51,7 @@ Yet with all the advancements within the field of neural networks, it still did 
 \par
 The other reason is that neural networks did not have a lot of applications at the time, this being due to a lack of invariances which caused poor performance in machine vision, and no proper way to represent features across time which caused poor performance in time-series modelling. There was also a lack of regularization methods, which caused the models to overfit and generalize poorly. Additionally, large networks suffered from vanishing or exploding gradients~\cite{exploding_vanishing_gradients}.
 \par
-In order to improve upon regularization, techniques such as Dropout~\cite{dropout}, \gls*{g_bn}~\cite{batchnorm}, and Data Augmentation~\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the Autoencoder~\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
+In order to improve upon regularization, techniques such as Dropout~\cite{dropout}, \gls*{g_bn}~\cite{batchnorm}, and Data Augmentation~\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the \gls*{g_ae}~\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
 As for representing features across time, architectures such as \glspl*{g_rnn}~\cite{lstm,gru} were invented. Later, attention~\cite{attention}-based models, such as the Transformer~\cite{transformer} model, were introduced.\par
 The vanishing and the exploding gradient problem was alleviated by implementing, among other techniques, residual connections~\cite{resnet} between layers.
@@ -88,7 +89,7 @@ In order to train the weights in such a configuration, the generator and discrim
 \par
 While the training method of a \gls*{g_gan} is straight forward, actually training a \gls*{g_gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability~\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{g_gan} have been proposed such as the Wasserstein GAN~\cite{wgan} and the Unrolled GAN~\cite{unrolled_gan}.
 \par
-There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is cGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a cGAN can generate faces of a specific age.
+There also exists variations of the standard \gls*{g_gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is CGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a CGAN can generate faces of a specific age.
 \subsection{Disadvantages of Deep Learning}
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset~\cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results.
 \par
@@ -116,8 +117,9 @@ As stated by \textcite{XAI}, as "black-box" approaches such as deep learning sur
         \includegraphics[width=\linewidth]{resources/related_works/gradcam_cat.jpg}
     \end{subfigure}
     \caption[Grad-Cam Visualization]{Grad-CAM visualization for the labels "dog" and "cat". Taken from~\textcite{GradCamExample}.}
+    \label{fig:grad_cam}
 \end{figure}
-Approaches such as Grad-CAM~\cite{GradCam} and Guided Backpropagation~\cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models~\cite{XAI}.
+Approaches such as Grad-CAM~\cite{GradCam} (\autoref{fig:grad_cam}) and Guided Backpropagation~\cite{guided_backprop} offer improvements in that regard, but these approaches are not made with generative models in mind. In fact, there are very few explainable AI approaches for generative models~\cite{XAI}.
 \section{Anomaly detection}
 \label{sec:anomaly_detection}
 As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined as detecting data points that deviate from the general distribution of the data, this also often includes quantifying the level of deviation. Unlike other problems within machine learning and statistics, anomaly detection deals with unpredictable and rare events, therefore adding complexities to problems. Some complexities are as follows:
@@ -141,9 +143,7 @@ The advantage is that GANs are generally good at generating realistic data, espe
 
 Another common approach is autoencoders, which aim to minimize the reconstruction error from a learned feature representation space~\cite{autoencoder1,anomaly_detection,anomalyvideo}. The assumption is that anomalies are more difficult to reconstruct than normal data, hence the reconstruction error will be high and can therefore be used as a metric to detect anomalies.
 \par
-As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it is safe to say that there is a lack of explainability in the field of anomaly detection.
-\par
-There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
+As previously stated, generative models suffer from a lack of explainability, and since generative models make up most of the state-of-the-art approaches in anomaly detection, it is safe to say that there is a lack of explainability in the field of anomaly detection. There are also variations of the aforementioned approaches, such as Adversarial Autoencoders, but the core idea is the same: To get an anomaly measure using some sort of generated or reconstructed data.
 \subsection{Smart Surveillance}
 Smart surveillance, which is the use of automatic video analysis specifically in surveillance, has seen rapid development since its inception. \textcite{anomalyvideo, smart_surveillance_2} present and summarize recent progress for anomaly detection in video for surveillance purposes, where the most promising methods are achieved by using convolutional \glspl*{g_ae} and \glspl*{g_gan}. More specifically, memory augmented autoencoders~\cite{memae} and future frame prediction GANs~\cite{future_frame_prediction} are some of the most promising approaches. In general, the results show that the deep learning approaches have a high degree of accuracy, and are consistently improving. This is not surprising given that generative models are popular in anomaly detection, as mentioned in \autoref{sec:dl_anom_detection}.
 \par
@@ -204,18 +204,19 @@ How this type of neuron operates in HTM implementations will be covered in great
 \subsection{Common Algorithm}
 HTM theory states that there is a common algorithm for the intelligence. That the signals from hearing, vision, and touch are at the core processed by the same common algorithm. By extension, this means that HTM networks should be able to solve all kinds of logical tasks.
 \subsection{Sparse Distributed Representation}
-HTM theory introduces Sparse Distributed Representation (SDR) as a way of representing data in HTM and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two SDRs by simply performing a binary AND operation.
+HTM theory introduces Sparse Distributed Representation (SDR) as a way of representing data in HTM and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two SDRs by simply performing a binary AND operation, as seen in \autoref{fig:sdr_semantics}.
 \begin{figure}[H]
     \centering
     \includegraphics{resources/related_works/sdr-semantics.png}
     \caption[SDR Semantic Comparison]{Semantic similarities between the two SDRs A and B.}
     \label{fig:sdr_semantics}
 \end{figure}
-Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise. That being said, sparsity can be configured to be any value.
+Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes HTM robust to noise. That being said, sparsity can be configured to be any value, as seen in \autoref{fig:sdr}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.25\textwidth]{resources/related_works/SDR.png}
     \caption[Example SDR]{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
+    \label{fig:sdr}
 \end{figure}
 \subsection{Encoders}
 \label{sec:encoders}
@@ -272,14 +273,15 @@ The temporal memory algorithm, on the other hand, simulates the learning algorit
     \item Learns sequences of SDRs formed by the spatial pooler
     \item Forms a prediction, in the form of a predictive SDR,  given the context of previous SDRs
 \end{itemize}
+A typical HTM pipeline can be seen in \autoref{fig:htm_pipeline}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/htm_pipeline.png}
-    \caption[The HTM Pipeline]{The HTM Pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
+    \caption[The HTM Pipeline]{A typical HTM pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
     \label{fig:htm_pipeline}
 \end{figure}
 
-This gives HTM systems the property of on-line learning, meaning they learn as they go. There is no batch training because each input into the HTM system will update the system. The system effectively builds a predictive model of the data and learns by trying to minimize the error between the true values and the predicted values. This means that the system will continuously adapt to a changing environment.
+This learning mechanism gives HTM systems the property of on-line learning, meaning they learn as they go. There is no batch training because each input into the HTM system will update the system. The system effectively builds a predictive model of the data and learns by trying to minimize the error between the true values and the predicted values. This means that the system will continuously adapt to a changing environment.
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.35\linewidth}
@@ -329,11 +331,12 @@ All the aforementioned concepts are configurable in technical implementations.
 \label{sec:temporal_memory}
 The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consist of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, distal dendrite segments), where each segment consists of synapses connecting to other cells.
 \par
-Essentially, it takes the "node" based representation of the \gls*{sp} output, and turns it into a new representation which includes state, or context, from previous time steps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the \gls*{sp} output has 100 active columns and only one cell per column is active, then the \gls*{tm} has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active.
+Essentially, it takes the "node" based representation of the \gls*{sp} output, and turns it into a new representation which includes state, or context, from previous time steps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the \gls*{sp} output has 100 active columns and only one cell per column is active, then the \gls*{tm} has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active. This is visualized in \autoref{fig:tm_vis_alt2}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt2}
     \caption[Temporal Memory Visualization]{Visualization of the TM, with number of cells equal 4. Some columns are bursting.}
+    \label{fig:tm_vis_alt2}
 \end{figure}
 \par
 The temporal memory algorithm consists of two phases. The first phase is to evaluate the \gls*{sp} output against predictions and choose a set of active cells. It does so by looking at the active columns and the cells they contain. If an active column contains predictive cells, then those cells are marked as active. If an active column has no predictive cells, usually caused by observing a new pattern for the first time, then the column "bursts" by activating all the cells that the column contains (see \autoref{fig:tm_vis1}). Otherwise, a cell is inactive.
@@ -354,10 +357,12 @@ The second phase is to form a prediction by putting cells into a predictive stat
     \item Predictive, if a connected segment is active, which is in turn determined by the amount of active synapses.
     \item Inactive, if none of the other states apply.
 \end{itemize}
+\autoref{fig:tm_vis_alt} visualizes cells with different states in the TM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/tm_vis_alt}
     \caption[Visualization of Cell States]{Visualization of the \gls*{tm} and the three states. Active in green, predictive in blue, and inactive in white.}
+    \label{fig:tm_vis_alt}
 \end{figure}
 
 One can configure how much the system can learn by setting the number of cells and the values by which permanence should be increased or decreased. If it is desired that the \gls*{tm} does not "forget" at all, then the permanence value by which synapses are decremented can be set to 0. If it is desired that the \gls*{tm} can only express patterns in the current context and the context of the previous time step, then the number of cells can be set to 2.
@@ -402,7 +407,7 @@ To summarize, the object is learned by the brain using multiple models that may 
     \end{subfigure}
     \caption[Thousand Brains Visualization]{Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.}
 \end{figure}
-This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet~\cite{inceptionnet} and Feature Pyramid Networks~\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
+This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet~\cite{inceptionnet} (see \autoref{fig:inception_module}) and Feature Pyramid Networks~\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/models/inception_module.png}
