@@ -4,3 +4,6 @@ My github url?
 How to cite external figures?
 List of tables/figures?
 Should Grid HTM related future work be mentioned in Grid HTM section?
+
+
+Section number or section name when referring?

@@ -2,7 +2,7 @@
 \label{sec:experiments}
 In this section, various experiments are performed in order to gauge the effectiveness of Grid HTM. There are three experiments in total, and each experiment covers a different use case. For reproducibility purposes, each experiment has corresponding tables of the parameters used.
 \section{Bouncing Ball Experiment}
-To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple experiment to test the capabilities of HTM and confirm that they apply on a video is introduced.
+To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple experiment to test the capabilities of \gls*{htm} and confirm that they apply on a video is introduced.
 \subsection{Data}
 \begin{figure}[H]
     \centering
@@ -15,14 +15,14 @@ To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simpl
 The video consists of a ball bouncing up and down until an anomaly occurs in the form of a sudden introduction of a horizontal velocity. After a while this horizontal velocity is set back to 0 and the ball is once again bouncing up and down in-place. This is visualized in \autoref{fig:bb}.
 \par
 \subsection{HTM}
-The model used is a standard HTM model, which covers the entire input. This is equivalent to a single cell in a Grid HTM.
+The model used is a standard \gls*{htm} model, which covers the entire input. This is equivalent to a single cell in a Grid HTM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{resources/experiments/bouncing_ball/bb_anoms_bad.png}
     \caption[Bouncing Ball Experiment Anomaly Score]{The anomaly score in the bouncing ball experiment.}
     \label{fig:bb_normal}
 \end{figure}
-From \autoref{fig:bb_normal} it can be observed that the HTM correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to $(1)$ and the anomaly spikes towards the end close to $(2)$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
+From \autoref{fig:bb_normal} it can be observed that the \gls*{htm} correctly detects anomalies and quickly adapts to them. On the other hand, the result is not perfect due to the minor oscillations close to $(1)$ and the anomaly spikes towards the end close to $(2)$. While the imperfections are not major and can be safely ignored, it is still important to understand their causes and what can be done to improve upon them. \par
 \subsubsection{Boosting}
 The reason for the oscillations is due to the spatial pooler being dominated by a lucky few columns. The solution is to enable boosting, as explained in \autoref{sec:spatial_pooler}. This also helped with the spikes towards the end, as can be seen in \autoref{fig:bb_boosting}.\par
 \begin{figure}[H]
@@ -32,13 +32,13 @@ The reason for the oscillations is due to the spatial pooler being dominated by 
     \label{fig:bb_boosting}
 \end{figure}
 \subsubsection{Zero Permanence Decrement}
-The reason for the anomaly spikes towards the end is because the spatial pooler has found an optimal representation when the ball is bouncing freely, but when the ball stops and starts bouncing in-place the spatial pooler ends up unlearning the old optimal representation while it learns the new optimal representation. This causes a sudden minor change in the SP output, which the TM reports as anomalous.
+The reason for the anomaly spikes towards the end is because the spatial pooler has found an optimal representation when the ball is bouncing freely, but when the ball stops and starts bouncing in-place the spatial pooler ends up unlearning the old optimal representation while it learns the new optimal representation. This causes a sudden minor change in the \gls*{sp} output, which the \gls*{tm} reports as anomalous.
 \par
-The solution is to set the value by which permanence is decreased by to zero, effectively disabling the ability of the spatial pooler to "forget", as can be seen in \autoref{fig:bb_forget}. That being said, the ability to decrement permanence is important in HTM systems, therefore disabling it is not always feasible.
+The solution is to set the value by which permanence is decreased by to zero, effectively disabling the ability of the spatial pooler to "forget", as can be seen in \autoref{fig:bb_forget}. That being said, the ability to decrement permanence is important in \gls*{htm} systems, therefore disabling it is not always feasible.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting.png}
-    \caption[Bouncing Ball Experiment Anomaly Score Zero Decrement]{Bouncing ball without the ability of the SP to "forget".}
+    \caption[Bouncing Ball Experiment Anomaly Score Zero Decrement]{Bouncing ball without the ability of the \gls*{sp} to "forget".}
     \label{fig:bb_forget}
 \end{figure}
 \subsubsection{Boosting and Zero Permanence Decrement}
@@ -46,7 +46,7 @@ Finally, for the sake of interest, the bouncing ball example was performed with 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{resources/experiments/bouncing_ball/bb_anoms_unforgetting_boosting.png}
-    \caption[Bouncing Ball Experiment Anomaly Score No Boosting Zero Decrement]{Bouncing ball without the ability of the SP to "forget" and with boosting enabled.}
+    \caption[Bouncing Ball Experiment Anomaly Score No Boosting Zero Decrement]{Bouncing ball without the ability of the \gls*{sp} to "forget" and with boosting enabled.}
     \label{fig:bb_boosting_forget}
 \end{figure}
 \subsubsection{Parameters}
@@ -55,22 +55,22 @@ Final list of parameters for reproducibility. For the plots, a moving average of
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                      \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                             \\
         \midrule
-        inputDimensions    & 120, 120       & The shape of the entire frame                       \\
-        columnDimensions   & 60, 60         &                                                     \\
-        potentialPct       & 0.1            &                                                     \\
-        potentialRadius    & 120            &                                                     \\
-        localAreaDensity   & 0.02           &                                                     \\
-        globalInhibition   & True           & Set to False to enable topology                     \\
+        inputDimensions    & 120, 120       & The shape of the entire frame                              \\
+        columnDimensions   & 60, 60         &                                                            \\
+        potentialPct       & 0.1            &                                                            \\
+        potentialRadius    & 120            &                                                            \\
+        localAreaDensity   & 0.02           &                                                            \\
+        globalInhibition   & True           & Set to False to enable topology                            \\
         wrapAround         & True           &
-        Allows the columns near the edges to "wrap around" and form connections on the other side \\
-        synPermActiveInc   & 0.1            &                                                     \\
-        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the SP to "forget" \\
-        stimulusThreshold  & 2              &                                                     \\
-        seed               & 2              &                                                     \\
-        boostStrength      & 0.1            & Set to 0 to disable boosting                        \\
-        dutyCyclePeriod    & 250            &                                                     \\
+        Allows the columns near the edges to "wrap around" and form connections on the other side        \\
+        synPermActiveInc   & 0.1            &                                                            \\
+        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the \gls*{sp} to "forget" \\
+        stimulusThreshold  & 2              &                                                            \\
+        seed               & 2              &                                                            \\
+        boostStrength      & 0.1            & Set to 0 to disable boosting                               \\
+        dutyCyclePeriod    & 250            &                                                            \\
         \bottomrule
     \end{tabularx}
 
@@ -81,16 +81,16 @@ Final list of parameters for reproducibility. For the plots, a moving average of
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
         \midrule
-        columnDimensions          & 60, 60         & Same as the SP \\
-        predictedSegmentDecrement & 0.003          &                \\
-        permanenceIncrement       & 0.1            &                \\
-        permanenceDecrement       & 0.001          &                \\
-        minThreshold              & 3              &                \\
-        activationThreshold       & 5              &                \\
-        cellsPerColumn            & 16             &                \\
-        seed                      & 2              &                \\
+        columnDimensions          & 60, 60         & Same as the \gls*{sp} \\
+        predictedSegmentDecrement & 0.003          &                       \\
+        permanenceIncrement       & 0.1            &                       \\
+        permanenceDecrement       & 0.001          &                       \\
+        minThreshold              & 3              &                       \\
+        activationThreshold       & 5              &                       \\
+        cellsPerColumn            & 16             &                       \\
+        seed                      & 2              &                       \\
         \bottomrule
     \end{tabularx}
 
@@ -98,7 +98,7 @@ Final list of parameters for reproducibility. For the plots, a moving average of
     \label{tab:bb_TM_params}
 \end{table}
 \subsection{Grid HTM}
-This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid HTM would be suitable if there were two or more independent bouncing balls, due to its improved invariance. Still, it is interesting to see how Grid HTM performs compared to normal HTM.
+This is a very simple problem which does not require invariances, making it unsuitable for Grid HTM. Grid \gls*{htm} would be suitable if there were two or more independent bouncing balls, due to its improved invariance. Still, it is interesting to see how Grid \gls*{htm} performs compared to normal HTM.
 \subsubsection{Results}
 \begin{figure}[H]
     \centering
@@ -106,9 +106,9 @@ This is a very simple problem which does not require invariances, making it unsu
     \caption[Bouncing Ball Experiment Anomaly Score Grid HTM]{Results when using Grid HTM}
     \label{fig:bb_gridhtm}
 \end{figure}
-It can be observed in \autoref{fig:bb_gridhtm} that Grid HTM performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
+It can be observed in \autoref{fig:bb_gridhtm} that Grid \gls*{htm} performs worse than the normal HTM, but the result is still acceptable. This is to be expected since this problem is not suited for the Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
 \subsubsection{Parameters}
-The SP and TM parameters were selected so that they were as close as possible to the normal HTM parameters. The non-zero mean was chosen as the aggregation function, because there is no noise due to the controlled environment. Again, a moving average of $n=100$ was used to smooth the anomaly score output in the plots.
+The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close as possible to the normal \gls*{htm} parameters. The non-zero mean was chosen as the aggregation function, because there is no noise due to the controlled environment. Again, a moving average of $n=100$ was used to smooth the anomaly score output in the plots.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
@@ -116,7 +116,7 @@ The SP and TM parameters were selected so that they were as close as possible to
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                             \\
         \midrule
         sp\_grid\_size     & 30, 30         & Size of each grid                                                          \\
-        tm\_grid\_size     & 15, 15         & Size of each SP grid output.                                               \\
+        tm\_grid\_size     & 15, 15         & Size of each \gls*{sp} grid output.                                        \\
         min\_sparsity      & 1              &                                                                            \\
         sparsity           & A              & Area of the bouncing ball with radius=3                                    \\
         temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled \\
@@ -151,30 +151,30 @@ The SP and TM parameters were selected so that they were as close as possible to
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the SP \\
-        predictedSegmentDecrement & 0.003          &                \\
-        permanenceIncrement       & 0.1            &                \\
-        permanenceDecrement       & 0.001          &                \\
-        minThreshold              & 1              &                \\
-        activationThreshold       & 1              &                \\
-        cellsPerColumn            & 16             &                \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
+        predictedSegmentDecrement & 0.003          &                       \\
+        permanenceIncrement       & 0.1            &                       \\
+        permanenceDecrement       & 0.001          &                       \\
+        minThreshold              & 1              &                       \\
+        activationThreshold       & 1              &                       \\
+        cellsPerColumn            & 16             &                       \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
     \label{tab:bb_tm_gridhtm_param}
 \end{table}
 \subsection{Experiment Summary}
-This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to 0. First the experiment is performed with a normal HTM model.
+This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to 0. First the experiment is performed with a normal \gls*{htm} model.
 \par
-The results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid HTM is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid HTM is designed for more complex videos, such as if there were multiple bouncing balls at once.
+The results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid \gls*{htm} is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid \gls*{htm} is designed for more complex videos, such as if there were multiple bouncing balls at once.
 \clearpage
 \section{Surveillance Experiment}
-As stated earlier, one of the use cases of Grid HTM is anomaly detection in surveillance. This example will show how Grid HTM could perform.
+As stated earlier, one of the use cases of Grid \gls*{htm} is anomaly detection in surveillance. This example will show how Grid \gls*{htm} could perform.
 The video to be used is part of the VIRAT~\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera, which is shown in \autoref{fig:selected_frame}.
 \par
-The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of a frame repeat lasting a couple of seconds, essentially "freezing" time, in order to test whether Grid HTM is able to understand how objects should be moving in time.
+The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of a frame repeat lasting a couple of seconds, essentially "freezing" time, in order to test whether Grid \gls*{htm} is able to understand how objects should be moving in time.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{resources/methodology/original.png}
@@ -202,18 +202,18 @@ While on the topic of segmentation, it is important to mention that the segmenta
     \caption[Grid HTM Anomaly Score Output]{Anomaly score output from Grid HTM.}
     \label{fig:surveillance_results}
 \end{figure}
-We can see in \autoref{fig:surveillance_results} that the Grid HTM is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores compared to each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. It should also be noted that a moving average ($n=200$) was applied to smooth out the anomaly score output, otherwise the graph would be too noisy.
+It can be observed in \autoref{fig:surveillance_results} that the Grid \gls*{htm} is detecting when segments begin and end, however it is not possible to use a threshold value to isolate them, and they also have vastly different anomaly scores compared to each other. This is due to the way the aggregation function works, which means that the anomaly output is dependent on the physical size of the anomaly. It should also be noted that a moving average ($n=200$) was applied to smooth out the anomaly score output, otherwise the graph would be too noisy.
 \par
-With the aggregation functions presented in this thesis in mind, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This however does not mean that Grid HTM is completely useless, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
+With the aggregation functions presented in this thesis in mind, it is safe to conclude that looking at the anomaly score output is meaningless for complex data such as a surveillance video. This however does not mean that Grid \gls*{htm} is completely useless, and this can be observed by looking at the visual output of the Grid HTM. The visual output during which the first segment anomaly occurs can be seen in \autoref{fig:surveillance_segment}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_anomaly_1.png}
     \caption[Segment Anomaly]{The first segment anomaly, which is marked with red text,  and the corresponding changes detected by Grid HTM.}
     \label{fig:surveillance_segment}
 \end{figure}
-Here it is observed that Grid HTM correctly marks the sudden change of cars when the current segment ends and a new segment begins.
+Here it is observed that Grid \gls*{htm} correctly marks the sudden change of cars when the current segment ends and a new segment begins.
 \subsubsection{Road}
-In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid HTM has mostly learned that behavior and does not report those moving cars as anomalies. This is shown in \autoref{fig:surveillance_road_1}.
+In the original video, there is a road on which cars regularly drive. By observing the visual output, it becomes evident that after some time the Grid \gls*{htm} has mostly learned that behavior and does not report those moving cars as anomalies. This is shown in \autoref{fig:surveillance_road_1}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_road_1.png}
@@ -221,7 +221,7 @@ In the original video, there is a road on which cars regularly drive. By observi
     \label{fig:surveillance_road_1}
 \end{figure}
 \subsubsection{Frame Repeat}
-To prove that the Grid HTM has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the architecture marks the cars standing still on the road as anomalies.
+To prove that the Grid \gls*{htm} has learned that cars on the road should be moving, it is possible to look at the visual output during the period when the video is repeating the same frame and observe if the architecture marks the cars standing still on the road as anomalies.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_1.png}
@@ -239,16 +239,16 @@ To prove that the anomaly was actually directly caused by the repeating frame, a
     \caption[No Frame Repeat Anomaly]{Anomaly output when there is no frame repeating, where it should have repeated is marked in red. The blue circle highlights the object of interest.}
     \label{fig:surveillance_freeze_no_freeze}
 \end{figure}
-It can be observed in \autoref{fig:surveillance_freeze_no_freeze} that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid HTM was able to learn how objects should be moving in time.
+It can be observed in \autoref{fig:surveillance_freeze_no_freeze} that the anomaly output is minor compared to when there was a repeating frame, proving that the anomaly was indeed a product of the repeating frame and that the Grid \gls*{htm} was able to learn how objects should be moving in time.
 \par
-Finally, it is interesting to look at how the Grid HTM handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_no_mtp}.
+Finally, it is interesting to look at how the Grid \gls*{htm} handles the repeating frames without multistep temporal patterns, which is shown in \autoref{fig:surveillance_freeze_no_mtp}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_freeze_no_mtp.png}
-    \caption[Frame Repeat No MTP Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. The blue circle highlights the object of interest. This time without multistep temporal patterns.}
+    \caption[Frame Repeat No Multistep Temporal Pattern Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. The blue circle highlights the object of interest. This time without multistep temporal patterns.}
     \label{fig:surveillance_freeze_no_mtp}
 \end{figure}
-Unfortunately, simply disabling multistep temporal patterns without adjusting the other TM parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid HTM to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive HTM can be regarding parameters.
+Unfortunately, simply disabling multistep temporal patterns without adjusting the other \gls*{tm} parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid \gls*{htm} to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive \gls*{htm} can be regarding parameters.
 \subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
@@ -266,7 +266,7 @@ The first point of interest, which can be seen in \autoref{fig:surveillance_poi_
 \end{figure}
 It can be seen that the anomaly score output, which is shown at the very bottom of each image, can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
 \par
-The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing HTM to all possible behaviours that are considered not anomalous, which is one of the complexities mentioned in \autoref{sec:anomaly_detection}.
+The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing \gls*{htm} to all possible behaviours that are considered not anomalous, which is one of the complexities mentioned in \autoref{sec:anomaly_detection}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
@@ -275,18 +275,18 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
 \end{figure}
 It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient amount of previous observations of that behavior.
 \subsection{Parameters}
-The following parameters were used in this experiment, and can be used for reproducibility:
+Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}               \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                \\
         \midrule
-        sp\_grid\_size     & 32, 32         & Size of each grid            \\
-        tm\_grid\_size     & 16, 16         & Size of each SP grid output. \\
-        min\_sparsity      & 10             &                              \\
-        sparsity           & 15             & Expected average sparsity    \\
-        temporal\_size     & 15             &                              \\
+        sp\_grid\_size     & 32, 32         & Size of each grid                             \\
+        tm\_grid\_size     & 16, 16         & Size of each \gls*{sp} grid output.           \\
+        min\_sparsity      & 10             &                                               \\
+        sparsity           & 15             & Expected average sparsity                     \\
+        temporal\_size     & 15             & Size of the multistep temporal pattern buffer \\
         \bottomrule
     \end{tabularx}
     \caption{Grid HTM specific parameters}
@@ -318,29 +318,29 @@ The following parameters were used in this experiment, and can be used for repro
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the SP \\
-        predictedSegmentDecrement & 0.001          &                \\
-        permanenceIncrement       & 0.01           &                \\
-        permanenceDecrement       & 0.001          &                \\
-        minThreshold              & 10             &                \\
-        activationThreshold       & 10             &                \\
-        cellsPerColumn            & 32             &                \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
+        predictedSegmentDecrement & 0.001          &                       \\
+        permanenceIncrement       & 0.01           &                       \\
+        permanenceDecrement       & 0.001          &                       \\
+        minThreshold              & 10             &                       \\
+        activationThreshold       & 10             &                       \\
+        cellsPerColumn            & 32             &                       \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
     \label{tab:surveillance_tm}
 \end{table}
 \subsection{Experiment Summary}
-This experiment showcases the performance of Grid HTM on complex data, specifically a surveillance video of a parking lot. The video contains technical anomalies in the form of segments, and also a synthetic anomaly which is a period of repeating frames. Semantic segmentation was performed in order to extract the cars in the frame into an SDR.
+This experiment showcases the performance of Grid \gls*{htm} on complex data, specifically a surveillance video of a parking lot. The video contains technical anomalies in the form of segments, and also a synthetic anomaly which is a period of repeating frames. Semantic segmentation was performed in order to extract the cars in the frame into an SDR.
 \par
-The results show that Grid HTM has the ability to react when segments begin and end, as well as the ability to detect the repeating frames. It also shows that the anomaly output, with the currently introduced aggregation functions, cannot be used to reliably to threshold anomalies. Instead, one can look at the visual output of the Grid HTM. The visual output shows that Grid HTM is able to detect the change in objects when a segment change occurs.
+The results show that Grid \gls*{htm} has the ability to react when segments begin and end, as well as the ability to detect the repeating frames. It also shows that the anomaly output, with the currently introduced aggregation functions, cannot be used to reliably to threshold anomalies. Instead, one can look at the visual output of the Grid HTM. The visual output shows that Grid \gls*{htm} is able to detect the change in objects when a segment change occurs.
 \par
-Results also show that Grid HTM learns common patterns such as cars driving on the main road, and does not report that behavior as anomalous. It is also shown that Grid HTM can correctly detect the repeating frames, and marks anomalous cars during the repeating frames with an increasing severity. Finally, a couple of points of interests are shown that highlight the weakness of the aggregation function and the importance of exposing HTM to all possible behaviors not considered anomalous.
+Results also show that Grid \gls*{htm} learns common patterns such as cars driving on the main road, and does not report that behavior as anomalous. It is also shown that Grid \gls*{htm} can correctly detect the repeating frames, and marks anomalous cars during the repeating frames with an increasing severity. Finally, a couple of points of interests are shown that highlight the weakness of the aggregation function and the importance of exposing \gls*{htm} to all possible behaviors not considered anomalous.
 \clearpage
 \section{Sperm Experiment}
-As seen in the surveillance experiment, it seems the Grid HTM can detect when segments begin and end. This experiment will explore this ability in greater detail.
+As seen in the surveillance experiment, it seems the Grid \gls*{htm} can detect when segments begin and end. This experiment will explore this ability in greater detail.
 \subsection{Data}
 The dataset used is VISEM~\cite{VISEM}, a sperm dataset which consists of videos that are made up of several segments. The sperm cells will be segmented using a rough binary thresholding, as shown in \autoref{fig:sperm_segmentation}.
 \begin{figure}[H]
@@ -350,15 +350,15 @@ The dataset used is VISEM~\cite{VISEM}, a sperm dataset which consists of videos
     \caption[Sperm Example Frame]{Example frame from a sperm video (left) and its corresponding segmentation (right).}
     \label{fig:sperm_segmentation}
 \end{figure}
-It is important to note that the data itself is noisy, and that it is not possible for the Grid HTM to learn any meaningful pattern. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
+It is important to note that the data itself is noisy, and that it is not possible for the Grid \gls*{htm} to learn any meaningful pattern. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
 \subsection{Benchmark}
-To ensure that the HTM does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
+To ensure that the \gls*{htm} does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
     E_t=\sum|F_t-F_{t-1}|
 \end{align*}
 Where $F_t$ denotes a segmented frame at time step $t$. The L2 error could also have been used, but it would not matter since this experiment will be comparing relative values.
 \subsection{Results}
-As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the L1 error benchmark. This can be deduced from the more prominent changes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid HTM able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid HTM anchors itself to and uses it to determine when segments start and end.
+As seen in \autoref{fig:sperm_results1}, the Grid \gls*{htm} is able to outperform the L1 error benchmark. This can be deduced from the more prominent changes in the anomaly score, compared to the L1 error. The reason might be that even though the data is very noisy, there is still something in it which makes Grid \gls*{htm} able to learn something general about the current state. This could for instance be a single cell that is standing still or moving very slowly, which the Grid \gls*{htm} anchors itself to and uses it to determine when segments start and end.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result1.png}
@@ -367,29 +367,29 @@ As seen in \autoref{fig:sperm_results1}, the Grid HTM is able to outperform the 
 \end{figure}
 
 \par
-That being said, the parameters for the Grid HTM were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, the video is not stationary), which makes Grid HTM useless. This can be observed in \autoref{fig:sperm_results2}, where both the Grid HTM and the L1 error struggle.
+That being said, the parameters for the Grid \gls*{htm} were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, the video is not stationary), which makes Grid \gls*{htm} useless. This can be observed in \autoref{fig:sperm_results2}, where both the Grid \gls*{htm} and the L1 error struggle.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result2.png}
     \caption[Drifting Video Results]{Results on a sperm video with drift.}
     \label{fig:sperm_results2}
 \end{figure}
-Just like in the stationary video, the change in the anomaly score is more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value. That being said, Grid HTM still outperforms the L1 score due to the more prominent changes in the anomaly score.
+Just like in the stationary video, the change in the anomaly score is more pronounced, but due to the drift in the video there is a constant high anomaly output which makes it impossible to find a threshold value. That being said, Grid \gls*{htm} still outperforms the L1 score due to the more prominent changes in the anomaly score.
 \subsection{Use Cases}
-The use case is to be able to use Grid HTM to detect segments and then use a separate tool to extract each segment. This could be useful in data processing, or even in streaming media services to automatically know when cuts happen and could aid scene boundary detection systems~\cite{scene_boundary_detection}.
+The use case is to be able to use Grid \gls*{htm} to detect segments and then use a separate tool to extract each segment. This could be useful in data processing, or even in streaming media services to automatically know when cuts happen and could aid scene boundary detection systems~\cite{scene_boundary_detection}.
 \subsection{Parameters}
-The following parameters were used in this experiment. The main difference from the surveillance experiment to note is the temporal size, which has been disabled due to the nonexistent patterns in the data.
+The following parameters were used in this experiment. The main difference from the surveillance experiment to note is the temporal size, which has been disabled due to the nonexistent patterns in the data. For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise in the output graph. Because the data is noisy, the mean was used as the aggregation function.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                             \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                    \\
         \midrule
-        sp\_grid\_size     & 16, 16         & Size of each grid                                                          \\
-        tm\_grid\_size     & 8, 8           & Size of each SP grid output.                                               \\
-        min\_sparsity      & 1              &                                                                            \\
-        sparsity           & 5              &                                                                            \\
-        temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled \\
+        sp\_grid\_size     & 16, 16         & Size of each grid                                                                 \\
+        tm\_grid\_size     & 8, 8           & Size of each \gls*{sp} grid output.                                               \\
+        min\_sparsity      & 1              &                                                                                   \\
+        sparsity           & 5              &                                                                                   \\
+        temporal\_size     & 1              & Size of the multistep temporal pattern buffer, 1 means it is effectively disabled \\
         \bottomrule
     \end{tabularx}
     \caption{Grid HTM specific parameters}
@@ -421,32 +421,31 @@ The following parameters were used in this experiment. The main difference from 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes} \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the SP \\
-        predictedSegmentDecrement & 0.003          &                \\
-        permanenceIncrement       & 0.01           &                \\
-        permanenceDecrement       & 0.001          &                \\
-        minThreshold              & 1              &                \\
-        activationThreshold       & 3              &                \\
-        cellsPerColumn            & 16             &                \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
+        predictedSegmentDecrement & 0.003          &                       \\
+        permanenceIncrement       & 0.01           &                       \\
+        permanenceDecrement       & 0.001          &                       \\
+        minThreshold              & 1              &                       \\
+        activationThreshold       & 3              &                       \\
+        cellsPerColumn            & 16             &                       \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
     \label{tab:sperm_tm_param}
 \end{table}
-For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise in the output graph. Because the data is noisy, the mean was used as the aggregation function.
 \subsection{Experiment Summary}
-This experiment explored the ability of Grid HTM to detect segments in greater detail. The videos used were videos of swimming sperm cells, and were segmented using a rough binary thresholding. The data is noisy and short, and it is therefore not expected for Grid HTM to learn any meaningful patterns. As a benchmark, the L1 error is employed.
+This experiment explored the ability of Grid \gls*{htm} to detect segments in greater detail. The videos used were videos of swimming sperm cells, and were segmented using a rough binary thresholding. The data is noisy and short, and it is therefore not expected for Grid \gls*{htm} to learn any meaningful patterns. As a benchmark, the L1 error is employed.
 \par
-The results show that Grid HTM outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
+The results show that Grid \gls*{htm} outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
 \clearpage
 \section{Summary}
-In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of HTM and Grid HTM on videos. The experiments show that it is possible to apply Grid HTM for anomaly detection in videos. For instance, results show that Grid HTM is able to learn the norm in a complex surveillance video, and is therefore able to detect anomalous events and where they occur in the frame. It was also shown that for complex data, the anomaly score output is not a good measure to use due to the noise and the influence of the size of the anomalies.
+In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of \gls*{htm} and Grid \gls*{htm} on videos. The experiments show that it is possible to apply Grid \gls*{htm} for anomaly detection in videos. For instance, results show that Grid \gls*{htm} is able to learn the norm in a complex surveillance video, and is therefore able to detect anomalous events and where they occur in the frame. It was also shown that for complex data, the anomaly score output is not a good measure to use due to the noise and the influence of the size of the anomalies.
 \par
-The first experiment is a controlled experiment where a computer-generated ball is bouncing with anomalies inserted. The aim of this experiment is to test whether the capabilities of HTM apply for videos, as well as the performance of Grid HTM on the same task. The results confirm this, and show that the performance of Grid HTM is slightly worse than that of normal HTM. This is to be expected since the data is very clean and simple, whereas Grid HTM was designed with more complex data in mind.
+The first experiment is a controlled experiment where a computer-generated ball is bouncing with anomalies inserted. The aim of this experiment is to test whether the capabilities of \gls*{htm} apply for videos, as well as the performance of Grid \gls*{htm} on the same task. The results confirm this, and show that the performance of Grid \gls*{htm} is slightly worse than that of normal HTM. This is to be expected since the data is very clean and simple, whereas Grid \gls*{htm} was designed with more complex data in mind.
 \par
-The second experiment showcases the performance of Grid HTM on a surveillance video with technical anomalies. Additionally, several key points of interests and the respective outputs of Grid HTM are shown in order to get a better understanding of its capabilities. Again, the results show that Grid HTM can adapt to the norm in the complex video and can correctly identify anomalies. An interesting discovery is the ability of Grid HTM to detect segment changes. The results also show that the anomaly score output cannot be relied upon for thresholding purposes, and that further work is required in that area.
+The second experiment showcases the performance of Grid \gls*{htm} on a surveillance video with technical anomalies. Additionally, several key points of interests and the respective outputs of Grid \gls*{htm} are shown in order to get a better understanding of its capabilities. Again, the results show that Grid \gls*{htm} can adapt to the norm in the complex video and can correctly identify anomalies. An interesting discovery is the ability of Grid \gls*{htm} to detect segment changes. The results also show that the anomaly score output cannot be relied upon for thresholding purposes, and that further work is required in that area.
 \par
-The third experiment further explores the ability of the Grid HTM to detect segments in videos, which was discovered in the previous experiment. The videos that are used in this experiment are videos of sperm that contain several segments. The results show that it outperforms the L1 benchmark due to a more prominent change in anomaly score during segment changes.
+The third experiment further explores the ability of the Grid \gls*{htm} to detect segments in videos, which was discovered in the previous experiment. The videos that are used in this experiment are videos of sperm that contain several segments. The results show that it outperforms the L1 benchmark due to a more prominent change in anomaly score during segment changes.
 
