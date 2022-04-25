@@ -1,6 +1,6 @@
 \chapter{Grid HTM}
 \label{sec:grid_htm}
-This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github\cite{master_thesis_github}.
+This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github~\cite{master_thesis_github}.
 \section{Introduction}
 \par
 This thesis explores a new type of architecture, named Grid HTM, for anomaly detection in videos using \gls*{htm}, and proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
@@ -97,7 +97,7 @@ Having the encoder output divided into a grid has the added benefit of introduci
 \par
 It is also possible to estimate the number of predictions for each cell which can be used as a measure of certainty, where fewer predictions means higher certainty. Making it possible to measure certainty per cell creates a new source of information which can be used for explainability or robustness purposes.
 \par
-These two properties show that GridHTM offers vastly more explainability than current state-of-the-art deep learning models for anomaly detection, which could make it an attractive approach.
+These two properties show that Grid HTM offers vastly more explainability than current state-of-the-art deep learning models for anomaly detection, which could make it an attractive approach.
 \subsection{Flexibility and Performance}
 In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in each cell independently, giving the architecture increased flexibility. It is also possible to use a non-uniform grid, meaning that some cells can have different sizes. Last but not least, dividing the frame into smaller cells makes it possible to run each cell in parallel for increased performance.
 \subsection{Reviewing Encoder Rules}
@@ -108,7 +108,7 @@ That being said, a potential problem with the grid approach is that the rules fo
     \item \textbf{The output must have the same dimensionality (total number of bits) for all inputs}. The segmentation model output has a fixed dimensionality.
     \item \textbf{The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling}. The segmentation model does not respect this. An example is that there can be no cars (zero active bits), one car ($n$ active bits), or two cars ($2n$ active bits), and that this will fluctuate over time.
 \end{itemize}
-The solution for the last rule is two-fold, and  consists of imposing a soft upper bound and a hard lower bound for the number of active pixels within a cell. The purpose is to lower the variation of number of active pixels, while also containing enough semantic information for the \gls*{htm} to work:
+The solution for the last rule is two-fold, and  consists of imposing a soft upper bound and a hard lower bound for the number of active pixels within a cell. The purpose is to lower the variation of number of active pixels, while also containing enough semantic information for \gls*{htm} to work:
 \begin{itemize}
     \item Pick a cell size so that the distribution of number of active pixels is as tight as possible, while containing enough semantic information and also being small enough so that the desired invariance is achieved. The cell size acts as a soft upper bound for the possible number of active pixels.
     \item Create a pattern representing emptiness, where the number of active bits is similar to what can be expected on average when there are cars inside a cell. This acts as a hard lower bound for the number of active pixels.
@@ -136,7 +136,7 @@ The visual output resulting from these changes, which is an equally important ou
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
-    \caption[Example Grid HTM Output]{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something the Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
+    \caption[Example Grid HTM Output]{Example Grid \gls*{htm} output and the corresponding input. The color represents the anomaly score for each of the cells, where red means high anomaly score and green means zero anomaly score. Two of the cars are marked as anomalous because they are moving, which is something Grid \gls*{htm} has not seen before during its 300 frame long lifetime.}
     \label{fig:gridhtm_output}
 \end{figure}
 Since there are now cells that are observing an empty pattern for a lot of the time in sparse data, boosting is recommended to be turned off, otherwise the \gls*{sp} output for the empty cells would change back and forth in order to adjust the active duty cycle.
@@ -155,7 +155,7 @@ Another issue with the grid based approach is when a car first comes into a cell
     \caption[Stabilizing Anomaly Output Visualization 2]{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
     \label{fig:empty_to_notempty_fixed}
 \end{figure}
-A more proper solution could be to allow the \gls*{tm} to grow synapses to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
+A more proper solution could be to allow the \gls*{tm} to grow segments to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
 \subsection{Multistep Temporal Patterns}
 \label{sec:multistep_temporal_patterns}
 Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still. \autoref{fig:high_fps} visualizes this phenomenon.
@@ -216,9 +216,9 @@ Remembering that a single HTM model models a cortical column, as stated in \auto
 \end{figure}
 The most intuitive use case is to use Grid \gls*{htm} for semi-active surveillance, where personnel only have to look at segments containing anomalies, leading to drastically increased efficiency.
 \par
-One example is making it possible to have an entire city, with environments such as in \autoref{fig:virat_examples}, be monitored by a few people. This is made possible by making it so that people only have to look at segments that the Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
+One example is making it possible to have an entire city, with environments such as in \autoref{fig:virat_examples}, be monitored by a few people. This is made possible by making it so that people only have to look at segments that Grid \gls*{htm} has found anomalous, which is what drastically lowers the manpower requirement for active monitoring of the entire city.
 \par
-Grid HTM could also be used to help automate labeling of anomaly datasets for deep learning. This would be similar to how older deep learning networks are used to help automate creating new labeled image datasets, where the model proposes a label for an image, which is then further refined by a human if needed.
+Grid HTM could also be used to help automate labeling of anomaly datasets for deep learning. This would be similar to how deep learning networks are used to help automate creating new labeled image datasets, where the model proposes a label for an image, which is then further refined by a human if needed.
 \section{Summary}
 This chapter proposes to use segmentation techniques as an encoder for visual data. The resulting \glspl*{sdr} can then be parsed by Grid HTM, which is essentially a collection of HTM models divided into a grid. The idea is that the SP will find an optimal general representation of the objects represented in the input SDRs. The task of the TM will be to learn the patterns that these objects exhibit over time, such as position, speed, and shape. Ideally, the architecture will have a calibration period where it will not do any anomaly detection but will only learn the patterns.
 \par

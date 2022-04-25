@@ -66,7 +66,7 @@ Through the use of data augmentation, it is also possible to not only improve th
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/cnn}
-    \caption[Typical CNN Architecture]{ A typical CNN architecture. }
+    \caption[Typical CNN Architecture]{ A typical CNN architecture used for classification. }
     \label{fig:cnn_example}
 \end{figure}
 \par
@@ -82,20 +82,20 @@ Generative models come in all shapes and sizes, but a standard \gls*{gan} usuall
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/gan.png}
-    \caption[Gan Example]{Example of a \gls*{gan}.}
+    \caption[Gan Example]{Example of a \gls*{gan} for generating images of cats.}
     \label{fig:gan}
 \end{figure}
 In order to train the weights in such a configuration, the generator and discriminator are trained in alteration. To train the discriminator, the weights of the generator are fixed and backpropagation is performed using the error based on whether the discriminator made the right prediction. To train the generator, the weights of the discriminator are fixed and backpropagation is performed using the error based on whether the discriminator was fooled or not.
 \par
 While the training method of a \gls*{gan} is straight forward, actually training a \gls*{gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability~\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{gan} have been proposed such as the Wasserstein GAN~\cite{wgan} and the Unrolled GAN~\cite{unrolled_gan}.
 \par
-There also exists variations of the standard \gls*{gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as turning a horse in an image into a zebra, without paired data. Another example is CGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a CGAN can generate faces of a specific age.
+There also exists variations of the standard \gls*{gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as transforming a horse in an image into a zebra, without paired data. Another example is CGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a CGAN can generate faces of a specific age.
 \subsection{Disadvantages of Deep Learning}
-A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset~\cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results. Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data~\cite{deeplearning_dataset}. This is visualized in \autoref{fig:data_size_accuracy}.
+A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset~\cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results. Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data~\cite{deeplearning_dataset}. This is exemplified in \autoref{fig:data_size_accuracy}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/training_volume}
-    \caption[Dataset Volume Accuracy]{Accuracy increase in relation to size of dataset.}
+    \caption[Dataset Volume Accuracy]{Logarithmic accuracy increase in relation to size of dataset.}
     \label{fig:data_size_accuracy}
 \end{figure}
 Deep learning models also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}. There is also a lack of explainability.
@@ -126,7 +126,7 @@ As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined 
     \item \textbf{Rarity and class imbalance} Anomalies are by definition rare instances, which means that it becomes difficult to create a balanced dataset. \textcite{class_imbalance1} review the current solutions to this problem.
     \item \textbf{Heterogeneity} Anomalies can take form in many ways, and as such one class of anomalies can be vastly different from another. Approaches such as the one introduced by \textcite{heterogeneous1} have been proposed to alleviate the problem.
 \end{itemize}
-These complexities make it hard to apply traditional deep learning methods for anomaly detection, because they are designed to be trained with pairs of $\{input, target\}$ in mind.
+These complexities make it hard to apply traditional deep learning methods for anomaly detection, because they are designed to be trained with pairs of $\{input, label\}$ in mind.
 \subsection{Deep Learning and Anomaly Detection}
 \label{sec:dl_anom_detection}
 The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning~\cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs~\cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs. A variation of GAN which is specifically designed for anomaly detection is GANomaly\cite{ganomaly}, shown in \autoref{fig:ganomaly}, which effectively compares image encoding latent space instead of image distributions.
@@ -235,7 +235,7 @@ As of now, there exists encoders for numbers, categories, geospatial locations, 
     \caption[Cyclical Date Encoding]{Visualization of a cyclical date encoding, which is currently encoding Thursday. Note that also Wednesday and Friday are included in the encoding of Thursday in order to emphasize that Wednesday and Friday are both equally distanced from Thursday.}
     \label{fig:cyclical_encoder}
 \end{figure}
-Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into \glspl*{sdr} one by one and then concatenate them into a single \gls*{sdr} before passing it to the HTM.
+Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into \glspl*{sdr} one by one and then concatenate them into a single \gls*{sdr} before passing it to the HTM system.
 \subsubsection{Encoding Visual Data}
 Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works~\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
 \begin{figure}[H]
