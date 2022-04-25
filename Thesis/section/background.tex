@@ -1,6 +1,6 @@
 \chapter{Deep Learning, Anomaly Detection, and Hierarchical Temporal Memory}
 \label{sec:background}
-The following is relevant background information on Deep Learning, Video Anomaly Detection, and \gls*{htm} theory.
+This chapter covers relevant background information on Deep Learning, Video Anomaly Detection, and \gls*{htm} theory. It also briefly mentions ethical considerations.
 \section{Deep Learning}
 As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
@@ -43,7 +43,7 @@ Neural networks use gradients to learn. The gradients are first calculated using
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/gradient_descent}
-    \caption[Gradient Descent Comparison]{Comparison between \gls*{sgd} and gradient descent.}
+    \caption[Gradient Descent Comparison]{Comparison between \gls*{sgd} and gradient descent. The green dot in the middle represents the optimum.}
     \label{fig:gd_sgd}
 \end{figure}
 \par
@@ -202,28 +202,28 @@ How this type of neuron operates in \gls*{htm} implementations will be covered i
 \subsection{Common Algorithm}
 HTM theory states that there is a common algorithm for the intelligence. That the signals from hearing, vision, and touch are at the core processed by the same common algorithm. By extension, this means that \gls*{htm} networks should be able to solve all kinds of logical tasks.
 \subsection{Sparse Distributed Representation}
-HTM theory introduces Sparse Distributed Representation (SDR) as a way of representing data in \gls*{htm} and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two SDRs by simply performing a binary AND operation, as seen in \autoref{fig:sdr_semantics}.
+HTM theory introduces \gls*{sdr} as a way of representing data in \gls*{htm} and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two \glspl*{sdr} by simply performing a binary AND operation, as seen in \autoref{fig:sdr_semantics}.
 \begin{figure}[H]
     \centering
     \includegraphics{resources/related_works/sdr-semantics.png}
-    \caption[SDR Semantic Comparison]{Semantic similarities between the two SDRs A and B.}
+    \caption[SDR Semantic Comparison]{Semantic similarities between the two \glspl*{sdr} A and B.}
     \label{fig:sdr_semantics}
 \end{figure}
-Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an SDR aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes \gls*{htm} robust to noise. That being said, sparsity can be configured to be any value, as seen in \autoref{fig:sdr}.
+Observations of the brain has found that at any given point in time, a small percentage of neurons are activated and an \gls*{sdr} aims to keep this property by having a small percentage of bits be 1 at any given point. A common value is 2\% in order to mimic the sparsity of active neurons in the neocortex. Having this property means that the chance of two bit-patterns with different semantic meanings coinciding, for instance due to bit-flips caused by noise in the data, is astronomically low and is what makes \gls*{htm} robust to noise. That being said, sparsity can be configured to be any value, as seen in \autoref{fig:sdr}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.25\textwidth]{resources/related_works/SDR.png}
-    \caption[Example SDR]{Example representation of an SDR with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
+    \caption[Example SDR]{Example representation of an \gls*{sdr} with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
     \label{fig:sdr}
 \end{figure}
 \subsection{Encoders}
 \label{sec:encoders}
-To convert real-world data into an SDR, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an SDR with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output SDRs created by the encoder are sometimes referred to as just binary arrays.\par
-Writing an encoder is no easy task as it is important to keep semantic similarities between values. This also means that the encoder is perhaps the most important part of an \gls*{htm} pipeline to get right as it is the part that can limit the system the most. A biological example would be an eye that takes in visual information and converts it into an SDR so that it can be processed by the neocortex.
+To convert real-world data into an \gls*{sdr}, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an \gls*{sdr} with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output \glspl*{sdr} created by the encoder are sometimes referred to as just binary arrays.\par
+Writing an encoder is no easy task as it is important to keep semantic similarities between values. This also means that the encoder is perhaps the most important part of an \gls*{htm} pipeline to get right as it is the part that can limit the system the most. A biological example would be an eye that takes in visual information and converts it into an \gls*{sdr} so that it can be processed by the neocortex.
 \par
 There are principles that should be followed in order to create a good encoder:
 \begin{itemize}
-    \item Semantically similar data should result in SDRs with overlapping active bits
+    \item Semantically similar data should result in \glspl*{sdr} with overlapping active bits
     \item The same input should always produce the same SDR
     \item The output must have the same dimensionality (total number of bits) for all inputs
     \item The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling
@@ -235,7 +235,7 @@ As of now, there exists encoders for numbers, categories, geospatial locations, 
     \caption[Cyclical Date Encoding]{Visualization of a cyclical date encoding, which is currently encoding Thursday. Note that also Wednesday and Friday are included in the encoding of Thursday in order to emphasize that Wednesday and Friday are both equally distanced from Thursday.}
     \label{fig:cyclical_encoder}
 \end{figure}
-Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into SDRs one by one and then concatenate them into a single SDR before passing it to the HTM.
+Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into \glspl*{sdr} one by one and then concatenate them into a single \gls*{sdr} before passing it to the HTM.
 \subsubsection{Encoding Visual Data}
 Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works~\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
 \begin{figure}[H]
@@ -245,13 +245,13 @@ Several approaches for encoding visual data have been proposed. An example is a 
     \label{fig:binary_threshold_example}
 \end{figure}
 \par
-There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an SDR by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
+There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an \gls*{sdr} by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
 There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as SIFT cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
 \par
 The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
 \par
-An encoder which transforms convolutional feature maps into SDRs could be the answer, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into SDRs by treating each value in the feature map as a float and converting it into its own SDR quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
+An encoder which transforms convolutional feature maps into \glspl*{sdr} could be the answer, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into \glspl*{sdr} by treating each value in the feature map as a float and converting it into its own \gls*{sdr} quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/resnet18_layer_10.png}
@@ -261,21 +261,21 @@ An encoder which transforms convolutional feature maps into SDRs could be the an
 \par
 Additionally, minor variations in the feature map would cause major variations in the resulting SDR. Alternatively, one could follow \textcite{CNN_HTM} and binary threshold the top-$n$ features, but this leads to its own problems such as loss of information and that the information contained in the top-$n$ features is often undefined in models trained for complex tasks. It is also undefined what the top-$n$ features represent when there are no strong activations in the feature maps.
 \par
-Seeing as there is currently no encoder that can produce sensible SDRs from high dimensional data such as videos, a natural conclusion to make is that \gls*{htm} should be applied differently, and that a new type of architecture using \gls*{htm} should be explored for this purpose.
+Seeing as there is currently no encoder that can produce sensible \glspl*{sdr} from high dimensional data such as videos, a natural conclusion to make is that \gls*{htm} should be applied differently, and that a new type of architecture using \gls*{htm} should be explored for this purpose.
 \subsection{Learning}
 Similar to mammalian intelligence, \gls*{htm} is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
 The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up multiple \gls*{htm} neurons.\par
-The spatial pooler takes SDRs produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output SDRs usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce SDRs that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
-The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the SDRs formed by the spatial pooler and does two things:
+The spatial pooler takes \glspl*{sdr} produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output \glspl*{sdr} usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce \glspl*{sdr} that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
+The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the \glspl*{sdr} formed by the spatial pooler and does two things:
 \begin{itemize}
-    \item Learns sequences of SDRs formed by the spatial pooler
+    \item Learns sequences of \glspl*{sdr} formed by the spatial pooler
     \item Forms a prediction, in the form of a predictive SDR,  given the context of previous SDRs
 \end{itemize}
 A typical \gls*{htm} pipeline can be seen in \autoref{fig:htm_pipeline}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/htm_pipeline.png}
-    \caption[The HTM Pipeline]{A typical \gls*{htm} pipeline. A common next-step could be to use a classifier to convert the predictive SDR into a classification. }
+    \caption[The HTM Pipeline]{A typical \gls*{htm} pipeline. A common next-step could be to use a classifier to convert the predictive \gls*{sdr} into a classification. }
     \label{fig:htm_pipeline}
 \end{figure}
 
@@ -424,7 +424,7 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/motion_frame.png}
-    \caption[Example Motion Frame]{Example motion frame~\cite{MotionAnomalyDetection}.}
+    \caption[Example Motion Frame]{Example motion frame the dataset used by \textcite{MotionAnomalyDetection}.}
     \label{fig:motion_frame}
 \end{figure}
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that \gls*{htm} by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features.
@@ -437,4 +437,4 @@ Deep learning can be traced back to the Perceptron which was a machine learning 
 \par
 Anomaly detection is often defined as detecting data points that deviate from the general distribution. Unlike most other problems in deep learning, anomaly detection deals with unpredictable and rare events which makes it hard to apply traditional deep learning for anomaly detection. Popular approaches therefore often employ generative models, that calculate an anomaly measure using generated or reconstructed data. A subset of anomaly detection is smart surveillance, which is the use of video analysis specifically in surveillance. Recent developments show that generative models have a high degree of accuracy and are consistently improving.
 \par
-HTM theory introduces a machine learning algorithm which works on the same principles as the brain and therefore solves some of the issues that deep learning has. \gls*{htm} is considered noise resistant and can perform online learning, meaning that it learns as it observes more data. \gls*{htm} replicates the structure of the neocortex which is made up of cortical regions, which in turn are made of up of mini-columns and then neurons. \gls*{htm} neurons are more complex than neurons in deep learning, and perform learning with Hebbian-like learning. The data in an \gls*{htm} is represented using an SDR, which is a sparse bit array. An encoder converts real world values into SDRs. One of the difficulties with \gls*{htm} is making it work on visual data, where creating a good encoder for visual data is still being researched. The learning mechanism consists of two parts, the spatial pooler and the temporal memory. The spatial pooler learns to extract semantically important information into output SDRs. The temporal memory learns sequences of patterns of SDRs and forms a prediction in the form of a predictive SDR. Research has shown that \gls*{htm} is very capable of performing anomaly detection on low-dimensional data and is able to outperform other anomaly detection methods. However, related works show that \gls*{htm} struggles with higher dimensional data. Therefore, a natural conclusion to make is that HTM should be applied differently, and that a new type of architecture using HTM should be explored for the purpose of video anomaly detection.
+HTM theory introduces a machine learning algorithm which works on the same principles as the brain and therefore solves some of the issues that deep learning has. \gls*{htm} is considered noise resistant and can perform online learning, meaning that it learns as it observes more data. \gls*{htm} replicates the structure of the neocortex which is made up of cortical regions, which in turn are made of up of mini-columns and then neurons. \gls*{htm} neurons are more complex than neurons in deep learning, and perform learning with Hebbian-like learning. The data in an \gls*{htm} is represented using an SDR, which is a sparse bit array. An encoder converts real world values into SDRs. One of the difficulties with \gls*{htm} is making it work on visual data, where creating a good encoder for visual data is still being researched. The learning mechanism consists of two parts, the spatial pooler and the temporal memory. The spatial pooler learns to extract semantically important information into output SDRs. The temporal memory learns sequences of patterns of \glspl*{sdr} and forms a prediction in the form of a predictive SDR. Research has shown that \gls*{htm} is very capable of performing anomaly detection on low-dimensional data and is able to outperform other anomaly detection methods. However, related works show that \gls*{htm} struggles with higher dimensional data. Therefore, a natural conclusion to make is that HTM should be applied differently, and that a new type of architecture using HTM should be explored for the purpose of video anomaly detection.

@@ -1,3 +1,15 @@
+\newcommand{\objective}[1]{
+    \ifnum #1=1
+        Introduce \gls*{htm} and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being easy to grasp for readers with a machine learning background.
+    \else \fi
+    \ifnum #1=2
+        Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.
+    \else \fi
+    \ifnum #1=3
+        Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.
+    \else \fi
+}
+
 \chapter{Introduction}
 \label{sec:introduction}
 \section{Background and Motivation}
@@ -21,9 +33,9 @@ With the advantages of  \gls*{htm} and the rise of video anomaly detection in mi
 Based on the background and motivation, the problem statement can be boiled down to a simple question: \textbf{Is \gls*{htm} viable for use in video anomaly detection?}\par
 This thesis will introduce three different objectives that will help answer the question and also showcase the performance of HTM. It will also cover all required knowledge. The objectives are as follows:
 \begin{enumerate}
-    \item Introduce  \gls*{htm} and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being easy to grasp to readers with a machine learning background.
-    \item Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.
-    \item Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.
+    \item \objective{1}
+    \item \objective{2}
+    \item \objective{3}
 \end{enumerate}
 
 \section{Limitations}
@@ -37,13 +49,13 @@ Finally, it needs to be noted that Numenta, which is the company behind HTM, is 
 
 \section{Contributions}
 This thesis explores the use of \gls*{htm} for anomaly detection in videos, and introduces a new type of \gls*{htm} architecture called Grid HTM, which requires a vigorous understanding of HTM. The main contributions are therefore achieved through the objectives introduced in \autoref{sec:problem_statement}. How this thesis achieves those objectives is described below:
-\paragraph*{Objective 1} \emph{Introduce \gls*{htm} and give a deep understanding of the inner workings, the strengths, and the weaknesses. While also being friendly to readers with a machine learning background.}
+\paragraph*{Objective 1} \emph{\objective{1}}
 \par
 This objective is achieved in \autoref{sec:background}, where \gls*{htm} is explained. This chapter also acts as an organization of  \gls*{htm} related research, supported with visualizations and a simpler language, making it easier for people with a machine learning background to understand. It is also important to mention that not only does this chapter include the main \gls*{htm} research published, but it also contains little tidbits of community research and ideas which are otherwise hard to come by.
-\paragraph*{Objective 2} \emph{Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.}
+\paragraph*{Objective 2} \emph{\objective{2}}
 \par
-This objective is achieved in \autoref{sec:grid_htm}, where Grid \gls*{htm} was introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis.
-\paragraph*{Objective 3} \emph{Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.}
+This objective is achieved in \autoref{sec:grid_htm}, where Grid \gls*{htm} was introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis. This objective is further achieved through the Grid HTM paper, which is a product of this thesis, and can be seen in \autoref{appendix:paper}.
+\paragraph*{Objective 3} \emph{\objective{3}}
 \par
 This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that \gls*{htm} and Grid \gls*{htm} can indeed perform anomaly detection on simple and clean videos. The second experiment showcased the performance of Grid \gls*{htm} on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid \gls*{htm} to detect segments in a video, where noisy videos of sperm were used for increased challenge.
 \par
@@ -62,11 +74,11 @@ As for the other experiments, a more quantitative research method was used. This
 This thesis consists of five chapters, where \autoref{sec:introduction} and \autoref{sec:background} are introductory and contain relevant background information for the understanding of the proceeding chapters. \autoref{sec:grid_htm} and \autoref{sec:experiments} present the work done during this thesis. \autoref{sec:conclusion} neatly summarizes this thesis and presents areas in which there can be performed further work. More details for each of the chapters, except this one, is presented below.
 \par
 \subsection*{Chapter 2: Background}
-\autoref{sec:background} covers the required knowledge for the proceeding chapters. It is split up into three parts. The first part covers deep learning and its history, and has an increased focus on the parts of deep learning that are especially relevant for this thesis, such as generative models.
+\autoref{sec:background} covers the required knowledge for the proceeding chapters, as well as a short section about ethical considerations. It is split up into three parts. The first part covers deep learning and its history, and has an increased focus on the parts of deep learning that are especially relevant for this thesis, such as generative models.
 \par
 The second part covers anomaly detection. More specifically, it covers the definition, challenges, and recent work within anomaly detection. It also discusses smart surveillance, which is a subset of anomaly detection specifically meant for surveillance purposes.
 \par
-The third and final part covers \gls*{htm} theory. It starts off by introducing the biological ties to \gls*{htm} and the pipeline of an \gls*{htm} model. This is then proceeded by a detailed account of the inner mechanisms of an \gls*{htm} model and how learning is performed. It then finishes by introducing use-cases, related work on the use of \gls*{htm} for anomaly detection and how it performs, and introduces similarities between recent developments within \gls*{htm} theory and recent developments within deep learning. There is also a brief section dedicated to ethical considerations when working within this field.
+The third and final part covers \gls*{htm} theory. It starts off by introducing the biological ties to \gls*{htm} and the pipeline of an \gls*{htm} model. This is then proceeded by a detailed account of the inner mechanisms of an \gls*{htm} model and how learning is performed. It then finishes by introducing use-cases, related work on the use of \gls*{htm} for anomaly detection and how it performs, and introduces similarities between recent developments within \gls*{htm} theory and recent developments within deep learning.
 \subsection*{Chapter 3: Grid HTM}
 This chapter introduces Grid HTM, a novel \gls*{htm} architecture for the purpose of anomaly detection in videos, which is the main contribution of this thesis.
 \par
@@ -84,4 +96,4 @@ In this chapter the thesis is summarized, and the thesis question presented in \
 \par
 The contributions are presented as the description of how the various objectives were achieved, as well as answering the thesis question. This is a shorter version of the contributions mentioned in the introduction, and is presented conclusively.
 \par
-There is future work that needs to be done in several areas. The main future work is creating a suitable dataset, so that experiments can be performed more quantitatively. It is also important to explore new aggregation functions for Grid HTM, as well as implementing the calibration period which was mentioned in \autoref{sec:grid_htm}. Finally, one should look more into combining deep learning and HTM, as well as staying up to date on the latest developments within neuroscience and HTM.
+This chapter also presents potential future work, which is further divided into sections focusing on different aspects such as datasets, Grid HTM, HTM and deep learning, and general research progress.
