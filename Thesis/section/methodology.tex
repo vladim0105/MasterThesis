@@ -103,7 +103,7 @@ In addition, it is also possible to configure the \gls*{sp} and the \gls*{tm} in
 \subsection{Reviewing Encoder Rules}
 That being said, a potential problem with the grid approach is that the rules for creating a good encoder, mentioned in \autoref{sec:encoders}, may not be respected and therefore should be reviewed:
 \begin{itemize}
-    \item \textbf{Semantically similar data should result in \glspl*{sdr} with overlapping active bits}. In this example, a car at one position will produce an SDR with a high amount of overlapping bits as another car at a similar position in the input image.
+    \item \textbf{Semantically similar data should result in \glspl*{sdr} with overlapping active bits}. In this example, a car at one position will produce an SDR with a high number of overlapping bits as another car at a similar position in the input image.
     \item \textbf{The same input should always produce the same SDR}. The segmentation model produces a deterministic output given the same input.
     \item \textbf{The output must have the same dimensionality (total number of bits) for all inputs}. The segmentation model output has a fixed dimensionality.
     \item \textbf{The output should have similar sparsity (similar amount of one-bits) for all inputs and have enough one-bits to handle noise and subsampling}. The segmentation model does not respect this. An example is that there can be no cars (zero active bits), one car ($n$ active bits), or two cars ($2n$ active bits), and that this will fluctuate over time.

@@ -12,7 +12,7 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{parskip}
-\usepackage[font={color=darkgray}]{caption}
+\usepackage[font={color=black, bf}]{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{nameref}
@@ -46,7 +46,6 @@
 
 
 \begin{document}
-
 \duoforside[
   dept={Department of Informatics},   %% ... or your department
   program={Informatics: Robotics and Intelligent Systems},         %% ... or your programme
@@ -54,22 +53,19 @@
 ]                                        %% ... or long (short = 30 credits, long = 60 credits)
 
 \frontmatter{}
-\mainmatter{}
-
 \chapter*{Abstract} \addcontentsline{toc}{chapter}{Abstract}
-The use of video anomaly detection systems has gained traction for the past few years. The current approaches use deep learning for performing anomaly detection in videos, but this has multiple problems. For starters, deep learning in general has issues with noise, concept drift, explainability, and training data volume. Additionally, anomaly detection in itself is a complex task and faces challenges such as unknowness, heterogeneity, and class imbalance. Anomaly detection in deep learning is therefore mainly constrained to generative models such as GANs and autoencoders due to their unsupervised nature, but even they suffer from general deep learning issues and are hard to train properly. This thesis instead looks to HTM to perform anomaly detection in videos, as it has favorable properties such as noise tolerance and online learning which combats concept drift. This thesis does so by introducing Grid HTM, which is an HTM based architecture specifically for anomaly detection in complex videos such as surveillance footage.
+The use of video anomaly detection systems has gained traction for the past few years. The current approaches use deep learning for performing anomaly detection in videos, but this has multiple problems. For starters, deep learning in general has issues with noise, concept drift, explainability, and training data volume. Additionally, anomaly detection in itself is a complex task and faces challenges such as unknowness, heterogeneity, and class imbalance. Anomaly detection in deep learning is therefore mainly constrained to generative models such as GANs and autoencoders due to their unsupervised nature, but even they suffer from general deep learning issues and are hard to train properly. This thesis instead looks to HTM to perform anomaly detection in videos, as it has favorable properties such as noise tolerance and online learning which combats concept drift. This thesis introduces Grid HTM, which is an HTM based architecture specifically for anomaly detection in complex videos. Experiment results show that, with proper data and further refinements, Grid HTM can be used for anomaly detection in complex videos such as surveillance footage.
+
 \chapter*{Acknowledgments} \addcontentsline{toc}{chapter}{Acknowledgments}
 I would like to thank my supervisors for their invaluable assistance and guidance, as well as for answering emails quickly.
 \par
 The research presented in this thesis has benefited from the Experimental Infrastructure for Exploration of Exascale Computing (eX3), which is financially supported by the Research Council of Norway under contract 270053.
-%\chapter*{Acknowledgments/Preface/...} \addcontentsline{toc}{chapter}{Acknowledgments}
-%I would like to thank ... * insert looong list here *
 
+
+\mainmatter{}
 \tableofcontents
 \listoffigures
 \listoftables
-
-\mainmatter
 \include{section/introduction}
 \include{section/background}
 \include{section/methodology}

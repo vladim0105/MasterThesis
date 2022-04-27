@@ -248,7 +248,7 @@ Finally, it is interesting to look at how Grid \gls*{htm} handles the repeating 
     \caption[Frame Repeat No Multistep Temporal Pattern Anomaly]{Anomaly output during the repeating frame, the start of the frame repeat is marked with red text. The blue circle highlights the object of interest. This time without multistep temporal patterns.}
     \label{fig:surveillance_freeze_no_mtp}
 \end{figure}
-Unfortunately, simply disabling multistep temporal patterns without adjusting the other \gls*{tm} parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid \gls*{htm} to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher amount of severe anomalies can be observed compared to previous examples. This also highlights how sensitive \gls*{htm} can be regarding parameters.
+Unfortunately, simply disabling multistep temporal patterns without adjusting the other \gls*{tm} parameters causes the same car to be marked as an anomaly before and during the frame repeat. In fact, as mentioned in \autoref{sec:multistep_temporal_patterns}, disabling multistep temporal patterns causes Grid \gls*{htm} to be less noise tolerant which causes a lot more anomalies to be wrongly detected. This is evident in \autoref{fig:surveillance_freeze_no_mtp}, where a higher number of severe anomalies can be observed compared to previous examples. This also highlights how sensitive \gls*{htm} can be regarding parameters.
 \subsubsection{Points of Interest}
 Finally, it is interesting to look the various anomaly score spikes and observe in the visual output what caused them. The points of interest to be explored are marked in \autoref{fig:surveillance_poi}
 \begin{figure}[H]
@@ -273,7 +273,7 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
     \caption[Second POI]{Visual output of the second point of interest.}
     \label{fig:surveillance_poi_2}
 \end{figure}
-It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient amount of previous observations of that behavior.
+It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient number of previous observations of that behavior.
 \subsection{Parameters}
 Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data.
 \begin{table}[H]
