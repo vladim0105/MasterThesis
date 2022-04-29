@@ -132,7 +132,7 @@ There could be situations where a few pixels are active within a cell, which cou
 
 
 With a carefully selected empty pattern sparsity, \textbf{the standard deviation of active pixels was lowered from $\mathbf{3.78}$ to $\mathbf{1.41}$}. It is possible to automate this process by developing an algorithm which finds the optimal cell size and empty pattern sparsity which causes the least variation of number of active pixels per cell. This algorithm would run as a part of the calibration process.\par
-The visual output resulting from these changes, which is an equally important output as the aggregated anomaly score, can be seen in \autoref{fig:gridhtm_output}.
+The visual output resulting from these changes, which is an equally important output as the aggregated anomaly score, can be seen in \autoref{fig:gridhtm_output}. Each individual "block" in the upper half of the image represents a cell and its anomaly score using a color which varies from green (low anomaly score) to red (high anomaly score). The individual blocks also display the \gls*{sp} representation of the individual cell. The current frame number is shown in the top right corner of the image. The bottom half of the image shows the corresponding input frame for Grid HTM.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/htm_grid_output.png}
@@ -148,13 +148,15 @@ Since there are now cells that are observing an empty pattern for a lot of the t
     \caption[Stabilizing Anomaly Output Visualization 1]{High anomaly score when an empty cell (represented with an empty pattern with a sparsity value of 5) changes to being not empty, as something enters the cell.}
     \label{fig:empty_to_notempty}
 \end{figure}
-Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This is illustrated in \autoref{fig:empty_to_notempty} where it can be observed that this effect causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty, which is illustrated in \autoref{fig:empty_to_notempty_fixed}.
+Another issue with the grid based approach is when a car first comes into a cell. The \gls*{tm} in that cell has no way of knowing that a car is about to enter, since it does not see outside its own cell, and therefore the first frame that a car enters a cell will cause a high anomaly output. This is illustrated in \autoref{fig:empty_to_notempty} where it can be observed that this effect causes the anomaly output to needlessly fluctuate. The band-aid solution is to ignore the anomaly score for the frame during which the cell goes from being empty to being not empty, which is illustrated in \autoref{fig:empty_to_notempty_fixed}. The result of this change is that the anomaly output of each individual cell is more stable and experiences less false positives.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{resources/methodology/empty_to_notempty_fixed.png}
     \caption[Stabilizing Anomaly Output Visualization 2]{In this case, the anomaly score is ignored (set to 0) for the frame in which the cell changes state from empty to not empty.}
     \label{fig:empty_to_notempty_fixed}
 \end{figure}
+
+\par
 A more proper solution could be to allow the \gls*{tm} to grow segments to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
 \subsection{Multistep Temporal Patterns}
 \label{sec:multistep_temporal_patterns}
@@ -191,7 +193,7 @@ A potential side effect of introducing temporal patterns, is that because the TM
 \par
 Adding support for multistep temporal patterns to the method used by \textcite{MotionAnomalyDetection}, which is mentioned in \autoref{sec:htm_perf}, could improve their results.
 \section{Implementation}
-Grid HTM was implemented in Python using the community fork of Numenta's HTM codebase~\cite{htm_community_fork}. The reason for using the community fork is that Numenta has stopped developing the original codebase, and that the community codebase is more optimized and has more features. There are other HTM implementations available~\cite{htm_community_cuda,htm_community_brainblocks}, but these were not considered due to their low popularity meaning that they have a higher chance of lacking features and containing bugs.
+This version of Grid HTM is implemented in Python using the community fork of Numenta's HTM codebase~\cite{htm_community_fork}. The reason for using the community fork is that Numenta has stopped developing the original codebase, and that the community codebase is more optimized and has more features. There are other HTM implementations available~\cite{htm_community_cuda,htm_community_brainblocks}, but these were not considered due to their low popularity meaning that they have a higher chance of lacking features and containing bugs.
 \section{Biological Plausibility}
 One of the key principles of HTM theory is that it should be biologically plausible~\cite{BAMI}. Every development within HTM theory follows this principle, and it should therefore be expected that Grid HTM does so as well.
 \par
@@ -231,3 +233,5 @@ One of the issues with the introduction of a grid, is that the HTM models in eac
 An issue that occurs specifically for high framerate videos is that HTM struggles to learn temporal patterns. It is suspected that this occurs due to a contextual loop, in which predictions that predict themselves become true. A solution is to concatenate the past SP outputs into a single SDR which is then used as input into the TM. This will force the TM input, for when an object is in motion and when an object is still, to be unique. A potential side effect is that the architecture becomes more tolerant to temporal noise.
 \par
 Grid HTM has several potential use cases, such as semi-active surveillance in which an entire city can be monitored by a few persons. It can also be used to help label anomaly datasets for use in training deep learning anomaly detection models.
+\par
+Now that Grid HTM has been introduced and explained, it is time to observe how it works in practice. The next chapter will therefore perform some proof-of-concept experiments and discuss the results.
