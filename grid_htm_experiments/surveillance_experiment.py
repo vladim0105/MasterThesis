@@ -135,7 +135,7 @@ if __name__ == '__main__':
             frame_out[0: frame.shape[0], 0:] = colored_sp_output
             frame_number = utils.text_phantom(str(bar.value), 12)
             frame_out[0:12, -(12 * 5):] = frame_number
-            #out.write(frame_out)
+            out.write(frame_out)
 
             # Get next frame -------------------------------------------------------------
             # Do not get next frame if it is currently set to be repeating the same frame
