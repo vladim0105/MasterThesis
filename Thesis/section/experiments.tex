@@ -50,27 +50,26 @@ Finally, for the sake of interest, the bouncing ball example was performed with 
     \label{fig:bb_boosting_forget}
 \end{figure}
 \subsubsection{Parameters}
-Final list of parameters for reproducibility. For the plots, a moving average of $n=100$ was used to smooth the output.
+Final list of parameters for reproducibility. For the plots, a moving average of $n=100$ was used to smooth the output. A lot of the parameters were selected through trial-and-error, and for most of the parameters, a change would lead to a minimal change in the results.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                             \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                       \\
         \midrule
-        inputDimensions    & 120, 120       & The shape of the entire frame                              \\
-        columnDimensions   & 60, 60         &                                                            \\
-        potentialPct       & 0.1            &                                                            \\
-        potentialRadius    & 120            &                                                            \\
-        localAreaDensity   & 0.02           &                                                            \\
-        globalInhibition   & True           & Set to False to enable topology                            \\
-        wrapAround         & True           &
-        Allows the columns near the edges to "wrap around" and form connections on the other side        \\
-        synPermActiveInc   & 0.1            &                                                            \\
-        synPermInactiveDec & 0              & Set to \textgreater{}0 to enable the \gls*{sp} to "forget" \\
-        stimulusThreshold  & 2              &                                                            \\
-        seed               & 2              &                                                            \\
-        boostStrength      & 0.1            & Set to 0 to disable boosting                               \\
-        dutyCyclePeriod    & 250            &                                                            \\
+        inputDimensions    & 120, 120       & The shape of the entire frame                                                        \\
+        columnDimensions   & 60, 60         &                                                                                      \\
+        potentialPct       & 0.1            & Percent of inputs within the receptive field of a column that it can be connected to \\
+        potentialRadius    & 120            & Controls the size of the receptive field                                             \\
+        localAreaDensity   & 0.02           & Output SDR target sparsity                                                           \\
+        globalInhibition   & True           & Set to False to enable topology                                                      \\
+        wrapAround         & True           & Whether to wrap around the receptive field when it is outside the input SDR          \\
+        synPermActiveInc   & 0.1            & Learning rate                                                                        \\
+        synPermInactiveDec & 0              & Forgetting rate                                                                      \\
+        stimulusThreshold  & 2              & Controls noise tolerance                                                             \\
+        boostStrength      & 0.1            &                                                                                      \\
+        dutyCyclePeriod    & 250            &                                                                                      \\
+        seed               & 2              &                                                                                      \\
         \bottomrule
     \end{tabularx}
 
@@ -81,16 +80,16 @@ Final list of parameters for reproducibility. For the plots, a moving average of
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}             \\
         \midrule
-        columnDimensions          & 60, 60         & Same as the \gls*{sp} \\
-        predictedSegmentDecrement & 0.003          &                       \\
-        permanenceIncrement       & 0.1            &                       \\
-        permanenceDecrement       & 0.001          &                       \\
-        minThreshold              & 3              &                       \\
-        activationThreshold       & 5              &                       \\
-        cellsPerColumn            & 16             &                       \\
-        seed                      & 2              &                       \\
+        columnDimensions          & 60, 60         & Same as the \gls*{sp}      \\
+        predictedSegmentDecrement & 0.003          & Punishment forgetting rate \\
+        permanenceIncrement       & 0.1            & Learning rate              \\
+        permanenceDecrement       & 0.001          & Forgetting rate            \\
+        minThreshold              & 3              & Controls noise tolerance   \\
+        activationThreshold       & 5              & Controls noise tolerance   \\
+        cellsPerColumn            & 16             & Contextual capacity        \\
+        seed                      & 2              &                            \\
         \bottomrule
     \end{tabularx}
 
@@ -108,18 +107,18 @@ This is a very simple problem which does not require invariances, making it unsu
 \end{figure}
 It can be observed in \autoref{fig:bb_gridhtm} that Grid \gls*{htm} performs worse than the normal HTM, due to the more prominent anomaly score spikes seen in \autoref{fig:bb_boosting_forget}, but the result is still acceptable. This is to be expected since this problem is not suited for Grid HTM, and that the parameters given in \autoref{tab:bb_gridhtm_params}, \autoref{tab:bb_sp_gridhtm_param}, and \autoref{tab:bb_tm_gridhtm_param} are probably not optimal.
 \subsubsection{Parameters}
-The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close as possible to the normal \gls*{htm} parameters. The non-zero mean was chosen as the aggregation function, because there is no noise due to the controlled environment. Again, a moving average of $n=100$ was used to smooth the anomaly score output in the plots.
+The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close as possible to the normal \gls*{htm} parameters. The non-zero mean was chosen as the aggregation function, because there is no noise due to the controlled environment. Again, a moving average of $n=100$ was used to smooth the anomaly score output in the plots. A lot of the parameters were selected through trial-and-error, and for most of the parameters, a change would lead to a minimal change in the results.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                             \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                                                          \\
         \midrule
-        sp\_grid\_size     & 30, 30         & Size of each grid                                                          \\
-        tm\_grid\_size     & 15, 15         & Size of each \gls*{sp} grid output.                                        \\
-        min\_sparsity      & 1              &                                                                            \\
-        sparsity           & A              & Area of the bouncing ball with radius=3                                    \\
-        temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled \\
+        sp\_grid\_size     & 30, 30         & Size of each cell in the grid, affects invariance                                                                       \\
+        tm\_grid\_size     & 15, 15         & Dimension of the \gls*{sdr} that each \gls*{sp}    outputs, also the number of columns in the \gls*{sp}                 \\
+        min\_sparsity      & 1              & How many pixels for the grid cell to be considered not empty, here it is set to mimic normal HTM                        \\
+        sparsity           & 28.27          & Empty pattern active bits, here it is the area of the bouncing ball with $r=3$                                          \\
+        temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled, it is disabled in order to mimic normal HTM \\
         \bottomrule
     \end{tabularx}
     \caption{Grid HTM specific parameters}
@@ -129,19 +128,20 @@ The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                  \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                                                                                        \\
         \midrule
-        inputDimensions    & sp\_grid\_size &                                                                 \\
-        columnDimensions   & tm\_grid\_size &                                                                 \\
-        potentialPct       & 0.5            & Increased in order to compensate for the smaller potential pool \\
-        potentialRadius    & 5              &                                                                 \\
-        localAreaDensity   & 0.1            &                                                                 \\
-        globalInhibition   & True           & Set to False to enable topology                                 \\
-        wrapAround         & False          &                                                                 \\
-        synPermActiveInc   & 0.1            &                                                                 \\
-        synPermInactiveDec & 0.001                                                                            \\
-        stimulusThreshold  & 2              &                                                                 \\
-        boostStrength      & 0              & Causes instability in empty cells                               \\
+        inputDimensions    & sp\_grid\_size &                                                                                                                                                       \\
+        columnDimensions   & tm\_grid\_size &                                                                                                                                                       \\
+        potentialPct       & 0.5            & Percent of inputs within the receptive field of a column that it can be connected to, increased in order to compensate for the smaller potential pool \\
+        potentialRadius    & 5              & Controls the size of the receptive field                                                                                                              \\
+        localAreaDensity   & 0.1            & Output SDR target sparsity                                                                                                                            \\
+        globalInhibition   & True           & Set to False to enable topology                                                                                                                       \\
+        wrapAround         & False          & Whether to wrap around the receptive field when it is outside the input SDR                                                                           \\
+        synPermActiveInc   & 0.1            & Learning rate                                                                                                                                         \\
+        synPermInactiveDec & 0.001          & Forgetting rate                                                                                                                                       \\
+        stimulusThreshold  & 2              & Controls noise tolerance                                                                                                                              \\
+        boostStrength      & 0              & Set to 0 to avoid instability in empty cells                                                                                                          \\
+        seed               & 2              &                                                                                                                                                       \\
         \bottomrule
     \end{tabularx}
     \caption{SP Parameters}
@@ -151,22 +151,23 @@ The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}             \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
-        predictedSegmentDecrement & 0.003          &                       \\
-        permanenceIncrement       & 0.1            &                       \\
-        permanenceDecrement       & 0.001          &                       \\
-        minThreshold              & 1              &                       \\
-        activationThreshold       & 1              &                       \\
-        cellsPerColumn            & 16             &                       \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp}      \\
+        predictedSegmentDecrement & 0.003          & Punishment forgetting rate \\
+        permanenceIncrement       & 0.1            & Learning rate              \\
+        permanenceDecrement       & 0.001          & Forgetting rate            \\
+        minThreshold              & 1              & Controls noise tolerance   \\
+        activationThreshold       & 1              & Controls noise tolerance   \\
+        cellsPerColumn            & 16             & Contextual capacity        \\
+        seed                      & 2              &                            \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
     \label{tab:bb_tm_gridhtm_param}
 \end{table}
 \subsection{Experiment Summary}
-This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to 0. First the experiment is performed with a normal \gls*{htm} model.
+This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to zero. First the experiment is performed with a normal \gls*{htm} model.
 \par
 The results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid \gls*{htm} is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid \gls*{htm} is designed for more complex videos, such as if there were multiple bouncing balls at once.
 \clearpage
@@ -275,18 +276,18 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
 \end{figure}
 It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient number of previous observations of that behavior.
 \subsection{Parameters}
-Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data.
+Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data. A lot of the parameters were selected through educated trial-and-error, and for most of the parameters, a change would lead to a minimal change in the results.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                  \\
         \midrule
-        sp\_grid\_size     & 32, 32         & Size of each grid                             \\
-        tm\_grid\_size     & 16, 16         & Size of each \gls*{sp} grid output.           \\
-        min\_sparsity      & 10             &                                               \\
-        sparsity           & 15             & Expected average sparsity                     \\
-        temporal\_size     & 15             & Size of the multistep temporal pattern buffer \\
+        sp\_grid\_size     & 32, 32         & Size of each cell in the grid, affects invariance                               \\
+        tm\_grid\_size     & 16, 16         & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
+        min\_sparsity      & 10             & How many pixels for the grid cell to be considered not empty                    \\
+        sparsity           & 15             & Empty pattern active bits                                                       \\
+        temporal\_size     & 15             & Size of the multistep temporal pattern buffer                                   \\
         \bottomrule
     \end{tabularx}
     \caption{Grid HTM specific parameters}
@@ -296,19 +297,20 @@ Final list of parameters for reproducibility. As previously mentioned, a moving 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                    \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                       \\
         \midrule
-        inputDimensions    & sp\_grid\_size &                                   \\
-        columnDimensions   & tm\_grid\_size &                                   \\
-        potentialPct       & 0.2            &                                   \\
-        potentialRadius    & 5              &                                   \\
-        localAreaDensity   & 0.05           &                                   \\
-        globalInhibition   & True           & Set to False to enable topology   \\
-        wrapAround         & False          &                                   \\
-        synPermActiveInc   & 0.01           &                                   \\
-        synPermInactiveDec & 0.00001                                            \\
-        stimulusThreshold  & 3              &                                   \\
-        boostStrength      & 0              & Causes instability in empty cells \\
+        inputDimensions    & sp\_grid\_size &                                                                                      \\
+        columnDimensions   & tm\_grid\_size &                                                                                      \\
+        potentialPct       & 0.2            & Percent of inputs within the receptive field of a column that it can be connected to \\
+        potentialRadius    & 5              & Controls size of the receptive field                                                 \\
+        localAreaDensity   & 0.05           & Output SDR target sparsity                                                           \\
+        globalInhibition   & True           & Set to False to enable topology                                                      \\
+        wrapAround         & False          & Whether to wrap around the receptive field when it is outside the input \gls*{sdr}   \\
+        synPermActiveInc   & 0.01           & Learning rate                                                                        \\
+        synPermInactiveDec & 0.00001        & Forgetting rate                                                                      \\
+        stimulusThreshold  & 3              & Controls noise tolerance                                                             \\
+        boostStrength      & 0              & Causes instability in empty cells                                                    \\
+        seed               & 2              &                                                                                      \\
         \bottomrule
     \end{tabularx}
     \caption{SP Parameters}
@@ -318,15 +320,16 @@ Final list of parameters for reproducibility. As previously mentioned, a moving 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}             \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
-        predictedSegmentDecrement & 0.001          &                       \\
-        permanenceIncrement       & 0.01           &                       \\
-        permanenceDecrement       & 0.001          &                       \\
-        minThreshold              & 10             &                       \\
-        activationThreshold       & 10             &                       \\
-        cellsPerColumn            & 32             &                       \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp}      \\
+        predictedSegmentDecrement & 0.001          & Punishment forgetting rate \\
+        permanenceIncrement       & 0.01           & Learning rate              \\
+        permanenceDecrement       & 0.001          & Forgetting rate            \\
+        minThreshold              & 10             & Controls noise tolerance   \\
+        activationThreshold       & 10             & Controls noise tolerance   \\
+        cellsPerColumn            & 32             & Contextual capacity        \\
+        seed                      & 2              &                            \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
@@ -378,18 +381,19 @@ Just like in the stationary video, the change in the anomaly score is more prono
 \subsection{Use Cases}
 The use case is to be able to use Grid \gls*{htm} to detect segments and then use a separate tool to extract each segment. This could be useful in data processing, or even in streaming media services to automatically know when cuts happen and could aid scene boundary detection systems~\cite{scene_boundary_detection}.
 \subsection{Parameters}
-The following parameters were used in this experiment. The main difference from the surveillance experiment to note is the temporal size, which has been disabled due to the nonexistent patterns in the data. For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise in the output graph. Because the data is noisy, the mean was used as the aggregation function. For binary thresholding, a pixel value threshold of $k=200$ was used.
+The following parameters were used in this experiment. The main difference from the surveillance experiment to note is the temporal size, which has been disabled due to the nonexistent patterns in the data. Again, the parameters were mostly selected through an educated trial-and-error method.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                    \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                  \\
         \midrule
-        sp\_grid\_size     & 16, 16         & Size of each grid                                                                 \\
-        tm\_grid\_size     & 8, 8           & Size of each \gls*{sp} grid output.                                               \\
-        min\_sparsity      & 1              &                                                                                   \\
-        sparsity           & 5              &                                                                                   \\
-        temporal\_size     & 1              & Size of the multistep temporal pattern buffer, 1 means it is effectively disabled \\
+        sp\_grid\_size     & 16, 16         & Size of each cell in the grid, affects invariance                               \\
+        tm\_grid\_size     & 8, 8           & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
+        min\_sparsity      & 1              & How many pixels for the grid cell to be considered not empty                    \\
+        sparsity           & 5              & Empty pattern active bits                                                       \\
+        temporal\_size     & 1              & Size of the multistep temporal pattern buffer                                   \\
+        seed               & 2              &                                                                                 \\
         \bottomrule
     \end{tabularx}
     \caption{Grid HTM specific parameters}
@@ -399,19 +403,20 @@ The following parameters were used in this experiment. The main difference from 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                    \\
+        \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                       \\
         \midrule
-        inputDimensions    & sp\_grid\_size &                                   \\
-        columnDimensions   & tm\_grid\_size &                                   \\
-        potentialPct       & 0.2            &                                   \\
-        potentialRadius    & 5              &                                   \\
-        localAreaDensity   & 0.1            &                                   \\
-        globalInhibition   & False          &                                   \\
-        wrapAround         & False          &                                   \\
-        synPermActiveInc   & 0.01           &                                   \\
-        synPermInactiveDec & 0.001                                              \\
-        stimulusThreshold  & 5              &                                   \\
-        boostStrength      & 0              & Causes instability in empty cells \\
+        inputDimensions    & sp\_grid\_size &                                                                                      \\
+        columnDimensions   & tm\_grid\_size &                                                                                      \\
+        potentialPct       & 0.2            & Percent of inputs within the receptive field of a column that it can be connected to \\
+        potentialRadius    & 5              & Controls size of the receptive field                                                 \\
+        localAreaDensity   & 0.1            & Output SDR target sparsity                                                           \\
+        globalInhibition   & False          & Set to False to enable topology                                                      \\
+        wrapAround         & False          & Whether to wrap around the receptive field when it is outside the input \gls*{sdr}   \\
+        synPermActiveInc   & 0.01           & Learning rate                                                                        \\
+        synPermInactiveDec & 0.001          & Forgetting rate                                                                      \\
+        stimulusThreshold  & 5              & Controls noise tolerance                                                             \\
+        boostStrength      & 0              & Causes instability in empty cells                                                    \\
+        seed               & 2              &                                                                                      \\
         \bottomrule
     \end{tabularx}
     \caption{SP Parameters}
@@ -421,25 +426,46 @@ The following parameters were used in this experiment. The main difference from 
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}        \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}             \\
         \midrule
-        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp} \\
-        predictedSegmentDecrement & 0.003          &                       \\
-        permanenceIncrement       & 0.01           &                       \\
-        permanenceDecrement       & 0.001          &                       \\
-        minThreshold              & 1              &                       \\
-        activationThreshold       & 3              &                       \\
-        cellsPerColumn            & 16             &                       \\
+        columnDimensions          & tm\_grid\_size & Same as the \gls*{sp}      \\
+        predictedSegmentDecrement & 0.003          & Punishment forgetting rate \\
+        permanenceIncrement       & 0.01           & Learning rate              \\
+        permanenceDecrement       & 0.001          & Forgetting rate            \\
+        minThreshold              & 1              & Controls noise tolerance   \\
+        activationThreshold       & 3              & Controls noise tolerance   \\
+        cellsPerColumn            & 16             & Contextual capacity        \\
         \bottomrule
     \end{tabularx}
     \caption{TM Parameters}
     \label{tab:sperm_tm_param}
 \end{table}
+For the plots, a moving average with window size $n=100$ was used to smooth the lines and reduce noise in the output graph. Because the data is noisy, the mean was used as the aggregation function. For binary thresholding, a pixel value threshold of $k=200$ was used.
 \subsection{Experiment Summary}
 This experiment explored the ability of Grid \gls*{htm} to detect segments in greater detail. The videos used were videos of swimming sperm cells, and were segmented using a rough binary thresholding. The data is noisy and short, and it is therefore not expected for Grid \gls*{htm} to learn any meaningful patterns. As a benchmark, the L1 error is employed.
 \par
 The results show that Grid \gls*{htm} outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
 \clearpage
+\section{Performance}
+\autoref{tab:frame_performance} shows, for each experiment, the video frame size and the corresponding average processing time per frame. Note that this is without any parallelization, and with different \gls*{sp}, \gls*{tm}, and Grid HTM parameters for each experiment.
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{@{}XlX@{}}
+        \toprule
+        \textbf{Experiment} & \textbf{Input Frame Dimension} & \textbf{Frames Per Second} \\
+        \midrule
+        Bouncing Ball       & (120, 120)                     & $\approx 200$              \\
+        Surveillance        & (416, 224)                     & $\approx 13$               \\
+        Sperm               & (192, 72)                      & $\approx 190$              \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Performance for each experiment}
+    \label{tab:frame_performance}
+\end{table}
+It should also be mentioned that the segmentation process is not considered in the calculation of frames per second, but this should not matter that much as the next frame can be segmented in parallel while Grid HTM processes the current frame. The performance with the segmentation process considered can therefore be expressed as:
+\begin{align*}
+    FPS=max(GridHTM\_FPS, Segmentation\_FPS)
+\end{align*}
 \section{Summary}
 In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of \gls*{htm} and Grid \gls*{htm} on videos. The experiments show that it is possible to apply Grid \gls*{htm} for anomaly detection in videos. It was also shown that for complex data, the anomaly score output is not a good measure to use due to the noise and the influence of the size of the anomalies.
 \par
