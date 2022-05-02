@@ -11,7 +11,7 @@ draw((-60, 20)--(-50, -10), EndArrow);
 draw((-50, -10)--(-35, 10), EndArrow);
 draw((-35, 10)--(-15, 0), EndArrow);
 draw((-15, 0)--(-3, 2), EndArrow);
-label("+", (0, 0));
+filldraw(circle((0, 0), 1.5), chartreuse);
 
 // Gradient
 label("Gradient Descent",(r*2+20, r+20));
@@ -28,5 +28,4 @@ path[] points = {
 for(path p: points){
 	draw(shift(r*2+20, 0)*p, EndArrow);
 }
-
-label("+", (r*2+20, 0));
+filldraw(circle((r*2+20, 0), 1.5), chartreuse);

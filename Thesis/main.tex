@@ -12,13 +12,14 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{parskip}
-\usepackage[font={color=darkgray}]{caption}
+\usepackage[font={color=black, bf}]{caption}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{nameref}
 \usepackage[acronyms]{glossaries}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{pdfpages}
 % Autoref section config
 \addto\extrasUSenglish{%
   \def\subsectionautorefname{Section}
@@ -40,10 +41,11 @@
 \addbibresource{citations/relatedworks.bib}            %% ... or whatever
 \addbibresource{citations/methodology.bib}    
 \addbibresource{citations/experiments.bib} 
-\include{glossary}
+\input{glossary}
+
+
 
 \begin{document}
-
 \duoforside[
   dept={Department of Informatics},   %% ... or your department
   program={Informatics: Robotics and Intelligent Systems},         %% ... or your programme
@@ -51,28 +53,33 @@
 ]                                        %% ... or long (short = 30 credits, long = 60 credits)
 
 \frontmatter{}
-\mainmatter{}
-
 \chapter*{Abstract} \addcontentsline{toc}{chapter}{Abstract}
-The use of video anomaly detection systems has gained traction for the past few years. The current approaches use deep learning for performing anomaly detection in videos, but this has multiple problems. For starters, deep learning in general has issues with noise, concept drift, explainability, and training data volume. Additionally, anomaly detection in itself is a complex task and faces challenges such as unknowness, heterogeneity, and class imbalance. Anomaly detection in deep learning is therefore mainly constrained to generative models such as GANs and autoencoders due to their unsupervised nature, but even they suffer from general deep learning issues and are hard to train properly. This thesis instead looks to HTM to perform anomaly detection in videos, as it has favorable properties such as noise tolerance and online learning which combats concept drift. This thesis does so by introducing Grid HTM, which is an HTM based architecture specifically for anomaly detection in complex videos such as surveillance footage.
-\chapter*{Acknowledgments} \addcontentsline{toc}{chapter}{Acknowledgments}
-Bla bla bla...
-\par
-The research presented in this paper has benefited from the Experimental Infrastructure for Exploration of Exascale Computing (eX3), which is financially supported by the Research Council of Norway under contract 270053.
-%\chapter*{Acknowledgments/Preface/...} \addcontentsline{toc}{chapter}{Acknowledgments}
-%I would like to thank ... * insert looong list here *
+The use of video anomaly detection systems has gained traction for the past few years. The current approaches use deep learning for performing anomaly detection in videos, but this has multiple problems. For starters, deep learning in general has issues with noise, concept drift, explainability, and training data volume. Additionally, anomaly detection in itself is a complex task and faces challenges such as unknowness, heterogeneity, and class imbalance. Anomaly detection in deep learning is therefore mainly constrained to generative models such as GANs and autoencoders due to their unsupervised nature, but even they suffer from general deep learning issues and are hard to train properly. This thesis instead looks to HTM to perform anomaly detection in videos, as it has favorable properties such as noise tolerance and online learning which combats concept drift. This thesis introduces Grid HTM, which is an HTM based architecture specifically for anomaly detection in complex videos. Experiment results show that, with proper data and further refinements, Grid HTM can be used for anomaly detection in complex videos such as surveillance footage.
 
+\chapter*{Acknowledgments} \addcontentsline{toc}{chapter}{Acknowledgments}
+I would like to thank my supervisors for their invaluable assistance and guidance, as well as for answering emails quickly.
+\par
+The research presented in this thesis has benefited from the Experimental Infrastructure for Exploration of Exascale Computing (eX3), which is financially supported by the Research Council of Norway under contract 270053.
+
+
+\mainmatter{}
 \tableofcontents
 \listoffigures
 \listoftables
-
-\mainmatter
 \include{section/introduction}
 \include{section/background}
 \include{section/methodology}
 \include{section/experiments}
 \include{section/conclusion}
-
 \backmatter{}
 \printbibliography
+
+\appendix
+%\addcontentsline{toc}{section}{Appendices}
+\chapter{Paper - GRID HTM: Hierarchical Temporal Memory for Anomaly Detection in Videos}
+\label{appendix:paper}
+The following paper was submitted to the 19th International Conference on Content-based Multimedia Indexing (CBMI2022).
+%\section{GRID HTM: Hierarchical Temporal Memory for Anomaly Detection in Videos}
+\includepdf[pages=-]{resources/paper}
+
 \end{document}
