@@ -8,8 +8,8 @@ if __name__ == "__main__":
     parser.add_argument("original_image", type=str)
 
     args = parser.parse_args()
-    thickness = 10
-    color = (0, 0, 255)
+    thickness = 15
+    color = (28,134,238)
     img = cv2.imread(args.original_image)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     cv2.circle(img, (2083, 366), 100, color, thickness)
