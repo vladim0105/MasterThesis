@@ -114,8 +114,8 @@ The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close 
         \toprule
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                                                          \\
         \midrule
-        sp\_grid\_size     & 30, 30         & Size of each cell in the grid, affects invariance                                                                       \\
-        tm\_grid\_size     & 15, 15         & Dimension of the \gls*{sdr} that each \gls*{sp}    outputs, also the number of columns in the \gls*{sp}                 \\
+        sp\_grid\_size     & (30, 30)       & Size of each cell in the grid, affects invariance                                                                       \\
+        tm\_grid\_size     & (15, 15)       & Dimension of the \gls*{sdr} that each \gls*{sp}    outputs, also the number of columns in the \gls*{sp}                 \\
         min\_sparsity      & 1              & How many pixels for the grid cell to be considered not empty, here it is set to mimic normal HTM                        \\
         sparsity           & 28.27          & Empty pattern active bits, here it is the area of the bouncing ball with $r=3$                                          \\
         temporal\_size     & 1              & Size of the multistep temporal pattern, 1 means it is effectively disabled, it is disabled in order to mimic normal HTM \\
@@ -183,7 +183,7 @@ The downside is that the video does not contain any non-technical anomalies, but
     \caption[Example Frames]{Example frames from the selected video.}
     \label{fig:selected_frame}
 \end{figure}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an \gls*{sdr} for cars and an \gls*{sdr} for persons (see \autoref{fig:seg_car_person}), that are then concatenated before being fed into the system.
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be a \gls*{sdr} for cars and a \gls*{sdr} for persons (see \autoref{fig:seg_car_person}), that are then concatenated before being fed into the system.
 \par
 The segmentation model used is PointRend~\cite{pointrend} with a ResNet101~\cite{resnet} backbone, pretrained on ImageNet~\cite{imagenet}, and implemented using PixelLib~\cite{pixellib}.
 \begin{figure}[H]
@@ -267,7 +267,7 @@ The first point of interest, which can be seen in \autoref{fig:surveillance_poi_
 \end{figure}
 It can be seen that the anomaly score output, which is shown at the very bottom of each image, can be attributed to two occurrences. The first occurrence is a physically big but low severity anomaly. The second occurrence is a physically small but high severity anomaly. Despite the two different anomalies, the anomaly score output is similar for both occurrences.
 \par
-The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing \gls*{htm} to all possible behaviours that are considered not anomalous, which is one of the complexities mentioned in \autoref{sec:anomaly_detection}.
+The second point of interest, which can be seen in \autoref{fig:surveillance_poi_2}, showcases the importance of exposing \gls*{htm} to all possible behaviors that are considered not anomalous, which is one of the complexities mentioned in \autoref{sec:anomaly_detection}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/surveillance/surveillance_poi_2.png}
@@ -276,15 +276,15 @@ The second point of interest, which can be seen in \autoref{fig:surveillance_poi
 \end{figure}
 It can be observed that there are high anomaly outputs for cars entering the parking lot from the left side of the frame. The high anomaly score is caused by an insufficient number of previous observations of that behavior.
 \subsection{Parameters}
-Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data. A lot of the parameters were selected through educated trial-and-error, and for most of the parameters, a change would lead to a minimal change in the results.
+Final list of parameters for reproducibility. As previously mentioned, a moving average ($n=200$) was used to smooth the output graph and make it more readable. The mean was used as the aggregation function due to the complex nature of the data. Most of the parameters were selected through trial-and-error and are also exaggerated in order to compensate for the relatively short video duration compared to what Grid HTM is designed for.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}
         \toprule
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                  \\
         \midrule
-        sp\_grid\_size     & 32, 32         & Size of each cell in the grid, affects invariance                               \\
-        tm\_grid\_size     & 16, 16         & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
+        sp\_grid\_size     & (32, 32)       & Size of each cell in the grid, affects invariance                               \\
+        tm\_grid\_size     & (16, 16)       & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
         min\_sparsity      & 10             & How many pixels for the grid cell to be considered not empty                    \\
         sparsity           & 15             & Empty pattern active bits                                                       \\
         temporal\_size     & 15             & Size of the multistep temporal pattern buffer                                   \\
@@ -388,8 +388,8 @@ The following parameters were used in this experiment. The main difference from 
         \toprule
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                  \\
         \midrule
-        sp\_grid\_size     & 16, 16         & Size of each cell in the grid, affects invariance                               \\
-        tm\_grid\_size     & 8, 8           & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
+        sp\_grid\_size     & (16, 16)       & Size of each cell in the grid, affects invariance                               \\
+        tm\_grid\_size     & (8, 8)         & Dimension of the SDR that each SP outputs, also the number of columns in the SP \\
         min\_sparsity      & 1              & How many pixels for the grid cell to be considered not empty                    \\
         sparsity           & 5              & Empty pattern active bits                                                       \\
         temporal\_size     & 1              & Size of the multistep temporal pattern buffer                                   \\
