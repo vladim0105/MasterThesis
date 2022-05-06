@@ -12,6 +12,7 @@
 
 \chapter{Introduction}
 \label{sec:introduction}
+\setcounter{page}{1}
 \section{Background and Motivation}
 As the global demand for security and automation increases, many seek to use video anomaly detection systems. In the US alone, the surveillance market is expected to reach $\$23.60$ Billion by 2027~\cite{us_video_stats}. Leveraging modern computer vision, modern anomaly detection systems play an important role in increasing monitoring efficiency and reducing the need for expensive live monitoring. Their use cases can vary from detecting faulty products on an assembly line to detecting car accidents on a highway, and everything in between.
 \par
@@ -63,15 +64,15 @@ This objective was achieved in \autoref{sec:experiments}, where three different 
 \par
 Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is \gls*{htm} viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid \gls*{htm} and other \gls*{htm} based architectures can indeed be used as anomaly detection systems for videos. However, as mentioned earlier, there is a lack of approaches to compare against which makes it hard to quantify the relative performance of Grid HTM.
 \par
-Additionally, during the course of this thesis, a contribution have been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to \gls*{htm} from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the \gls*{htm} field.
+Additionally, during the course of this thesis, a contribution has been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to \gls*{htm} from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the \gls*{htm} field.
 \par
-Finally, all the work done in this thesis, including the Grid \gls*{htm} source code and the various experiments, is publically available at Github~\cite{master_thesis_github}.
+Finally, the work done in this thesis has produced a paper which can be found in \autoref{appendix:paper}. The work, including the Grid \gls*{htm} source code and the various experiments, is publically available at Github~\cite{master_thesis_github}.
 \section{Research Methods}
-Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis, an exploratory research method was used with the context of answering the thesis question, this was used due to the novelty of this thesis and the lack of related works. The result of this exploratory method is Grid HTM, which began from a simple starting point and was shaped through exploring improvements and solutions to problems that arose.
+Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis, an exploratory research method~\cite{exploratory_research} was used with the context of answering the thesis question, this was used due to the novelty of this thesis and the lack of related works. The result of this exploratory method is Grid HTM, which began from a simple starting point and was shaped through exploring improvements and solutions to problems that arose.
 \par
-For the surveillance experiment, a qualitative research method was used to determine the effectiveness of Grid HTM. This is due to the lack of labeled data which made it hard to quantify, and that real life surveillance examples are complex by nature. The result is that the effectiveness was determined not through numbers, but through whether the results were qualitatively reasonable.
+For the surveillance experiment, a qualitative research method~\cite{quantitative_qualitative} was used to determine the effectiveness of Grid HTM. This is due to the lack of labeled data which made it hard to quantify, and that real life surveillance examples are complex by nature. The result is that the effectiveness was determined not through numbers, but through whether the results were qualitatively reasonable.
 \par
-As for the other experiments, a more quantitative research method was used. This was made possible in the bouncing ball experiment due to the controlled nature of the experiment. In the sperm experiment, this was made possible due to the use of a benchmark, which allowed for direct comparisons.
+As for the other experiments, a more quantitative research method~\cite{quantitative_qualitative} was used. This was made possible in the bouncing ball experiment due to the controlled nature of the experiment. In the sperm experiment, this was made possible due to the use of a benchmark, which allowed for direct comparisons.
 \section{Thesis Outline}
 This thesis consists of five chapters, where \autoref{sec:introduction} and \autoref{sec:background} are introductory and contain relevant background information for the understanding of the proceeding chapters. \autoref{sec:grid_htm} and \autoref{sec:experiments} present the work done during this thesis. \autoref{sec:conclusion} summarizes this thesis and presents areas in which there can be performed further work. More details for each of the chapters, except this one, is presented below.
 \par

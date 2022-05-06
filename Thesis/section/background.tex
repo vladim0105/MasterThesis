@@ -195,7 +195,7 @@ Neurons in \gls*{htm} theory are different from neurons in traditional machine l
         \includegraphics[width=\linewidth]{resources/related_works/neuron_htm}
         \caption[Comparison of neurons]{HTM neuron}
     \end{subfigure}
-    \caption[Comparison of Neurons]{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), \gls*{htm} Neuron (C). Source:~\cite{BAMI}}
+    \caption[Comparison of Neurons]{Comparison of neurons: Traditional Machine Learning (A), Biological Neuron (B), \gls*{htm} Neuron (C).}
     \label{fig:neuron_comparison}
 \end{figure}
 \par
@@ -257,7 +257,7 @@ Several approaches for encoding visual data have been proposed. An example is a 
 \par
 There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an \gls*{sdr} by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
-There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as SIFT cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
+There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift}~\cite{sift} cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
 \par
 The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
 \par
@@ -314,7 +314,7 @@ This learning mechanism gives \gls*{htm} systems the property of on-line learnin
 The spatial pooler consists of columns (mini-columns), where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input space within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius. This is visualized in \autoref{fig:sp_vis_alt}.\par
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.6\linewidth]{resources/related_works/sp_vis_alt}
+    \includegraphics[width=0.8\linewidth]{resources/related_works/sp_vis_alt}
     \caption[Spatial Pooler Visualization]{Visualization of the \gls*{sp} and the potential pool of one of its columns.}
     \label{fig:sp_vis_alt}
 \end{figure}
@@ -395,7 +395,7 @@ The general use case for \gls*{htm} is to perform anomaly detection. More specif
 \begin{itemize}
     \item \textbf{Rogue Behavior Detection} which models normal behavior and detects anomalies, such as unusual use of files in a network~\cite{htm_rogue}.
     \item \textbf{Geospatial Tracking} which detects anomalies in the movement of people, objects, or material, using speed and location data~\cite{htm_geospatial}.
-    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter volume~\cite{htm_finance}.
+    \item \textbf{Financial Monitoring} which detects anomalies in publicly traded companies by continuously modelling stock price, stock volume, and Twitter activity~\cite{htm_finance}.
 \end{itemize}
 There are other examples on the use of \gls*{htm} for real world applications. One of them is the work done by \textcite{htm_medicine}, which showcases how \gls*{htm} can be used to model medical streams in real time. Another example is the work done by \textcite{htm_electrical_load}, which shows how \gls*{htm} can be used for forecasting electrical loads in power grids.
 \par
@@ -436,7 +436,7 @@ While the Thousand Brains Theory is not yet technically implemented in any way i
 Knowing that deep learning approaches have a high degree of accuracy but suffer from problems related to generalizability, adaptability, and noise it stands to reason that \gls*{htm} is a viable alternative for anomaly detection.\par
 \textcite{AHMAD2017134} explores the use of \gls*{htm} for anomaly detection on low dimensional data such as temperature data from an industrial machine. The authors also discuss benchmarks for anomaly detection and compare different methods. The results show that \gls*{htm} is very capable of performing anomaly detection, especially in a changing environment. \gls*{htm} is able to outperform other anomaly detection methods and has the advantage of not requiring any per-problem parameter tuning.
 \par
-For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a \gls*{htm} system to find anomalous frames in videos of motions, example shown in \autoref{fig:motion_frame}. The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results show that the \gls*{htm} system was able to correctly detect some anomalies, but not an impressive amount.
+For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a \gls*{htm} system to find anomalous frames in videos of motions, with an example shown in \autoref{fig:motion_frame}. The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results show that the \gls*{htm} system was able to correctly detect some anomalies, but not an impressive amount.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/motion_frame.png}
@@ -444,7 +444,7 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
     \label{fig:motion_frame}
 \end{figure}
 \par
-One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that \gls*{htm} by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features. This is an area in which more work needs to be done so that \gls*{htm} can perform better on complex problems.
+One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that \gls*{htm} by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features. This is an area in which more work needs to be done so that \gls*{htm} can perform better on complex problems. Alternatively, one should explore new architectures using \gls*{htm}.
 \section{Ethical Considerations}
 This thesis introduces an architecture for performing surveillance on potentially a massive scale, and could even be tied to some sort of social credit system. This raises ethical questions regarding mass surveillance that highlight how the work done in this thesis can be misused. Therefore, even if the work done in this thesis is nowhere near perfect and far from ready to be used in production, one should still keep the ethical aspects in mind when pursuing this type of research.
 \par

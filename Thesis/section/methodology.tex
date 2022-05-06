@@ -3,7 +3,7 @@
 This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github~\cite{master_thesis_github}.
 \section{Introduction}
 \par
-This thesis explores a new type of architecture, named Grid HTM, for anomaly detection in videos using \gls*{htm}, and proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as ORB~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
+This thesis explores a new type of architecture, named Grid HTM, for anomaly detection in videos using \gls*{htm}, and proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as \gls*{orb}~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=.45\textwidth]{resources/methodology/original.png}
@@ -81,14 +81,13 @@ Meaning that only the cells with a non-zero anomaly score, denoted $X$, will be 
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_mean.png}
         \caption{Mean.}
-
     \end{subfigure}%
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{resources/methodology/aggr_clean_nzmean.png}
         \caption{Non-zero mean.}
     \end{subfigure}
-    \caption[Aggregation Functions on Clean Data]{How the two aggregation functions perform on the same clean data.}
+    \caption[Aggregation Functions on Clean Data]{How the two aggregation functions perform on the same clean data. The graphs show their respective anomaly score output.}
     \label{fig:aggr_clean}
 \end{figure}
 \autoref{fig:aggr_noisy} illustrates the effect of an aggregation function for noisy data, where the non-zero mean is rendered useless due to the noise. On the other hand, \autoref{fig:aggr_clean} shows how the non-zero mean gives a clearer anomaly score when the data is clean. Especially regarding how, unlike the mean, the non-zero mean has a clearly defined range between 0 and 1.
