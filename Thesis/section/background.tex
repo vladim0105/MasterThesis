@@ -2,9 +2,9 @@
 \label{sec:background}
 Anomaly detection, which is often defined as detecting deviating data points, and in which deep learning is in important component, has seen an increase in popularity in the context of video anomaly detection and surveillance systems. This chapter will therefore cover relevant background information on deep learning, video anomaly detection, and \gls*{htm} theory. It will also briefly mention ethical considerations.
 \section{Deep Learning}
-As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the Perceptron\cite{perceptron,perceptron2} was first introduced.
+As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the perceptron~\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
-The perceptron\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function, which is shown in \autoref{fig:perceptron}.
+The perceptron~\cite{perceptron, perceptron2} was a machine learning algorithm that was based on a simplification of the theory, at the time, about the inner workings of a neuron. The perceptron consists of three parts; the inputs $\mathbf{x}$, the weights $\mathbf{w}$, and the unit step activation function, which is shown in \autoref{fig:perceptron}.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.7\linewidth]{resources/related_works/perceptron}
@@ -56,7 +56,7 @@ The other reason is that neural networks did not have a lot of applications at t
 \par
 In order to improve upon regularization, techniques such as Dropout~\cite{dropout}, \gls*{bn}~\cite{batchnorm}, and Data Augmentation~\cite{data_augmentation} were introduced. New neural network architectures were invented, such as the \gls*{ae}~\cite{autoencoder}, that forces the model to construct an internal representation under constraints, which has a regularizing effect.
 \par
-As for representing features across time, architectures such as \glspl*{rnn}~\cite{lstm,gru} were invented. Later, attention~\cite{attention}-based models, such as the Transformer~\cite{transformer} model, were introduced.\par
+As for representing features across time, architectures such as \glspl*{rnn}~\cite{lstm,gru} were invented. Later, attention-based~\cite{attention} models, such as the Transformer~\cite{transformer} model, were introduced.\par
 The vanishing and the exploding gradient problem was alleviated by implementing, among other techniques, residual connections~\cite{resnet} between layers.
 \subsection{Convolutional Neural Networks}
 In an attempt to solve the problems regarding invariance and to improve the performance in machine vision tasks, \glspl*{cnn} were introduced by \textcite{cnn} in 1998. A \gls*{cnn} offers several properties that are useful, such as translational invariance~\cite{cnn}. These properties stem from the three architectural ideas in a CNN:
@@ -84,7 +84,7 @@ The idea is that generative models learn a distribution which describes the data
 Generative models come in all shapes and sizes, but a standard \gls*{gan} usually consists of just a generator and a discriminator. The generator takes some inputs (usually some random noise) and generates some samples. The batch of generated samples are then combined with a batch of real samples and mixed up. The discriminator then has to decide for every sample whether it is real or generated. This is essentially a two-player game in which the generator attempts to fool the discriminator. A typical \gls*{gan} pipeline is shown in \autoref{fig:gan}.
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=\linewidth]{resources/related_works/gan.png}
+    \includegraphics[width=\linewidth]{resources/related_works/gan.eps}
     \caption[Gan Example]{Example of a \gls*{gan} for generating images of cats.}
     \label{fig:gan}
 \end{figure}
@@ -93,7 +93,7 @@ In order to train the weights in such a configuration, the generator and discrim
 \par
 While the training method of a \gls*{gan} is straight forward, actually training a \gls*{gan} well is hard and faces several challenges such as mode-collapse, non-convergence, and instability~\cite{gan_challenges,gan_challenges2}. To alleviate these challenges, modifications to the standard \gls*{gan} have been proposed such as the Wasserstein GAN~\cite{wgan} and the Unrolled GAN~\cite{unrolled_gan}.
 \par
-There also exists variations of the standard \gls*{gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as transforming a horse in an image into a zebra, without paired data. Another example is CGAN~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a CGAN can generate faces of a specific age.
+There also exists variations of the standard \gls*{gan} for the purpose of different types of generation. One example is the CycleGAN~\cite{CycleGAN} which makes it possible to perform domain translation, such as transforming a horse in an image into a zebra, without paired data. Another example is the \gls*{cgan}~\cite{cgan}  in which both the generator and discriminator are conditioned on some auxiliary information, which makes it possible to generate data within a specific context. For instance, instead of generating arbitrary human faces, a \gls*{cgan} can generate faces of a specific age.
 \subsection{Disadvantages of Deep Learning}
 A disadvantage for deep-learning models in general is that they are susceptible to noise in the dataset~\cite{noise1,noise2}, which leads to decreased classification accuracy and poor prediction results. Due to the nature of training deep learning models, they are also in most cases not self-supervised and therefore require constant tuning in order to stay effective on changing data. Not to mention that they require a lot of data before they can be considered effective, and that performance increases logarithmically based on the volume of training data~\cite{deeplearning_dataset}. This is exemplified in \autoref{fig:data_size_accuracy}.
 \begin{figure}[htb]
@@ -104,7 +104,7 @@ A disadvantage for deep-learning models in general is that they are susceptible 
 \end{figure}
 \par
 Deep learning models also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}. There is also a lack of explainability.
-\subsubsection{Explainability}
+\par
 As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they make those predictions. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
 \begin{figure}[htb]
     \centering
@@ -133,7 +133,7 @@ As reviewed by \textcite{anomaly_detection}, anomaly detection is often defined 
 These complexities make it hard to apply traditional deep learning methods for anomaly detection, because they are designed to be trained with pairs of $\{input, label\}$ in mind.
 \subsection{Deep Learning and Anomaly Detection}
 \label{sec:dl_anom_detection}
-The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning~\cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs~\cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs. A variation of GAN which is specifically designed for anomaly detection is GANomaly\cite{ganomaly}, shown in \autoref{fig:ganomaly}, which effectively compares image encoding latent space instead of image distributions.
+The current state-of-the-art algorithms for anomaly detection are numerous, but the main approach is achieved by using deep learning~\cite{anomaly_detection}. As previously mentioned, traditional deep learning approaches are hard to apply for anomaly detection. Instead, a popular approach is to use generative deep learning models such as GANs~\cite{anomaly_detection, ganomaly,anomalyvideo} to generate synthetic data and compare it to real data in order to detect anomalies. This approach is based on the assumption that the model will only be able to generate data similar to what it has been trained on, and therefore fail when an anomalous event occurs. A variation of GAN which is specifically designed for anomaly detection is GANomaly~\cite{ganomaly}, shown in \autoref{fig:ganomaly}, which effectively compares image encoding latent space instead of image distributions.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=\linewidth]{resources/related_works/ganomaly}
@@ -207,7 +207,7 @@ The \gls*{htm} neuron has three inputs~\cite{htm_neurons}:
 \end{itemize}
 How this type of neuron operates in \gls*{htm} implementations will be covered in greater detail later in this section.
 \subsection{Common Algorithms}
-HTM theory states that there are common algorithms in the neocortex. and that vision, hearing and touch are not necessarily different problems, but are at the core handled by the same common algorithms in the neocortex. \gls*{htm} is therefore developed with the idea of common algorithms in mind, which means that \gls*{htm} networks should be able to solve all kinds of logical tasks.
+HTM theory states that there are common algorithms in the neocortex and that vision, hearing and touch are not necessarily different problems, but are at the core handled by the same common algorithms in the neocortex. \gls*{htm} is therefore developed with the idea of common algorithms in mind, which means that \gls*{htm} networks should be able to solve all kinds of logical tasks.
 \subsection{Sparse Distributed Representation}
 HTM theory introduces \gls*{sdr} as a way of representing data in \gls*{htm} and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two \glspl*{sdr} by simply performing a binary AND operation, as seen in \autoref{fig:sdr_semantics}.
 \begin{figure}[htb]
@@ -247,7 +247,7 @@ As of now, there exists encoders for numbers, categories, geospatial locations, 
 \par
 Some applications may require anomaly detection on multiple values at once, the correct approach then is to encode the values into \glspl*{sdr} one by one and then concatenate them into a single \gls*{sdr} before passing it to the HTM system.
 \subsection{Encoding Visual Data}
-Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works~\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses scale-invariant feature transform (SIFT) to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
+Several approaches for encoding visual data have been proposed. An example is a neuroscientifical approach which replicates how the eye works~\cite{eyeencoder}, another example is the approach by \textcite{ObjectDetectionSIFT} which uses \gls*{sift}~\cite{sift} to find points of interest in images and encode that information as an SDR. A simple threshold, as seen in \autoref{fig:binary_threshold_example}, can also be applied to extract information into an SDR-friendly format.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.3\linewidth]{resources/related_works/binary_threshold_example.png}
@@ -257,7 +257,7 @@ Several approaches for encoding visual data have been proposed. An example is a 
 \par
 There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an \gls*{sdr} by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
-There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift}~\cite{sift} cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
+There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift} cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
 \par
 The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
 \par
@@ -275,7 +275,7 @@ Seeing as there is currently no encoder that can produce sensible \glspl*{sdr} f
 \subsection{Learning}
 Similar to the neocortex, \gls*{htm} is designed to work on streaming data. It does not operate with batches like traditional machine learning, but rather with streaming data that may be changing over time. \par
 The learning mechanism consists of two parts; the Spatial Pooler (SP) and the Temporal Memory (TM) algorithm. The latter is also commonly referred to as Sequence Memory. Together they make up multiple \gls*{htm} neurons.\par
-The spatial pooler takes \glspl*{sdr} produced by the encoder, and uses Hebbian like learning to extract semantically important information into output SDRs. These output \glspl*{sdr} usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce \glspl*{sdr} that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
+The spatial pooler takes \glspl*{sdr} produced by the encoder, and uses Hebbian-like learning to extract semantically important information into output SDRs. These output \glspl*{sdr} usually have a fixed sparsity of about 2\% due to the fact that the spatial pooler aims to produce \glspl*{sdr} that have similar sparsity to what has been observed in the neocortex, but this can be configured at will and is dependent on the problem at hand.\par
 The temporal memory algorithm, on the other hand, simulates the learning algorithm in the neocortex. It takes the \glspl*{sdr} formed by the spatial pooler and does two things:
 \begin{itemize}
     \item Learns sequences of \glspl*{sdr} formed by the spatial pooler
@@ -311,7 +311,7 @@ This learning mechanism gives \gls*{htm} systems the property of on-line learnin
 \autoref{fig:sp_tm_responsibility} shows that a spatial pooler combined with a temporal memory forms the \gls*{htm} neuron, where the color green indicates the responsibility of the spatial pooler and blue indicates the responsibility of the temporal memory.
 \subsubsection{Spatial Pooler}
 \label{sec:spatial_pooler}
-The spatial pooler consists of columns (mini-columns), where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input space within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius. This is visualized in \autoref{fig:sp_vis_alt}.\par
+The spatial pooler consists of columns (more specifically, mini-columns), where each column has a receptive field covering the input. In technical implementations of spatial poolers, the columns exist in name only and could be thought of as nodes instead. A column can cover parts of the input or the entire input, the range being referred to as the \textbf{potential radius}. During initialization, each column creates random connections to a percentage of the bits in the input space within its receptive field, this gives each column a unique \textbf{potential pool} when there are overlaps of receptive fields caused by a large potential radius. This is visualized in \autoref{fig:sp_vis_alt}.\par
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.8\linewidth]{resources/related_works/sp_vis_alt}
@@ -325,7 +325,7 @@ The number of active connections for a given column is referred to as \textbf{ov
 \par
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{resources/related_works/sp_vis.png}
+    \includegraphics[width=0.5\textwidth]{resources/related_works/sp_vis.eps}
     \caption[Spatial Pooler Workings]{ This figure illustrates how a spatial pooler works. All connections are above the stimulus threshold. The receptive field is 3 bits wide for each column. Overlap score threshold is $1$, and $n=1$. Red means inactive, green means active, and blue means active and selected.}
     \label{fig:sp_vis}
 \end{figure}
@@ -355,7 +355,7 @@ The temporal memory algorithm consists of two phases. The first phase is to eval
 \par
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{resources/related_works/tm_vis1.png}
+    \includegraphics[width=0.5\textwidth]{resources/related_works/tm_vis1.eps}
     \caption[Temporal Memory Workings]{Expanded \gls*{sp} example with \gls*{tm} component where the number of cells is set to 3. The leftmost column is bursting (all 3 cells activated in green) due to the active \gls*{sp} output and due to containing no predictive cells.}
     \label{fig:tm_vis1}
 \end{figure}
@@ -401,7 +401,7 @@ There are other examples on the use of \gls*{htm} for real world applications. O
 \par
 There are also applications that are actively used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon \gls*{htm} in order to perform language analysis. This is made this possible by introducing Semantic Folding and Semantic Fingerprinting~\cite{semantic_folding}.
 \subsection{The Thousand Brains Theory}
-One of the newest advancements in \gls*{htm} Theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand brains theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
+One of the newest advancements in \gls*{htm} Theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand Brains Theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
 To summarize, the object is learned by the brain using multiple models that may rely on different inputs, the models then vote to reach a consensus on what they are sensing. This is coincidentally similar to ensemble learning such as \textcite{divergentNets}. Each model can be thought of as a mini-brain, hence the name "The Thousand Brains Theory".
 \begin{figure}[htb]
     \centering
@@ -446,7 +446,7 @@ For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a
 \par
 One thing to note is that direct binary representations of the video frames were used as SDRs, therefore no proper encoding was performed which might have led to the poor results. This hints at the fact that \gls*{htm} by itself is not capable of handling high dimensional data, and is instead reliant on an encoder to lower the dimensionality by extracting important spatial features. This is an area in which more work needs to be done so that \gls*{htm} can perform better on complex problems. Alternatively, one should explore new architectures using \gls*{htm}.
 \section{Ethical Considerations}
-This thesis introduces an architecture for performing surveillance on potentially a massive scale, and could even be tied to some sort of social credit system. This raises ethical questions regarding mass surveillance that highlight how the work done in this thesis can be misused. Therefore, even if the work done in this thesis is nowhere near perfect and far from ready to be used in production, one should still keep the ethical aspects in mind when pursuing this type of research.
+This thesis introduces an architecture for performing surveillance on potentially a massive scale, and could for instance be tied to some sort of social credit system. This raises ethical questions regarding mass surveillance that highlight how the work done in this thesis can be misused. Therefore, even if the work done in this thesis is nowhere near perfect and far from ready to be used in production, one should still keep the ethical aspects in mind when pursuing this type of research.
 \par
 It should also be reiterated that \gls*{htm} is the result of research from a private company, which is why one should be extra critical of their work. Another aspect is that unlike deep learning, which is democratized, \gls*{htm} is still very centralized. This means that Numenta has a lot of influence within the development of HTM, which could be misused for the purpose of promoting the goals of the company.
 \section{Summary}
@@ -454,6 +454,6 @@ Deep learning can be traced back to the Perceptron which was a machine learning 
 \par
 Anomaly detection is often defined as detecting data points that deviate from the general distribution. Unlike most other problems in deep learning, anomaly detection deals with unpredictable and rare events which makes it hard to apply traditional deep learning for anomaly detection. Popular approaches therefore often employ generative models, that calculate an anomaly measure using generated or reconstructed data. A subset of anomaly detection is smart surveillance, which is the use of video analysis specifically in surveillance. Recent developments show that generative models have a high degree of accuracy and are consistently improving.
 \par
-HTM theory introduces a machine learning algorithm which works on the same principles as the brain and therefore solves some of the issues that deep learning has. \gls*{htm} is considered noise resistant and can perform online learning, meaning that it learns as it observes more data. \gls*{htm} replicates the structure of the neocortex which is made up of cortical regions, which in turn are made of up of mini-columns and then neurons. \gls*{htm} neurons are more complex than neurons in deep learning, and perform learning with Hebbian-like learning. The data in an \gls*{htm} is represented using an SDR, which is a sparse bit array. An encoder converts real world values into SDRs. One of the difficulties with \gls*{htm} is making it work on visual data, where creating a good encoder for visual data is still being researched. The \gls*{htm} learning mechanism consists of two parts, the spatial pooler and the temporal memory. The spatial pooler learns to extract semantically important information into output SDRs. The temporal memory learns sequences of patterns of \glspl*{sdr} and forms a prediction in the form of a predictive SDR. Research has shown that \gls*{htm} is very capable of performing anomaly detection on low-dimensional data and is able to outperform other anomaly detection methods. However, related works show that \gls*{htm} struggles with higher dimensional data. Therefore, a natural conclusion to make is that HTM should be applied differently, and that a new type of architecture using HTM should be explored for the purpose of video anomaly detection.
+HTM theory introduces a machine learning algorithm which works on the same principles as the brain and therefore solves some of the issues that deep learning has. \gls*{htm} is considered noise resistant and can perform online learning, meaning that it learns as it observes more data. \gls*{htm} replicates the structure of the neocortex which is made up of cortical regions consisting of cortical columns, which in turn are made of up of mini-columns and then neurons. \gls*{htm} neurons are more complex than neurons in deep learning, and perform learning with Hebbian-like learning. The data in an \gls*{htm} is represented using an SDR, which is a sparse bit array. An encoder converts real world values into SDRs. One of the difficulties with \gls*{htm} is making it work on visual data, where creating a good encoder for visual data is still being researched. The \gls*{htm} learning mechanism consists of two parts, the spatial pooler and the temporal memory. The spatial pooler learns to extract semantically important information into output SDRs. The temporal memory learns sequences of patterns of \glspl*{sdr} and forms a prediction in the form of a predictive SDR. Research has shown that \gls*{htm} is very capable of performing anomaly detection on low-dimensional data and is able to outperform other anomaly detection methods. However, related works show that \gls*{htm} struggles with higher dimensional data. Therefore, a natural conclusion to make is that HTM should be applied differently, and that a new type of architecture using HTM should be explored for the purpose of video anomaly detection.
 \par
 It is with the topics covered in this chapter in mind, as well as the conclusion that there is a need for a new architecture so that HTM can be applied for video anomaly detection, that this thesis introduces Grid HTM in the next chapter. The next chapter will address the challenge regarding handling higher dimensional data, and will describe the architecture in a detailed way.

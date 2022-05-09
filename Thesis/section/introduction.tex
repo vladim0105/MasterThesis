@@ -6,7 +6,7 @@
         Develop and outline a theoretically sound \gls*{htm} architecture that can be applied for anomaly detection in complex videos.
     \else \fi
     \ifnum #1=3
-        Perform experiments, discuss the results, and lay out potential future work for Grid HTM. The experiments will vary in difficulty, complexity, and will focus on different use cases.
+        Perform experiments, discuss the results, and lay out potential future work for the aforementioned \gls*{htm} architecture. The experiments will vary in difficulty, complexity, and will focus on different use cases.
     \else \fi
 }
 
@@ -25,7 +25,7 @@ The most important component in video anomaly detection systems is the intellige
 \end{figure}
 Yet despite the major progress within the field of deep learning, there are still many tasks where humans outperform models, especially in anomaly detection where the anomalies are often undefined. Deep learning approaches also perform poorly when dealing with noise and concept drift.
 \par
-The cause for the discrepancy lies in the difference between how humans and machine learning algorithms represent data and learn. Most machine learning algorithms use a dense representation of the data and apply back-propagation in order to learn. Human learning happens in the neocortex, where evidence points to that the neocortex uses a sparse representation and performs Hebbian-style learning. For the latter, there is a growing field of machine learning dedicated to replicating the inner mechanics of the neocortex, namely  \gls*{htm} theory. This theory outlines its advantages over standard machine learning, such as noise-tolerance and the ability to adapt to changing data.
+The cause for the discrepancy lies in the difference between how humans and machine learning algorithms represent data and learn. Most machine learning algorithms use a dense representation of the data and apply back-propagation in order to learn. Human learning happens in the neocortex, where evidence points to that the neocortex uses a sparse representation and performs Hebbian-like~\cite{hebbian_learning} learning. For the latter, there is a growing field of machine learning dedicated to replicating the inner mechanics of the neocortex, namely  \gls*{htm} theory. This theory outlines its advantages over standard machine learning, such as noise-tolerance and the ability to adapt to changing data.
 \par
 With the advantages of  \gls*{htm} and the rise of video anomaly detection in mind, a natural question one could pose is whether it is possible to apply  \gls*{htm} for anomaly detection in videos. Combined with a lack of related works, it is this very question that is the motivation behind this thesis.
 
@@ -57,16 +57,16 @@ This thesis explores the use of \gls*{htm} for anomaly detection in videos, and 
 This objective is achieved in \autoref{sec:background}, where \gls*{htm} is explained. This chapter also acts as an organization of  \gls*{htm} related research, supported with visualizations and a simpler language, making it easier for people with a machine learning background to understand. It is also important to mention that not only does this chapter include the main \gls*{htm} research published, but it also contains little tidbits of community research and ideas which are otherwise hard to come by.
 \paragraph*{Objective 2} \emph{\objective{2}}
 \par
-This objective is achieved in \autoref{sec:grid_htm}, where Grid \gls*{htm} was introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis. This objective is further achieved through the Grid HTM paper, which is a product of this thesis, and can be seen in \autoref{appendix:paper}.
+This objective is achieved in \autoref{sec:grid_htm}, where Grid \gls*{htm} is introduced. Not only does it present a novel way to apply  \gls*{htm} on video-based problems, it also uncovers the reasoning behind the design decisions that were made as well as providing thorough analysis. This objective is further achieved through the Grid HTM paper, which is a product of this thesis, and can be found in \autoref{appendix:paper}.
 \paragraph*{Objective 3} \emph{\objective{3}}
 \par
-This objective was achieved in \autoref{sec:experiments}, where three different experiments were performed. The first experiment showcased that \gls*{htm} and Grid \gls*{htm} can indeed perform anomaly detection on simple and clean videos. The second experiment showcased the performance of Grid \gls*{htm} on a complex surveillance video, which showed promising results. The third experiment showcased the ability of Grid \gls*{htm} to detect segments in a video, where noisy videos of sperm were used for increased challenge.
+This objective is achieved in \autoref{sec:experiments}, where three different experiments are performed. The first experiment showcases that \gls*{htm} and Grid \gls*{htm} can indeed perform anomaly detection on simple and clean videos. The second experiment showcases the performance of Grid \gls*{htm} on a complex surveillance video, which shows promising results. The third experiment showcases the ability of Grid \gls*{htm} to detect segments in a video, where noisy videos of sperm are used for increased challenge.
 \par
-Now that the three objectives have been achieved, it is possible to answer the thesis question: \textbf{Is \gls*{htm} viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid \gls*{htm} and other \gls*{htm} based architectures can indeed be used as anomaly detection systems for videos. However, as mentioned earlier, there is a lack of approaches to compare against which makes it hard to quantify the relative performance of Grid HTM.
+With the three objectives achieved, it is possible to answer the thesis question: \textbf{Is \gls*{htm} viable for anomaly detection in videos?} The experiments show that with proper data and further refinements, Grid \gls*{htm} and other \gls*{htm} based architectures can indeed be used as anomaly detection systems for videos. However, as mentioned earlier, there is a lack of approaches to compare against which makes it hard to quantify the relative performance of Grid HTM.
 \par
 Additionally, during the course of this thesis, a contribution has been made to the  \gls*{htm} community in the form of uncovering and reporting a bug related to the technical implementation of  \gls*{htm}~\cite{github_contrib}. It is also important to reiterate that this thesis acts as a general guide to \gls*{htm} from a machine learning perspective, which is something that is sorely needed due to the low accessibility of the \gls*{htm} field.
 \par
-Finally, the work done in this thesis has produced a paper which can be found in \autoref{appendix:paper}. The work, including the Grid \gls*{htm} source code and the various experiments, is publically available at Github~\cite{master_thesis_github}.
+Finally, the work done in this thesis has produced a paper which can be found in \autoref{appendix:paper}. The work, including the Grid \gls*{htm} source code and the various experiments, is publically available on Github~\cite{master_thesis_github}.
 \section{Research Methods}
 Due to the novelty of this thesis, a single research method could not be used. Instead, a combination of multiple research methods was employed. For most of the thesis, an exploratory research method~\cite{exploratory_research} was used with the context of answering the thesis question, this was used due to the novelty of this thesis and the lack of related works. The result of this exploratory method is Grid HTM, which began from a simple starting point and was shaped through exploring improvements and solutions to problems that arose.
 \par
@@ -81,7 +81,7 @@ This thesis consists of five chapters, where \autoref{sec:introduction} and \aut
 \par
 The second part covers anomaly detection. More specifically, it covers the definition, challenges, and recent work within anomaly detection. It also discusses smart surveillance, which is a subset of anomaly detection specifically meant for surveillance purposes.
 \par
-The third and final part covers \gls*{htm} theory. It starts off by introducing the biological ties to \gls*{htm} and the pipeline of an \gls*{htm} model. This is then proceeded by a detailed account of the inner mechanisms of an \gls*{htm} model and how learning is performed. It then finishes by introducing use-cases, related work on the use of \gls*{htm} for anomaly detection and how it performs, and introduces similarities between recent developments within \gls*{htm} theory and recent developments within deep learning.
+The third and final part covers \gls*{htm} theory. It starts off by introducing the biological ties to \gls*{htm} and the pipeline of an \gls*{htm} model. This is then proceeded by a detailed account of the inner mechanisms of an \gls*{htm} model and how learning is performed. It then finishes by introducing use-cases, related work on the use of \gls*{htm} for anomaly detection and how it performs, and highlights similarities between recent developments within \gls*{htm} theory and recent developments within deep learning.
 \subsection*{Chapter 3: Grid HTM}
 This chapter introduces Grid HTM, a novel \gls*{htm} architecture for the purpose of anomaly detection in videos, which is the main contribution of this thesis.
 \par
