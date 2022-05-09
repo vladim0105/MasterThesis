@@ -1,6 +1,6 @@
 \chapter{Grid HTM}
 \label{sec:grid_htm}
-This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code of Grid HTM can be found on Github~\cite{master_thesis_github}.
+This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code for Grid HTM can be found on Github~\cite{master_thesis_github}.
 \section{Introduction}
 \par
 This thesis explores a new type of architecture, named Grid HTM, for anomaly detection in videos using \gls*{htm}, and proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as \gls*{orb}~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
@@ -20,7 +20,7 @@ The idea is that the \gls*{sp} will learn to find an optimal general representat
     \label{fig:car_segmentation_sp}
 \end{figure}
 \par
-The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the model to quickly learn the norm, even if there is little activity, while still reacting to anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
+The task of the \gls*{tm} will then be to learn the common patterns that the cars exhibit, their speed, shape, and positioning will be taken into account. Finally, the learning will be set so that new patterns are learned quickly, but forgotten slowly. This will allow the model to quickly learn the norm, even if there is little activity, while still reacting to rare anomalies. This requires that the input is stationary, in our example this means that the camera is not moving.
 \par
 It is possible to split different segmentation classes into their respective SDRs. This will give the SP and the TM the ability to learn different things for each of the classes. For instance, if there are two classes "person" and "car", then the TM will learn that it is normal for objects belonging to "person" to be on the sidewalk, while objects belonging to "car" will be marked as anomalous when on the sidewalk.
 \par
@@ -196,7 +196,7 @@ This version of Grid HTM is implemented in Python using the community fork of Nu
 \section{Biological Plausibility}
 One of the key principles of HTM theory is that it should be biologically plausible~\cite{BAMI}. Every development within HTM theory follows this principle, and it should therefore be expected that Grid HTM does so as well.
 \par
-Remembering that a single HTM model models a cortical column, as stated in \autoref{sec:htm_structure}, means that each cell in the grid can be considered an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, as visualized in \autoref{fig:cortical_region}.
+Remembering that a single HTM system can model a cortical column, as stated in \autoref{sec:htm_structure}, means that each cell in the grid can be considered an individual cortical column. The entire architecture can therefore be thought of as a simplified cortical region, as visualized in \autoref{fig:cortical_region}.
 \section{Use Cases}
 \begin{figure}[H]
     \centering
@@ -223,7 +223,102 @@ Grid HTM could also be used to help automate labeling of anomaly datasets for de
 \section{Summary}
 This chapter proposes to use segmentation techniques as an encoder for visual data. The resulting \glspl*{sdr} can then be parsed by Grid HTM, which is essentially a collection of HTM models divided into a grid. The idea is that the SP will find an optimal general representation of the objects represented in the input SDRs. The task of the TM will be to learn the patterns that these objects exhibit over time, such as position, speed, and shape. Ideally, the architecture will have a calibration period where it will not do any anomaly detection but will only learn the patterns.
 \par
-The main reason for applying a grid, and using separate HTM models in each cell, is to introduce a form of invariance within the frame. Another benefit is that this introduces explainability into the architecture, meaning that it is easy to know where in the frame the anomaly is. Finally, having a grid means increased flexibility since the HTM models in each grid can be configured independently as well as the possibility to run each grid in parallel for increased performance. This chapter proposes to use an aggregation function to combine all the anomaly outputs of each cell in the grid into a single output for the entire architecture. This grid based approach also makes sense from a biological perspective by being a simplified cortical region.
+The main reason for applying a grid, and using separate HTM models in each cell, is to introduce a form of invariance within the frame. Another benefit is that this introduces explainability into the architecture, meaning that it is easy to know where in the frame the anomaly is. Finally, having a grid means increased flexibility since the HTM models in each grid can be configured independently as well as the possibility to run each grid in parallel for increased performance. This chapter proposes to use an aggregation function to combine all the anomaly outputs of each cell in the grid into a single output for the entire architecture. This grid based approach also makes sense from a biological perspective by loosely resembling a6666
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cortical region.
 \par
 With all the new changes made, it is important to review the rules for creating a good encoder, and it becomes evident that the rule regarding having a stable sparsity value is not followed. To address this, a pattern representing emptiness is introduced in order to impose a lower bound for sparsity, while the cell size itself acts as a soft upper bound for the number of active pixels. Due to the possibility of a lot of cells  seeing the same empty pattern for long periods of time, it is recommended to disable boosting.
 \par
