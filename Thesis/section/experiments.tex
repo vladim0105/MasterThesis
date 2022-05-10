@@ -57,8 +57,8 @@ Final list of parameters for reproducibility. For the plots, a moving average of
         \toprule
         \textbf{Parameter} & \textbf{Value} & \textbf{Notes}                                                                       \\
         \midrule
-        inputDimensions    & 120, 120       & The shape of the entire frame                                                        \\
-        columnDimensions   & 60, 60         &                                                                                      \\
+        inputDimensions    & 120, 120       & The shape of the input                                                               \\
+        columnDimensions   & 60, 60         & The dimensions of the columns in the spatial pooler                                  \\
         potentialPct       & 0.1            & Percent of inputs within the receptive field of a column that it can be connected to \\
         potentialRadius    & 120            & Controls the size of the receptive field                                             \\
         localAreaDensity   & 0.02           & Output SDR target sparsity                                                           \\
@@ -80,16 +80,16 @@ Final list of parameters for reproducibility. For the plots, a moving average of
     \centering
     \begin{tabularx}{\linewidth}{@{}llX@{}}
         \toprule
-        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}             \\
+        \textbf{Parameter}        & \textbf{Value} & \textbf{Notes}                \\
         \midrule
-        columnDimensions          & 60, 60         & Same as the \gls*{sp}      \\
-        predictedSegmentDecrement & 0.003          & Punishment forgetting rate \\
-        permanenceIncrement       & 0.1            & Learning rate              \\
-        permanenceDecrement       & 0.001          & Forgetting rate            \\
-        minThreshold              & 3              & Controls noise tolerance   \\
-        activationThreshold       & 5              & Controls noise tolerance   \\
-        cellsPerColumn            & 16             & Contextual capacity        \\
-        seed                      & 2              &                            \\
+        columnDimensions          & 60, 60         & Must be same as the \gls*{sp} \\
+        predictedSegmentDecrement & 0.003          & Punishment forgetting rate    \\
+        permanenceIncrement       & 0.1            & Learning rate                 \\
+        permanenceDecrement       & 0.001          & Forgetting rate               \\
+        minThreshold              & 3              & Controls noise tolerance      \\
+        activationThreshold       & 5              & Controls noise tolerance      \\
+        cellsPerColumn            & 16             & Contextual capacity           \\
+        seed                      & 2              &                               \\
         \bottomrule
     \end{tabularx}
 
@@ -167,12 +167,12 @@ The \gls*{sp} and \gls*{tm} parameters were selected so that they were as close 
     \label{tab:bb_tm_gridhtm_param}
 \end{table}
 \subsection{Experiment Summary}
-This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to zero. First the experiment is performed with a normal \gls*{htm} model.
+This experiment is a controlled experiment involving a computer generated ball bouncing up and down, and then introducing an anomaly in the form of a change in horizontal velocity. Finally, the horizontal velocity is set back to zero.
 \par
-The results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid \gls*{htm} is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid \gls*{htm} is designed for more complex videos, such as if there were multiple bouncing balls at once.
+First the experiment is performed with a normal \gls*{htm} model, and the results show that it is capable of detecting the anomalies and quickly adapts to them. The same experiment is then performed with Grid HTM. The results show that Grid \gls*{htm} is also capable of detecting the anomalies and quickly adapts to them, however it performs slightly worse than normal HTM. The reason is that Grid \gls*{htm} is designed for more complex videos, such as if there were multiple bouncing balls at once.
 \clearpage
 \section{Surveillance Experiment}
-As stated earlier, one of the use cases of Grid \gls*{htm} is anomaly detection in surveillance. This example will show how Grid \gls*{htm} could perform.
+As stated earlier, one of the use cases of Grid \gls*{htm} is anomaly detection in complex videos. This example will show how Grid \gls*{htm} could perform on surveillance footage.
 The video to be used is part of the VIRAT~\cite{VIRAT} video dataset, and was selected due to its long duration and stationary camera, which is shown in \autoref{fig:selected_frame}.
 \par
 The downside is that the video does not contain any non-technical anomalies, but consists of technical anomalies in the form of several segments with sudden frame skips in between. There is also a synthetic anomaly introduced in the form of a frame repeat lasting a couple of seconds, essentially "freezing" time, in order to test whether Grid \gls*{htm} is able to understand how objects should be moving in time.
@@ -353,7 +353,7 @@ The dataset used is VISEM~\cite{VISEM}, a sperm dataset which consists of videos
     \caption[Sperm Example Frame]{Example frame from a sperm video (left) and its corresponding segmentation (right).}
     \label{fig:sperm_segmentation}
 \end{figure}
-It is important to note that the data itself is noisy, and that it is not possible for Grid \gls*{htm} to learn any meaningful pattern. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
+It is important to note that the data itself is noisy, and that it is not possible for Grid \gls*{htm} to learn any meaningful patterns. The individual videos are also relatively short, which makes it even harder to learn any meaningful patterns.
 \subsection{Benchmark}
 To ensure that \gls*{htm} does not just react to the sudden change in pixels but does something more, the L1 error will be used as a benchmark to compare against:
 \begin{align*}
@@ -371,7 +371,7 @@ As seen in \autoref{fig:sperm_results1}, Grid \gls*{htm} is able to outperform t
 
 \par
 That being said, the parameters for Grid \gls*{htm} were selected carefully to achieve the results seen in \autoref{fig:sperm_results1}, and are dependent on the contents of the data. Unfortunately, most of the videos in the dataset contain drift (in other words, the video is not stationary), which makes Grid \gls*{htm} useless. This can be observed in \autoref{fig:sperm_results2}, where both Grid \gls*{htm} and the L1 error struggle.
-\begin{figure}[H]
+\begin{figure}[htb]
     \centering
     \includegraphics[width=\textwidth]{resources/experiments/sperm/sperm_result2.png}
     \caption[Drifting Video Results]{Results on a sperm video with drift.}
@@ -464,7 +464,7 @@ The results show that Grid \gls*{htm} outperforms the L1 error, presumably due t
 \end{table}
 It should also be mentioned that the segmentation process is not considered in the calculation of frames per second, but this should not matter that much as the next frame can be segmented in parallel while Grid HTM processes the current frame. The performance with the segmentation process considered can therefore be expressed as:
 \begin{align*}
-    FPS=max(GridHTM\_FPS, Segmentation\_FPS)
+    FPS=min(GridHTM\_FPS, Segmentation\_FPS)
 \end{align*}
 \section{Summary}
 In this chapter, three different experiments were performed with the purpose of gauging the effectiveness of \gls*{htm} and Grid \gls*{htm} on videos. The experiments show that it is possible to apply Grid \gls*{htm} for anomaly detection in videos. It was also shown that for complex data, the anomaly score output is not a good measure to use due to the noise and the influence of the size of the anomalies.

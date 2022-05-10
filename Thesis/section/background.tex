@@ -25,7 +25,7 @@ As shown by \textcite{perceptron3}, the perceptron was able to solve linearly se
 \par
 Unfortunately, the work by \textcite{perceptron3} lead to the misconception that a \gls*{mlp} would have the same limitations as a single perceptron, and that further progress was impossible, which lead to the perceptron and other neuron-based approaches being largely abandoned~\cite{perceptron_misconceptions}. This misconception, combined with a lack of computing power and no good approaches to train a \gls*{mlp}, lead to a decline in the research of neuron-inspired approaches.
 \par
-It was not until the late 1980s~\cite{perceptron_misconceptions} that the \gls*{mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave birth to modern neural networks.
+It was not until the late 1980s~\cite{perceptron_misconceptions} that the \gls*{mlp} approach experienced a revival, led by the increase in computational power and the introduction of backpropagation by \textcite{backprop}, which allowed multilayer networks to be easily trained, and gave rise to modern neural networks.
 \subsection{Backpropagation}
 Backpropagation~\cite{backprop}, which is shorthand for "backward propagation of errors",  is a method for efficiently calculating the gradient of the error function, so that it is possible to adjust each individual weight with the purpose of lowering the error. The error function is a function that quantifies the difference between a prediction and the corresponding label, and is differentiable. An example of such an error function, is the \gls*{mse}:
 \begin{align*}
@@ -103,7 +103,7 @@ A disadvantage for deep-learning models in general is that they are susceptible 
     \label{fig:data_size_accuracy}
 \end{figure}
 \par
-Deep learning models also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in real life. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}. There is also a lack of explainability.
+Deep learning models also suffer from issues with out-of-distribution performance, where a model might perform great on the dataset it is tested on, but performs poorly when deployed in practical settings. This could be caused by selection bias in the dataset or when there are differences in the causal structure between the training domain and the deployment domain~\cite{deeplearning_ood}. There is also a lack of explainability.
 \par
 As stated by \textcite{XAI}, as "black-box" approaches such as deep learning surged in popularity, many realized that they offered poor explainability. While it is known \textit{how} the models make their decisions, their huge parametric spaces make it unfeasible to know \textit{why} they make those predictions. Combined with the vast potential that deep learning offers in critical sectors such as medicine, has lead to an increase in focus on developing approaches that offer explainability.
 \begin{figure}[htb]
@@ -207,7 +207,7 @@ The \gls*{htm} neuron has three inputs~\cite{htm_neurons}:
 \end{itemize}
 How this type of neuron operates in \gls*{htm} implementations will be covered in greater detail later in this section.
 \subsection{Common Algorithms}
-HTM theory states that there are common algorithms in the neocortex and that vision, hearing and touch are not necessarily different problems, but are at the core handled by the same common algorithms in the neocortex. \gls*{htm} is therefore developed with the idea of common algorithms in mind, which means that \gls*{htm} networks should be able to solve all kinds of logical tasks.
+HTM theory states that there are common algorithms in the neocortex and that vision, hearing and touch are not necessarily different problems, but are at the core handled by the same common algorithms in the neocortex. More specifically, the signals from hearing, touch, and vision are all represented in the same format and processed by the same common algorithm. \gls*{htm} is therefore developed with the idea of common algorithms in mind, which means that \gls*{htm} networks should be able to solve all kinds of logical tasks.
 \subsection{Sparse Distributed Representation}
 HTM theory introduces \gls*{sdr} as a way of representing data in \gls*{htm} and can be thought of as a bit-array. Each bit theoretically corresponds to a neuron in the neocortex and also represents some semantic information about the current data. This opens up for all kinds of mathematical operations, for instance it is possible to compare the semantic similarities between two \glspl*{sdr} by simply performing a binary AND operation, as seen in \autoref{fig:sdr_semantics}.
 \begin{figure}[htb]
@@ -257,7 +257,7 @@ Several approaches for encoding visual data have been proposed. An example is a 
 \par
 There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an \gls*{sdr} by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
-There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift} cause a lot of noise due to points shifting as lighting is changing. The distribution of the points within a frame is also constantly changing, which adds even more noise.
+There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift} cause a lot of semantic noise due to points shifting as lighting is changing, and the same object can therefore shift from one pattern to a completely different pattern when represented as an SDR. The distribution of the points within a frame is also constantly changing, which adds even more noise.
 \par
 The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
 \par
@@ -333,7 +333,7 @@ The number of active connections for a given column is referred to as \textbf{ov
 Because only the active columns are allowed to learn, only a select few columns who got lucky during the random initialization will dominate the spatial pooler output and have a very high \textbf{active duty cycle}. Active duty cycle measures how often a column is active and ranges from 0 (never) to 1 (always).
 \par
 To counter dominating columns, the spatial pooler uses \textbf{boosting}.
-The concept behind boosting is to "boost" the overlap score of underperforming columns and lower the overlap score of over performing columns. The result is that more columns learn and contribute to the output, which means that the spatial pooler can then process the input data with a finer granularity. This is also a form of regularization. One has to be careful with boosting, since it can cause instability in the spatial pooler output.
+The concept behind boosting is to "boost" the overlap score of underperforming columns and lower the overlap score of overperforming columns. The result is that more columns learn and contribute to the output, which means that the spatial pooler can then process the input data with a finer granularity. This is also a form of regularization. One has to be careful with boosting, since it can cause instability in the spatial pooler output.
 \par
 It is also possible to have \textbf{topology} in the output by selecting the columns to be included in the output by their local neighborhood, instead of comparing their overlap score globally.
 \par
@@ -341,7 +341,7 @@ All the aforementioned concepts are configurable in technical implementations.
 
 \subsubsection{Temporal Memory}
 \label{sec:temporal_memory}
-The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consist of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, distal dendrite segments), where each segment consists of synapses connecting to other cells.
+The temporal memory consists of the columns that a spatial pooler outputs, but treats them as actual columns instead of "nodes". These columns consist of cells and can contain an arbitrary \textbf{number of cells} which defines the capacity of contexts that the temporal memory can express. Each cell in a column can connect to other cells in other columns using segments (more specifically, \emph{distal dendrite segments}), where each segment consists of synapses connecting to other cells.
 \par
 Essentially, it takes the "node" based representation of the \gls*{sp} output, and turns it into a new representation which includes state, or context, from previous time steps. It achieves this by only activating a subset of cells per column, typically only one per column. This allows the temporal memory to represent a pattern in multiple contexts. If every column has 32 cells and the \gls*{sp} output has 100 active columns and only one cell per column is active, then the \gls*{tm} has $32^{100}$ ways of representing the same input. The same input will make the same columns active, but in different contexts different cells in those columns will be active. This is visualized in \autoref{fig:tm_vis_alt2}.
 \begin{figure}[htb]

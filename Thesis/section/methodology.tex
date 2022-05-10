@@ -1,6 +1,6 @@
 \chapter{Grid HTM}
 \label{sec:grid_htm}
-This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code for Grid HTM can be found on Github~\cite{master_thesis_github}.
+This chapter presents Grid HTM, which is the product of answering the thesis question and is the main contribution of this thesis. The source code for Grid HTM can be found on GitHub~\cite{master_thesis_github}.
 \section{Introduction}
 \par
 This thesis explores a new type of architecture, named Grid HTM, for anomaly detection in videos using \gls*{htm}, and proposes to use segmentation techniques to simplify the data into an SDR-friendly format. These segmentation techniques could be anything from simple binary thresholding to deep learning instance segmentation. Even keypoint detectors such as \gls*{orb}~\cite{orb_detector} could in theory be applied. When explaining Grid HTM, the examples will be taken from deep learning instance segmentation of cars on a video from the VIRAT~\cite{VIRAT} dataset. An example segmentation is shown in \autoref{fig:example_segmentation}.
@@ -162,9 +162,9 @@ A more proper solution could be to allow the \gls*{tm} to grow segments to the T
 Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still. \autoref{fig:high_fps} visualizes this phenomenon.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_moving.png}
+    \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_moving.eps}
     \unskip\ \vrule\
-    \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_still.png}
+    \includegraphics[width=0.3\textwidth]{resources/methodology/high_fps_still.eps}
     \caption[Comparison of a Moving Object in a High Framerate Video]{Comparison of a moving object (left) and a still object (right) in a high framerate video. They are very similar and could actually end up being represented identically by the SP.}
     \label{fig:high_fps}
 \end{figure}

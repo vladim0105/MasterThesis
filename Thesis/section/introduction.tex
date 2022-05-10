@@ -23,7 +23,7 @@ The most important component in video anomaly detection systems is the intellige
     \caption[Publications Increase Comparison]{The increase in publications mentioning the terms "deep learning" and "deep learning surveillance"~\cite{deep_learning_surveillance_stats}.}
     \label{fig:dl_publications}
 \end{figure}
-Yet despite the major progress within the field of deep learning, there are still many tasks where humans outperform models, especially in anomaly detection where the anomalies are often undefined. Deep learning approaches also perform poorly when dealing with noise and concept drift.
+Yet despite major progress within the field of deep learning, there are still many tasks where humans outperform deep learning models, especially in anomaly detection where the nature of anomalies is typically difficult to define. Deep learning approaches also perform poorly when dealing with noise and concept drift.
 \par
 The cause for the discrepancy lies in the difference between how humans and machine learning algorithms represent data and learn. Most machine learning algorithms use a dense representation of the data and apply back-propagation in order to learn. Human learning happens in the neocortex, where evidence points to that the neocortex uses a sparse representation and performs Hebbian-like~\cite{hebbian_learning} learning. For the latter, there is a growing field of machine learning dedicated to replicating the inner mechanics of the neocortex, namely  \gls*{htm} theory. This theory outlines its advantages over standard machine learning, such as noise-tolerance and the ability to adapt to changing data.
 \par
@@ -40,7 +40,7 @@ This thesis will introduce three different objectives that will help answer the 
 \end{enumerate}
 
 \section{Limitations}
-HTM is a complex topic not part of the curriculum in most educations, if any at all. It is also based on neurological research, lending terms and concepts from the biological field, which significantly raises the level of entry for people with a machine learning background. The field also has a low level of accessibility due to a lack of proper documentation and a high reliance on the tiny \gls*{htm} community. This makes learning and understanding \gls*{htm} a process which takes up a sizable chunk out of the total time spent on this thesis. As such, this thesis will be relatively limited in scope, and will therefore focus mainly on anomaly detection in the context of surveillance.
+HTM is a complex topic not part of the curriculum in most educations, if any at all. It is also based on neurological research, lending terms and concepts from the biological field, which significantly raises the barrier to entry for people with a machine learning background. The field also has a low level of accessibility due to a lack of proper documentation and a high reliance on the comparatively small \gls*{htm} community. This makes learning and understanding \gls*{htm} a process which takes up a sizable chunk out of the total time spent on this thesis. As such, this thesis will be relatively limited in scope, and will therefore focus mainly on anomaly detection in the context of surveillance.
 \par
 Additionally, \gls*{htm} for video anomaly detection~\cite{MotionAnomalyDetection} is a novel topic and is therefore naturally limited on several fronts. One of the main limitations is the lack of labeled anomaly data that suits the nature of HTM, because most datasets are made for use with deep learning approaches. Deep learning video datasets usually consist of many short segments whereas HTM suitable video datasets would consist of continuous videos, which was proven to be hard to come by during the work of this thesis. The main experiment of this thesis will therefore focus on only one dataset, due to the absence of suitable alternatives.
 \par
@@ -95,7 +95,7 @@ The second experiment showcases the performance of Grid \gls*{htm} on a surveill
 \par
 The third experiment further explores the ability of Grid \gls*{htm} to detect segments in videos, which was discovered in the previous experiment. The videos that are used in this experiment are videos of sperm that contain several segments.
 \subsection*{Chapter 5: Conclusion and Further Work}
-In this chapter the thesis is summarized, and the thesis question presented in \autoref{sec:introduction} is answered along with potential further work and the main contributions of this thesis.
+In this chapter the thesis is summarized, and the thesis question presented in \autoref{sec:introduction} is answered along with potential further work, as well as the main contributions of this thesis.
 \par
 The contributions are presented as the description of how the various objectives were achieved, as well as answering the thesis question. This is a shorter version of the contributions mentioned in the introduction, and is presented conclusively.
 \par
