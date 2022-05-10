@@ -146,15 +146,15 @@ if __name__ == "__main__":
     sp_args.inputDimensions = (frame_size[0], frame_size[1])
     sp_args.columnDimensions = (frame_size[0] // 2, frame_size[1] // 2)
     sp_args.potentialPct = 0.1
-    sp_args.potentialRadius = 5
-    sp_args.localAreaDensity = 0.1
+    sp_args.potentialRadius = 120
+    sp_args.localAreaDensity = 0.02
     sp_args.globalInhibition = True
-    sp_args.wrapAround = False
+    sp_args.wrapAround = True
     sp_args.synPermActiveInc = 0.1
     sp_args.synPermInactiveDec = 0
     sp_args.stimulusThreshold = 2
     sp_args.seed=2
-    sp_args.boostStrength=0
+    sp_args.boostStrength=0.1
     sp_args.dutyCyclePeriod=250
 
     tm_args = model.TemporalMemoryArgs()
@@ -170,7 +170,7 @@ if __name__ == "__main__":
     sp = model.SpatialPooler(sp_args)
     tm = model.TemporalMemory(tm_args)
     r = 3
-    path, anom_frames = bouncing_path2(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
+    path, anom_frames = bouncing_path(frame_size[0] // 2, int(r * 1.3), r, shape=frame_size, num_bounces=1000)
     anom_scores, predicted_things = create_video(path, r, sp, tm, shape=frame_size)
     dump_data = {"anom_scores": anom_scores, "anom_markers": anom_frames, "predicted_things": predicted_things}
     pickle.dump(dump_data, open(f'bb_results/anoms_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pkl', 'wb'))

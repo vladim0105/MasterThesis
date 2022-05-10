@@ -15,7 +15,6 @@ if __name__ == "__main__":
     cv2.circle(img, (2083, 366), 100, color, thickness)
     cv2.circle(img, (2083, 366+450), 100, color, thickness)
 
-
     cv2.circle(img, (160, 1574), 100, color, thickness)
     cv2.circle(img, (160, 1574+450), 100, color, thickness)
 
