@@ -1,6 +1,6 @@
 \chapter{Experiments and Results}
 \label{sec:experiments}
-In this section, various experiments are performed in order to gauge the effectiveness of Grid HTM. There are three experiments in total, and each experiment covers a different use case. For reproducibility purposes, each experiment has corresponding tables of the parameters used.
+In this section, various experiments are performed in order to gauge the effectiveness of Grid HTM. There are three experiments in total, and each experiment covers a different use case. For the purpose of reproducibility, each experiment also includes tables showing the parameters used.
 \section{Bouncing Ball Experiment}
 To give credibility to the approach mentioned in \autoref{sec:grid_htm}, a simple experiment to test the capabilities of \gls*{htm} and confirm that they apply on a video is introduced.
 \subsection{Data}
@@ -447,7 +447,7 @@ This experiment explored the ability of Grid \gls*{htm} to detect segments in gr
 The results show that Grid \gls*{htm} outperforms the L1 error, presumably due to it managing to find something among the noise to lock on to. For this experiment, the parameters had to be carefully tuned to the content of the data.
 \clearpage
 \section{Performance}
-\autoref{tab:frame_performance} shows, for each experiment, the video frame size and the corresponding average processing time per frame. Note that this is without any parallelization, and with different \gls*{sp}, \gls*{tm}, and Grid HTM parameters for each experiment.
+\autoref{tab:frame_performance} shows the video frame size and the corresponding average processing time per frame, for each experiment. Note that this is without any parallelization, and with different \gls*{sp}, \gls*{tm}, and Grid HTM parameters for each experiment.
 \begin{table}[H]
     \centering
     \begin{tabularx}{\linewidth}{@{}XlX@{}}

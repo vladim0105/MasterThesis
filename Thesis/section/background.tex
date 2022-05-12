@@ -221,10 +221,19 @@ Observations of the brain has found that at any given point in time, a small per
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.15\textwidth]{resources/related_works/SDR.png}
-    \caption[Example SDR]{Example representation of an \gls*{sdr} with a length of 64 and a sparsity of 14.1\%, visualized as a 2D grid.}
+    \caption[Example SDR]{Example representation of an \gls*{sdr} with a size of $64$ and a sparsity of $\approx14.1\%$, visualized as a 2D grid.}
     \label{fig:sdr}
 \end{figure}
 \par
+The capacity of an \gls*{sdr}, e.g. how many unique patterns it can represent given a size $n$ and the number of active bits $w$, is expressed as:
+\begin{align*}
+    \binom{n}{w}=\dfrac{n!}{w!(n-w)!}
+\end{align*}
+This would mean that given the properties of the SDR in \autoref{fig:sdr}, it could fit approximately $2.754\times 10^{10}$ unique patterns. Similarly, the chance of two random \glspl*{sdr} with the same parameters having all their active bits overlap each other can be expressed as:
+\begin{align*}
+    P(x=y)=1/\binom{n}{w}
+\end{align*}
+In the example given in \autoref{fig:sdr}, this would mean that the chance for a complete overlap is approximately $3.631\times 10^{-11}$.
 \subsection{Encoders}
 \label{sec:encoders}
 To convert real-world data into an \gls*{sdr}, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an \gls*{sdr} with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output \glspl*{sdr} created by the encoder are sometimes referred to as just binary arrays.\par
@@ -450,7 +459,7 @@ This thesis introduces an architecture for performing surveillance on potentiall
 \par
 It should also be reiterated that \gls*{htm} is the result of research from a private company, which is why one should be extra critical of their work. Another aspect is that unlike deep learning, which is democratized, \gls*{htm} is still very centralized. This means that Numenta has a lot of influence within the development of HTM, which could be misused for the purpose of promoting the goals of the company.
 \section{Summary}
-Deep learning can be traced back to the Perceptron which was a machine learning model capable of solving linearly separable problems. Over time, people theorized that stacking Perceptrons would give it the ability to solve more complex problems. This was not possible before back propagation was introduced. After that, deep learning evolved and new architectures were invented. One of the main contribution is the introduction of the CNN, which allowed deep learning approaches to achieve state-of-the-art results for complex problems such as image classification. The ability to train deep learning on the GPU and the introduction of frameworks caused deep learning to explode in popularity. One of the latest advancements is the introduction of generative models, which can be used for various purposes including generating realistic data. Deep learning has several issues, such as lack of explainability, the need for a lot of data, and poor out-of-distribution performance.
+Deep learning can be traced back to the Perceptron which was a machine learning model capable of solving linearly separable problems. Over time, people theorized that stacking Perceptrons would give it the ability to solve more complex problems. This was not possible before back propagation was introduced. After that, deep learning evolved and new architectures were invented. One of the main contribution is the introduction of the CNN, which allowed deep learning approaches to achieve state-of-the-art results for complex problems such as image classification. The ability to train deep learning models on the GPU and the introduction of frameworks caused deep learning to explode in popularity. One of the latest advancements is the introduction of generative models, which can be used for various purposes including generating realistic data. Deep learning has several issues, such as lack of explainability, the need for a lot of data, and poor out-of-distribution performance.
 \par
 Anomaly detection is often defined as detecting data points that deviate from the general distribution. Unlike most other problems in deep learning, anomaly detection deals with unpredictable and rare events which makes it hard to apply traditional deep learning for anomaly detection. Popular approaches therefore often employ generative models, that calculate an anomaly measure using generated or reconstructed data. A subset of anomaly detection is smart surveillance, which is the use of video analysis specifically in surveillance. Recent developments show that generative models have a high degree of accuracy and are consistently improving.
 \par
