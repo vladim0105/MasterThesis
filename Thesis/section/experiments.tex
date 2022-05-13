@@ -183,7 +183,7 @@ The downside is that the video does not contain any non-technical anomalies, but
     \caption[Example Frames]{Example frames from the selected video.}
     \label{fig:selected_frame}
 \end{figure}
-As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be a \gls*{sdr} for cars and a \gls*{sdr} for persons (see \autoref{fig:seg_car_person}), that are then concatenated before being fed into the system.
+As previously mentioned, both binary thresholding and deep learning feature map extraction as encoders have their downsides. Therefore, this thesis proposes to use a combination of both, a segmentation model which can extract classes into their respective SDRs. Meaning that there could be an \gls*{sdr} for cars and an \gls*{sdr} for persons (see \autoref{fig:seg_car_person}), that are then concatenated before being fed into the system.
 \par
 The segmentation model used is PointRend~\cite{pointrend} with a ResNet101~\cite{resnet} backbone, pretrained on ImageNet~\cite{imagenet}, and implemented using PixelLib~\cite{pixellib}.
 \begin{figure}[H]

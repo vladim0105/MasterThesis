@@ -1,6 +1,6 @@
 \chapter{Deep Learning, Anomaly Detection, and Hierarchical Temporal Memory}
 \label{sec:background}
-Anomaly detection, which is often defined as detecting deviating data points, and in which deep learning is in important component, has seen an increase in popularity in the context of video anomaly detection and surveillance systems. This chapter will therefore cover relevant background information on deep learning, video anomaly detection, and \gls*{htm} theory. It will also briefly mention ethical considerations.
+Anomaly detection, which is often defined as detecting deviating data points, and in which deep learning is an important component, has seen an increase in popularity in the context of video anomaly detection and surveillance systems. This chapter will therefore cover relevant background information on deep learning, video anomaly detection, and \gls*{htm} theory. It will also briefly mention ethical considerations.
 \section{Deep Learning}
 As mentioned in the introduction, deep learning has seen increased popularity in the past few years. Surprisingly enough, the field of deep learning can be traced back to 1958 when the perceptron~\cite{perceptron,perceptron2} was first introduced.
 \subsection{Perceptron}
@@ -153,7 +153,7 @@ Smart surveillance, which is the use of automatic video analysis specifically in
 The work by \textcite{anomalyvideo} also discusses problems with using deep learning approaches for anomaly detection, and further emphasizes the complexities mentioned in \autoref{sec:anomaly_detection}. One of the examples that it uses is about a bicycle on campus being wrongly classified as an anomaly, which is related to the aforementioned issue with the non-realistic requirement that the training data must contain all possible classes of non-anomalous events.
 
 \section{Hierarchical Temporal Memory}
-Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces \gls*{htm} theory which aims to outline a machine learning algorithm which works on the same principles as the brain and therefore solves some of the aforementioned issues.\par
+Today's machine learning algorithms aim to solve complex problems by simulating a substantial amount of mathematically defined neurons. These neurons are vastly simplified compared to the neurons in the brain and therefore do not have the complexity required to solve complex problems with an accuracy and level of generalizability comparable to the brain. \textcite{BAMI} introduces \gls*{htm} theory which aims to outline a machine learning algorithm which works on the same principles as the brain, meaning that it is biologically plausible, and therefore solves some of the aforementioned issues.\par
 The brain consists of layers that have been added throughout evolution. The inner layers are responsible for primal intelligence such as hunger, sex and instincts. \gls*{htm} theory specifically aims to roughly simulate the neocortex, which is the outer layer of the brain tasked with advanced logic. It is important to note that \gls*{htm} only attempts to \emph{estimate} the activity in the neocortex, unlike Spiking Neural Networks and others which aim to \emph{accurately simulate} the activity of the neocortex~\cite{spiking_neural_networks}.
 \subsection{Structure}
 \label{sec:htm_structure}
@@ -233,7 +233,22 @@ This would mean that given the properties of the SDR in \autoref{fig:sdr}, it co
 \begin{align*}
     P(x=y)=1/\binom{n}{w}
 \end{align*}
-In the example given in \autoref{fig:sdr}, this would mean that the chance for a complete overlap is approximately $3.631\times 10^{-11}$.
+In the example given in \autoref{fig:sdr}, this would mean that the chance for a complete overlap is approximately $3.631\times 10^{-11}$, which shows how the sparsity property makes the SDR robust to noise.
+\par
+Furthermore, this noise robustness is still significant for impartial overlaps defined by $\theta$, e.g. $\theta=0.3$ means that only $30\%$ of the active bits are required to overlap in order to consider two \glspl*{sdr} as matching. Alternatively, one can think of $\theta=0.3$ as $70\%$ noise, meaning the chance of a random flip occurring for every bit. The chance of a false positive, meaning that the two \glspl{sdr} accidentally match due to noise given a minimum overlap threshold $\theta$, is defined as:
+\begin{align*}
+    |\Omega(n, w, b)| & =\binom{w}{b}\times \binom{n-w}{w-b}                          \\
+    P(n, w, \theta)   & =\dfrac{\sum_{b=\theta w}^{w}|\Omega(n, w, b)|}{\binom{n}{w}}
+\end{align*}
+Where $|\Omega(n,w,b)|$ is the number of possible patterns with $b$ bits overlap.
+\par
+\autoref{fig:sdr_chance} shows the false positive chance given a fixed overlap threshold $\theta=0.3$, by varying the size $n$ and the number of active bits $w$ in both \glspl*{sdr}.
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=\textwidth]{resources/related_works/sdr_chance.eps}
+    \caption[SDR False Positive Chance]{False positive chance of two SDRs with identical properties, with a $30\%$ overlap threshold.}
+    \label{fig:sdr_chance}
+\end{figure}
 \subsection{Encoders}
 \label{sec:encoders}
 To convert real-world data into an \gls*{sdr}, there is a need for an encoder in the pipeline. These encoders can be designed to take potentially any data and convert it into an \gls*{sdr} with an arbitrary sparsity. Given the fact that they may have an arbitrary sparsity, the output \glspl*{sdr} created by the encoder are sometimes referred to as just binary arrays.\par
@@ -266,11 +281,11 @@ Several approaches for encoding visual data have been proposed. An example is a 
 \par
 There are also deep learning approaches such as the one proposed by \textcite{CNN_HTM} which uses a Convolutional Neural Network (CNN) as part of the encoder. It creates an \gls*{sdr} by storing the top $n$-features in a feature map as ones and set the rest to zeros in order to achieve binary values suitable for the SDR.
 \par
-There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift} cause a lot of semantic noise due to points shifting as lighting is changing, and the same object can therefore shift from one pattern to a completely different pattern when represented as an SDR. The distribution of the points within a frame is also constantly changing, which adds even more noise.
+There are several reasons why these approaches might not perform well in videos. Keypoint detectors such as \gls*{sift} cause a lot of semantic noise due to points shifting as lighting is changing, and the same object can therefore shift from one pattern to a completely different pattern, when represented as an SDR. The distribution of the points within a frame is also constantly changing, which adds even more noise.
 \par
 The reason for why a direct binary threshold encoding might not perform well is due to the fact that it is neither position nor scale invariant and as such breaks the first principle of creating a good encoder. For instance, if it is desired that two pictures of the same object, but in different scales have more or less the same semantic meaning, then a direct binary encoding is not going to work. Direct binary threshold encoders also lead to loss of information, and is hard to perform for complex objects.
 \par
-An encoder which transforms convolutional feature maps into \glspl*{sdr} could be the answer, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into \glspl*{sdr} by treating each value in the feature map as a float and converting it into its own \gls*{sdr} quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single layer, which highlights how intangible this approach is.
+An encoder which transforms convolutional feature maps into \glspl*{sdr} could be the answer, but the issue is converting the dense representation of the feature maps into SDRs. Directly encoding them into \glspl*{sdr} by treating each value in the feature map as a float and converting it into its own \gls*{sdr} quickly becomes intangible due to the processing and memory requirements. \autoref{fig:cnn_features} shows only a small subset of all the feature maps in a single convolutional layer, which highlights how intangible this approach is.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/resnet18_layer_10.png}
@@ -410,8 +425,8 @@ There are other examples on the use of \gls*{htm} for real world applications. O
 \par
 There are also applications that are actively used in production, such as the model offered by \href{www.cortical.io}{cortical.io} which builds upon \gls*{htm} in order to perform language analysis. This is made this possible by introducing Semantic Folding and Semantic Fingerprinting~\cite{semantic_folding}.
 \subsection{The Thousand Brains Theory}
-One of the newest advancements in \gls*{htm} Theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand Brains Theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
-To summarize, the object is learned by the brain using multiple models that may rely on different inputs, the models then vote to reach a consensus on what they are sensing. This is coincidentally similar to ensemble learning such as \textcite{divergentNets}. Each model can be thought of as a mini-brain, hence the name "The Thousand Brains Theory".
+One of the newest advancements in \gls*{htm} theory is the introduction of the Thousand Brains Theory. \textcite{thousandbrains} introduces the Thousand Brains Theory as a way of redefining hierarchy in the brain based on recent neuroscientifical discoveries. Instead of our classical understanding of hierarchy in deep learning where each layer takes simple features and outputs complex features, we now have that every layer of the hierarchy sees the input at once but at different scales and resolutions. The different nodes in the hierarchy are now also connected and thus enable the network to use all available views of the object in order to create an understanding of that object. \par
+To summarize, the object is learned by the brain using multiple models that may rely on different inputs, the models then vote to reach a consensus on what they are sensing. This is coincidentally similar to ensemble learning such as \textcite{divergentNets}. Each model can be thought of as a mini-brain, hence the name \emph{The Thousand Brains Theory}.
 \begin{figure}[htb]
     \centering
     \begin{subfigure}[t]{0.55\textwidth}
@@ -433,7 +448,7 @@ To summarize, the object is learned by the brain using multiple models that may 
 This new type of hierarchy is also quite similar to some state-of-the-art image recognition deep learning architectures such as InceptionNet~\cite{inceptionnet} (see \autoref{fig:inception_module}) and Feature Pyramid Networks~\cite{fpn}, in the sense that they apply different sized convolutional filters, where each filter can be thought of as its own separate model, on the data and do predictions based on all of them at once. This also ensures scale invariance of objects fed in to the architecture.
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.7\linewidth]{resources/models/inception_module.png}
+    \includegraphics[width=0.9\linewidth]{resources/related_works/inception.eps}
     \caption[Filter Concatenation]{How the Inception~\cite{inceptionnet} architecture uses multiple filters at once.}
     \label{fig:inception_module}
 \end{figure}
@@ -445,7 +460,7 @@ While the Thousand Brains Theory is not yet technically implemented in any way i
 Knowing that deep learning approaches have a high degree of accuracy but suffer from problems related to generalizability, adaptability, and noise it stands to reason that \gls*{htm} is a viable alternative for anomaly detection.\par
 \textcite{AHMAD2017134} explores the use of \gls*{htm} for anomaly detection on low dimensional data such as temperature data from an industrial machine. The authors also discuss benchmarks for anomaly detection and compare different methods. The results show that \gls*{htm} is very capable of performing anomaly detection, especially in a changing environment. \gls*{htm} is able to outperform other anomaly detection methods and has the advantage of not requiring any per-problem parameter tuning.
 \par
-For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a \gls*{htm} system to find anomalous frames in videos of motions, with an example shown in \autoref{fig:motion_frame}. The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results show that the \gls*{htm} system was able to correctly detect some anomalies, but not an impressive amount.
+For high-dimensional anomaly detection; \textcite{MotionAnomalyDetection} used a \gls*{htm} system to find anomalous frames in videos of motions, with an example shown in \autoref{fig:motion_frame}. The anomalies were artificially created by swapping certain frames between different motion videos in the dataset. The results showed that the \gls*{htm} system was able to correctly detect some anomalies, but not an impressive amount.
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\linewidth]{resources/related_works/motion_frame.png}
