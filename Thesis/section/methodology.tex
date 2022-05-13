@@ -156,7 +156,7 @@ Another issue with the grid based approach arises when a car first comes into a 
 \end{figure}
 
 \par
-A more proper solution could be to allow the \gls*{tm} to grow segments to the TMs in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
+A more proper solution could be to allow the \gls*{tm} to grow segments to the \glspl*{tm} in the neighboring cells, but this is not documented in any research papers and might also hinder invariance.
 \subsection{Multistep Temporal Patterns}
 \label{sec:multistep_temporal_patterns}
 Since the \gls*{tm} can only grow segments to cells that were active in the previous timestep, as was mentioned in \autoref{sec:temporal_memory}, it will struggle to learn temporal patterns across multiple timesteps. This is especially evident in high framerate videos, where an object in motion has a similar representation at timestep $t$ and $t+1$, as an object standing still. \autoref{fig:high_fps} visualizes this phenomenon.

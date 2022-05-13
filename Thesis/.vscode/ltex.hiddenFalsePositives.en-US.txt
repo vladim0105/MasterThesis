@@ -14,3 +14,4 @@
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QCVPR 2011\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qsf\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QHierarchical Temporal Networks for anomaly detection in surveillance A subtitle of your thesis Vladimir Monakhov\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QClassical Hierarchy Hierarchy as in the Thousand Brains Theory [Thousand Brains Visualization]Comparison of classical hierarchy and the hierarchy introduced by the Thousand Brains Theory.\\E$"}
