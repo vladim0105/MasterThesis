@@ -27,7 +27,7 @@ if __name__ == "__main__":
         for anom_marker in anom_markers:
             plot = plt.axvline(anom_marker, c="red", alpha=0.3)
             anom_marker_plots.append(plot)
-    plt.legend([anom_score_plot, tuple(anom_marker_plots) if "anom_markers" in data else None], ["HTM Anomaly Score", "Anomalies"])
+    plt.legend([anom_score_plot, tuple(anom_marker_plots) if "anom_markers" in data else None], ["Grid HTM Anomaly Score", "Anomalies"])
     #plt.legend()
     plt.savefig("figure.eps")
     plt.show()
